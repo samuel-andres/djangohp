@@ -1,0 +1,12 @@
+body {
+  padding-bottom: 20px;
+}
+
+.navbar {
+  margin-bottom: 10px;
+  background-color: rgb(0, 85, 0);
+}
+
+.navbar-custom {
+  color: rgb(0, 85, 0);
+}

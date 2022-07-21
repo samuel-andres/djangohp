@@ -1,0 +1,14 @@
+.maseit {
+    max-height: 300px;
+  }
+.cuac {
+  margin-top: 15px;
+}
+
+.marigen {
+  margin-left: 200px;
+  margin-right: 200px;
+  border-style: solid;
+  /* border-radius: 25px; */
+  border-radius: 9px;
+}

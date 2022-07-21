@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "jquery": "^3.6.0",
+    "mermaid.cli": "^0.5.1",
+    "moment": "^2.29.4"
+  }
+}
