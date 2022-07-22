@@ -6,7 +6,8 @@ from django.views import View, generic
 
 # Views
 
+
 class IndexView(View):
     # def get(self, request):
-        # return render(request, 'cabañas/index.html')
+    # return render(request, 'cabañas/index.html')
     pass
