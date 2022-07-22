@@ -66,14 +66,5 @@ target/
 .vscode/*
 
 out/*
-*.jpeg
-*.jpg
-*settings.py
-
-*.png
-*.jpeg
-*.jpg
-*.webp
-*.gif
 
 */out/*
