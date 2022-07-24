@@ -6,23 +6,30 @@ class FotosInLine(admin.StackedInline):
     model = Foto
     extra = 1
 
+
 class RangosInLine(admin.StackedInline):
     model = Rango
     extra = 0
+
 
 class InstalacionesInLine(admin.TabularInline):
     model = Instalacion.cab.through
     extra = 0
 
+
 @admin.register(Cab)
 class CabAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'cantHabitaciones', 'slug',)
-    exclude=('slug',)
+    list_display = (
+        "nombre",
+        "cantHabitaciones",
+        "slug",
+    )
+    exclude = ("slug",)
     inlines = [
         FotosInLine,
         RangosInLine,
         InstalacionesInLine,
-        ]
+    ]
 
 
 # @admin.register(Calendario)
@@ -47,7 +54,7 @@ class HuespedAdmin(admin.ModelAdmin):
 
 @admin.register(Estado)
 class EstadoAdmin(admin.ModelAdmin):
-    list_filter = ('ambito',)
+    list_filter = ("ambito",)
 
 
 @admin.register(Rango)

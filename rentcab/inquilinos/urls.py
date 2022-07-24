@@ -8,5 +8,7 @@ urlpatterns = [
     # DetailViews
     path("cab/<slug:slug>", views.CabDetailView.as_view(), name="cab-det"),
     # CustomViews
-    path("cab/<slug:slug>/reservar", views.RegistroReservaView.as_view(), name="reg-res"),
+    path(
+        "cab/<slug:slug>/reservar", views.RegistroReservaView.as_view(), name="reg-res"
+    ),
 ]

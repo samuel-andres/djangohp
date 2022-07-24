@@ -25,7 +25,7 @@ class Huesped(models.Model):
         return f"{self.apellido}, {self.nombre}"
 
     class Meta:
-        verbose_name_plural = 'Huespedes'
+        verbose_name_plural = "Huespedes"
 
 
 class Estado(models.Model):
@@ -35,9 +35,9 @@ class Estado(models.Model):
 
     # métodos
     def __str__(self) -> str:
-        if self.ambito == 'cab':
-            return f'{self.ambito.capitalize()}aña {self.nombre.capitalize()}'
-        return f'{self.ambito.capitalize()}erva {self.nombre.capitalize()}'
+        if self.ambito == "cab":
+            return f"{self.ambito.capitalize()}aña {self.nombre.capitalize()}"
+        return f"{self.ambito.capitalize()}erva {self.nombre.capitalize()}"
 
 
 class Cab(models.Model):
@@ -58,8 +58,8 @@ class Cab(models.Model):
         return self.nombre
 
     class Meta:
-        verbose_name = 'Cabaña'
-        verbose_name_plural = 'Cabañas'
+        verbose_name = "Cabaña"
+        verbose_name_plural = "Cabañas"
 
 
 class Reserva(models.Model):
@@ -79,9 +79,9 @@ class Reserva(models.Model):
             MinValueValidator(0),
             MaxValueValidator(5),
         ],
-        null = True,
+        null=True,
     )
-    
+
     # punteros
     huesped = models.ForeignKey(
         Huesped, on_delete=models.CASCADE, null=True, blank=True
@@ -96,7 +96,7 @@ class Reserva(models.Model):
         return f"{self.fechaDesde}->{self.fechaHasta}-{self.cab}"
 
     class Meta:
-        verbose_name_plural = 'Reservas'
+        verbose_name_plural = "Reservas"
 
 
 class Foto(models.Model):
@@ -131,7 +131,7 @@ class Instalacion(models.Model):
     cab = models.ManyToManyField(Cab)
     # métodos
     def __str__(self) -> str:
-        return f'{self.descripcion}'
-    
+        return f"{self.descripcion}"
+
     class Meta:
-        verbose_name_plural = 'Instalaciones'
+        verbose_name_plural = "Instalaciones"

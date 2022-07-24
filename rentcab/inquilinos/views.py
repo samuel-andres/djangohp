@@ -6,12 +6,13 @@ from django.views import View, generic
 from django.urls import reverse
 from inquilinos.models import Reserva, Cab, Estado, Rango
 from inquilinos.forms import RegResForm
-from inquilinos.myparsers import CustomParser
+from inquilinos.parsers import CustomParser
 
 # Views
 class IndexView(View):
-    '''Vista del home que acepta get requests y renderiza el template index.htm
-    con las cabañas como contexto'''
+    """Vista del home que acepta get requests y renderiza el template index.htm
+    con las cabañas como contexto"""
+
     def get(self, request):
         cabs = Cab.objects.all()
         ctx = {
@@ -21,26 +22,29 @@ class IndexView(View):
 
 
 class CabDetailView(generic.DetailView):
-    '''DetailView de Cabañas'''
+    """DetailView de Cabañas"""
+
     model = Cab
     template_name = "inquilinos/cab_detail.html"
 
 
 class RegistroReservaView(View):
-    ''' Vista de registro de reserva que utiliza un formulario custom y sobreescribe
+    """Vista de registro de reserva que utiliza un formulario custom y sobreescribe
     los métodos get y post de la vista abstracta para devolver el formulario con
     los datos cargados en caso de que el formulario sea inválido y guarda el contenido
     del DateRangePicker en dos campos distintos del modelo reserva en caso de que los
-    datos sean correctos.'''
+    datos sean correctos."""
+
     model = Reserva
     # template_name = "inquilinos/reg_res.html"
     template_name = "inquilinos/reg_res.html"
     form_class = RegResForm
+
     def get(self, request, slug):
         # se genera el formulario vacío
-        form = self.form_class()
+        form = self.form_class(initial={"foo_slug": slug})
         # se obtiene la cabaña actual
-        cab=Cab.objects.get(slug=slug)
+        cab = Cab.objects.get(slug=slug)
         # se obtienen los rangos asociados a la cabaña
         ranges = Rango.objects.filter(cab_id=cab.id)
         # se obtienen las reservas asociadas a la cabaña
@@ -52,19 +56,19 @@ class RegistroReservaView(View):
         # se pasa como contexto el formulario vacío, el día de hoy y las fechas habilitadas y deshabilitadas
         context = {
             "form": form,
-            'today': today,
-            'allowed_dates': allowed_dates,
-            'disabled_dates': disabled_dates,
+            "today": today,
+            "allowed_dates": allowed_dates,
+            "disabled_dates": disabled_dates,
         }
 
         return render(request, self.template_name, context)
 
     def post(self, request, slug):
         # guarda el formulario con los datos ingresados
-        form = self.form_class(request.POST)
-        context = {
-            "form": form,
-        }
+        form = self.form_class(request.POST, initial={"foo_slug": slug})
+        # context = {
+        #     "form": form,
+        # }
         if form.is_valid():
             # si el formulario es válido parseo las fechas del datepicker
             # y las convierto a objetos datetime
@@ -74,11 +78,11 @@ class RegistroReservaView(View):
             date_object1, date_object2 = DesdeHastaTupla
             # creo la reserva con los datos cargados por el usuario
             nueva_reserva = Reserva(
-                fechaDesde = date_object1,
-                fechaHasta = date_object2,
+                fechaDesde=date_object1,
+                fechaHasta=date_object2,
                 cantAdultos=form.cleaned_data["cantAdultos"],
                 cantMenores=form.cleaned_data["cantMenores"],
-                # la cabaña se setea según el slug del url 
+                # la cabaña se setea según el slug del url
                 cab=Cab.objects.get(slug=slug),
                 # el estado se setea en pte confirmación
                 estado=Estado.objects.get(nombre="Pte Confirmacion"),
@@ -87,5 +91,18 @@ class RegistroReservaView(View):
             nueva_reserva.save()
             # después del post exitoso se redirige al usuario al home
             return HttpResponseRedirect(reverse("inquilinos:index"))
-        # si el formulario no fue válido se devuelve el formulario con los datos incorrectos 
+        # si el formulario no fue válido se devuelve el formulario con los datos incorrectos
+        cab = Cab.objects.get(slug=slug)
+        ranges = Rango.objects.filter(cab_id=cab.id)
+        reservas = cab.reserva_set.all()
+        myCustomParser = CustomParser()
+        allowed_dates = myCustomParser.parseRanges(ranges=ranges)
+        disabled_dates = myCustomParser.parseReservas(reservas=reservas)
+        today = myCustomParser.getParsedToday()
+        context = {
+            "form": form,
+            "today": today,
+            "allowed_dates": allowed_dates,
+            "disabled_dates": disabled_dates,
+        }
         return render(request, self.template_name, context)
