@@ -1,8 +1,47 @@
-{% extends 'inquilinos/base.html' %}
-{% block content %}
+{% extends 'inquilinos/base.html' %}{% block content %}{% load static %}
+<script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
 {% load crispy_forms_tags %}
 {% csrf_token %}
 <div class="col-md-3 offset-md-4">
 {% crispy form %}
 </div>
+<script>
+    var today = "{{ today }}";
+    var allowedDates = {{allowed_dates|safe}};
+    var disabledDates = {{disabled_dates|safe}}
+    console.log(allowedDates);
+    const picker = new Litepicker({
+        element: document.getElementById('litepicker'),
+        singleMode: false,
+        tooltipText: {
+          one: 'noche',
+          other: 'noches'
+        },
+        tooltipNumber: (totalDays) => {
+          return totalDays - 1;},
+        lockDays: disabledDates,
+        format : "DD/MM/YYYY",
+        lockDaysFormat : "DD/MM/YYYY",
+        minDate : today,
+        numberOfMonths : 2,
+        numberOfColumns: 2,
+        lang : 'es-AR',
+        minDays : 2,
+        disallowLockDaysInRange: true,
+        lockDaysFilter: (date1, date2, pickedDates) => {
+            if (!date2) {
+                return !allowedDates.includes(date1.format('DD/MM/YYYY'));
+            }
+            while (date1.toJSDate() < date2.toJSDate()) {
+                const day = date1.getDay();
+                isProhibited = !allowedDates.includes(date1.format('DD/MM/YYYY'));
+                if (isProhibited) { return true; }
+                date1.add(1, 'day');
+              }
+          
+              return false;
+        },
+        resetButton: true,
+      });   
+</script>
 {% endblock content %} 

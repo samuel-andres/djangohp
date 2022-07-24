@@ -12,3 +12,7 @@
   /* border-radius: 25px; */
   border-radius: 9px;
 }
+
+.disabled{
+    color:#cecece;
+}

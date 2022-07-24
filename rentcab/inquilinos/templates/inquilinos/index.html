@@ -15,20 +15,9 @@
 <div class="album py-5 bg-light">
     <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-
-
-
-
-
-
-
-
-
-
           {% for cab in cabs %}
             <div class="col">
                 <div class="card shadow-sm">
-                  {% comment %} <img src="{% static 'inquilinos/images/cabaña.jpg' %}" alt=""/> {% endcomment %}
                   <img src="{{ cab.foto_set.first.foto.url }}" alt="">
                   <div class="card-body">
                     <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>
@@ -36,27 +25,12 @@
                       <div class="btn-group">
                         <button type="button" onclick="location.href='{% url 'inquilinos:cab-det' cab.slug %}'" class="btn btn-sm btn-outline-secondary">Ver cabaña</button>
                       </div>
-                      <small class="text-muted">Cabaña {{forloop.counter}}</small>
+                      <small class="text-muted">{{cab.nombre}}</small>
                     </div>
                   </div>
                 </div>
               </div>
           {% endfor %}
-              
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       </div>
     </div>
   </div>

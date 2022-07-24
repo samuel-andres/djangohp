@@ -1,5 +1,4 @@
 import datetime
-from black import DEFAULT_EXCLUDES
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View, generic
@@ -39,16 +38,36 @@ class RegistroReservaView(View):
     def get(self, request, slug):
         # se genera el formulario vacío
         form = self.form_class()
-        # se obtiene la cabaña actual
-        cab=Cab.objects.get(slug=slug)
-        # se obtienen los rangos asociados a la cabaña
-        ranges = Rango.objects.filter(cab_id=cab.id)
-        # se obtienen las reservas asociadas a la cabaña
-        reservas = cab.reserva_set.all()
-        myCustomParser = CustomParser()
-        allowed_dates = myCustomParser.parseRanges(ranges=ranges)
-        disabled_dates = myCustomParser.parseReservas(reservas=reservas)
-        today = myCustomParser.getParsedToday()
+        # se guarda el día de hoy en una variable para pasarlo como ctx
+        today = datetime.date.today()
+        # se pasa el día de hoy de datetime obj a str
+        today = today.strftime("%d-%m-%Y")
+        strp,strf,fmt=datetime.datetime.strptime,datetime.datetime.strftime,"%d/%m/%Y"
+        # se obtienen todos los rangos en la db
+        ranges = Rango.objects.all()
+        foo = list()
+        # se guardan todos los rangos (desde-hasta) en una lista
+        for rango in ranges:
+            foo.append(rango.fechaDesde.strftime("%d/%m/%Y"))
+            foo.append(rango.fechaHasta.strftime("%d/%m/%Y"))
+        
+        # se generan todas las fechas intermedias entre los rangos especificados
+        allowed_dates = [[strf(k,fmt) for k in (strp(i,fmt)+datetime.timedelta(days=n) for n in range((strp(j,fmt)-strp(i,fmt)).days+1))] for i,j in zip(foo[::2],foo[1::2])]
+        
+        # se flatea la lista (elimina los [])
+        allowed_dates = [x for xs in allowed_dates for x in xs]
+
+        # se obtienen todas las reservas en la db
+        reservas = Reserva.objects.all()
+        disabled_dates = list()
+
+        # se genera una lista de listas con los rangos a deshabilitar correspondientes a las reservas que existen en la db
+        for reserva in reservas:
+            bar = []
+            bar.append(reserva.fechaDesde.strftime("%d/%m/%Y"))
+            bar.append(reserva.fechaHasta.strftime("%d/%m/%Y"))
+            disabled_dates.append(bar)
+
         # se pasa como contexto el formulario vacío, el día de hoy y las fechas habilitadas y deshabilitadas
         context = {
             "form": form,
@@ -68,16 +87,15 @@ class RegistroReservaView(View):
         if form.is_valid():
             # si el formulario es válido parseo las fechas del datepicker
             # y las convierto a objetos datetime
-            pickerinput = form.cleaned_data["fechaDesdeHasta"]
-            myCurstomParser = CustomParser()
-            DesdeHastaTupla = myCurstomParser.parsePickerInput(pickerinput=pickerinput)
-            date_object1, date_object2 = DesdeHastaTupla
+            date_string1 = form.cleaned_data["fechaDesdeHasta"][:10]
+            date_string2 = form.cleaned_data["fechaDesdeHasta"][13:]
+            date_object1 = datetime.datetime.strptime(date_string1, '%d/%m/%Y')
+            date_object2 = datetime.datetime.strptime(date_string2, '%d/%m/%Y')
             # creo la reserva con los datos cargados por el usuario
             nueva_reserva = Reserva(
                 fechaDesde = date_object1,
                 fechaHasta = date_object2,
                 cantAdultos=form.cleaned_data["cantAdultos"],
-                cantMenores=form.cleaned_data["cantMenores"],
                 # la cabaña se setea según el slug del url 
                 cab=Cab.objects.get(slug=slug),
                 # el estado se setea en pte confirmación

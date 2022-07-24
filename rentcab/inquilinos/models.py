@@ -66,12 +66,20 @@ class Reserva(models.Model):
     # attrs
     fechaDesde = models.DateField()
     fechaHasta = models.DateField()
-    cantAdultos = models.PositiveIntegerField(
+    cantAdultos = models.PositiveSmallIntegerField(
         help_text="Cantidad de adultos",
         validators=[
             MinValueValidator(1),
             MaxValueValidator(5),
         ],
+    )
+    cantMenores = models.PositiveSmallIntegerField(
+        help_text="Cantidad de niños",
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(5),
+        ],
+        null = True,
     )
     
     # punteros
@@ -107,12 +115,12 @@ class Foto(models.Model):
 class Rango(models.Model):
     # attrs
     fechaDesde = models.DateField()
-    fechHasta = models.DateField()
+    fechaHasta = models.DateField()
     # punteros
     cab = models.ForeignKey(Cab, on_delete=models.CASCADE, null=True)
     # métodos
     def __str__(self) -> str:
-        return f"{self.fechaDesde}=>{self.fechHasta}"
+        return f"{self.fechaDesde}=>{self.fechaHasta}"
 
 
 class Instalacion(models.Model):
