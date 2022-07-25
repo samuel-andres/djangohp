@@ -47,10 +47,11 @@ INSTALLED_APPS = [
     "propietarios.apps.PropietariosConfig",
     "django_extensions",
     "crispy_forms",
-    "bootstrap_datepicker_plus",
+    # "bootstrap_datepicker_plus",
     "bootstrap4",
     # "crispy_bootstrap5",
-    "bootstrap_daterangepicker",
+    # "bootstrap_daterangepicker",
+    'djmoney',
 ]
 
 MIDDLEWARE = [

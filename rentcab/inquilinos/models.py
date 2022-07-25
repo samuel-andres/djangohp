@@ -6,6 +6,8 @@ from django.contrib.postgres.fields import DateRangeField
 from bootstrap_daterangepicker import widgets
 from datetime import date
 from django.core.validators import MaxValueValidator, MinValueValidator
+from djmoney.models.fields import MoneyField
+from moneyed import ARS
 
 # Create your models here.
 
@@ -46,7 +48,17 @@ class Cab(models.Model):
         max_length=200,
     )
     cantHabitaciones = models.IntegerField()
-    slug = models.SlugField(null=False, blank=False, unique=True)
+    costoPorNoche = MoneyField(
+        max_digits=14, 
+        decimal_places=2, 
+        default_currency='ARS',
+        null=True,
+        )
+    slug = models.SlugField(
+        null=False, 
+        blank=False, 
+        unique=True
+        )
 
     # métodos
     def set_slug(sender, instance, *args, **kwargs):

@@ -1,16 +1,20 @@
 .maseit {
     max-height: 300px;
+    /* border-style: groove; */
+    border-style: outset;
+    border-radius: 9px;
   }
 .cuac {
-  margin-top: 15px;
+  /* margin-top: 5px; */
+  float: right;
 }
 
 .marigen {
   margin-left: 200px;
   margin-right: 200px;
-  border-style: solid;
+  /* border-style: groove; */
   /* border-radius: 25px; */
-  border-radius: 9px;
+  /* border-radius: 9px; */
 }
 
 .disabled{
@@ -68,4 +72,8 @@
   text-align: center;
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
+}
+
+ul {
+  list-style-type: none;
 }

@@ -1,16 +1,14 @@
-from ctypes import c_ssize_t
 import datetime
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit, Field, HTML, Div
-from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
+from crispy_forms.layout import Submit, Layout, Field
 from inquilinos.parsers import CustomParser
 from inquilinos.models import Rango, Cab
 
 
 class RegResForm(forms.Form):
-    foo_slug = forms.SlugField()
+    foo_slug = forms.SlugField(widget=forms.HiddenInput())
     # cantidades predefinidas para los campos adultos y menores
     cant_choices = [
         (0, "Cero"),
@@ -98,29 +96,9 @@ class RegResForm(forms.Form):
         data = cl_mens
         return data
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Fieldset(
-                'Reservar cabaña',
-                Field('fechaDesdeHasta', css_class="mb-3 form-control"),
-                Field('cantAdultos',css_class="mb-3 form-control"),
-                Field('cantMenores',css_class="mb-3 form-control"),
-                'foo_slug',
-            ),
-            Submit('submit', 'Confirmar', css_class="btn btn-primary cuac"),
-            HTML('<a class="btn btn-secondary" href="/">Cancelar</a>'),
-        )
-        self.helper.form_method = "POST"
-        self.helper.form_style = "inline"
-        self.fields["foo_slug"].widget = forms.HiddenInput()
-
-
-
     # huesped = forms.ModelChoiceField(queryset=Estado.objects.filter(ambito='cab'))
     # form helper para agregar el boton de submit y definir el metodo post en el formulario
-    # helper = FormHelper()
-    # helper.add_input(Submit("submit", "Confirmar", css_class="btn-primary cuac"))
-    # helper.form_method = "POST"
-    # helper.form_style = "inline"
+    helper = FormHelper()
+    helper.add_input(Submit("submit", "Confirmar", css_class="btn-primary cuac"))
+    helper.form_method = "POST"
+    helper.form_style = "inline"
