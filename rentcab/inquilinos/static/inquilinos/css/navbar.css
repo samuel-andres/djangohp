@@ -4,7 +4,10 @@ body {
 
 .navbar {
   margin-bottom: 10px;
-  background-color: rgb(0, 85, 0);
+  background-color: white;
+  /* #01cda9; */
+  /* #036c39; */
+   /* rgb(0, 85, 0); */
 }
 
 .navbar-custom {

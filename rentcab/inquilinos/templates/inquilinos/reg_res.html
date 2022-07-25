@@ -1,9 +1,12 @@
 {% extends 'inquilinos/base.html' %}{% block content %}{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'inquilinos/icons/bootstrap-icons/font/bootstrap-icons.css'%}">
 <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
 {% load crispy_forms_tags %}
 {% csrf_token %}
-<div class="col-md-3 offset-md-4">
+<br>
+<div class="col-md-3 offset-md-4 p-5 d-flex justify-content-center border rounded bg-white">
 {% crispy form %}
+{% comment %} <i class="bi bi-calendar-date"></i> {% endcomment %}
 </div>
 <script>
     var today = "{{ today }}";

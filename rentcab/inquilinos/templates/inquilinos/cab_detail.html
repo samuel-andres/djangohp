@@ -1,35 +1,25 @@
 {% extends 'inquilinos/base.html' %}{% block content %}{% load static %}
-{# Load the tag library #}
-{% load bootstrap4 %}
-{# Load CSS and JavaScript #}
-{% bootstrap_css %}
-{% bootstrap_javascript jquery='full' %}
-{# Display django.contrib.messages as Bootstrap alerts #}
-{% bootstrap_messages %}
-
-
+<div class="p-3">
 <center>
     <h1>{{cab.nombre}}</h1>
 </center>
-
 <div class="col-md-8 offset-md-2">
     <center>
         {% for inst in cab.instalacion_set.all  %}
             <p>{{ inst.descripcion }}</p>
         {% endfor %}
         <p>{{ cab.cantHabitaciones }} habitaciones.</p>
-        {% buttons %}
-        <button type="button" onclick="location.href='{% url 'inquilinos:reg-res' cab.slug %}'" class="btn btn-primary">
+        <button type="button" onclick="location.href='{% url 'inquilinos:reg-res' cab.slug %}'" class="btn btn-primary mb-2">
             Consultar disponibilidad
         </button> 
-        {% endbuttons %} 
     </center> 
-    <div id="gallery" class="carousel slide carousel-fade marigen" data-ride="carousel" data-aos="fade-up" data-aos-delay="300">
+    {% comment %} <div id="gallery" class="carousel slide carousel-fade marigen" data-ride="carousel" data-aos="fade-up" data-aos-delay="300"> {% endcomment %}
+        <div id="gallery" class="carousel slide marigen" data-bs-ride="carousel">
         <ul class="carousel-indicators">
-            <li data-target="#gallery" data-slide-to="0" class="active"></li>
+            <li data-bs-target="#gallery" data-bs-slide-to="0" class="active"></li>
             {% for foto in cab.foto_set.all %}
                 {% if forloop.last %}<! -- {% endif %} 
-                <li data-target="#gallery" data-slide-to="{{ forloop.counter }}"></li>
+                <li data-bs-target="#gallery" data-bs-slide-to="{{ forloop.counter }}"></li>
             {% endfor %}
         </ul>
         <div class="carousel-inner">
@@ -42,7 +32,15 @@
                 </div>
             {% endfor %}
         </div>
+        {% comment %} <button class="carousel-control-prev" type="button" data-bs-target="#gallery" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#gallery" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button> {% endcomment %}
 
 </div>
-
+</div>
 {% endblock content %}

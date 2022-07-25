@@ -20,7 +20,13 @@ class RegResForm(forms.Form):
     ]
     # textinput con el id que usa el datepicker
     fechaDesdeHasta = forms.CharField(
-        widget=forms.TextInput(attrs={"id": "litepicker"}), label="Rango de reserva"
+        widget=forms.TextInput(
+            attrs={
+                "id": "litepicker",
+                "placeholder": "Ingreso - Salida",
+            }
+        ),
+        label="Rango de reserva",
     )
     # el [1:] es pq no puede haber 0 adultos
     cantAdultos = forms.ChoiceField(
