@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     "bootstrap4",
     # "crispy_bootstrap5",
     # "bootstrap_daterangepicker",
-    'djmoney',
+    # 'djmoney',
 ]
 
 MIDDLEWARE = [

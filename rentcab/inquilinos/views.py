@@ -45,6 +45,7 @@ class RegistroReservaView(View):
         form = self.form_class(initial={"foo_slug": slug})
         # se obtiene la cabaña actual
         cab = Cab.objects.get(slug=slug)
+        costoPorNoche = cab.costoPorNoche
         # se obtienen los rangos asociados a la cabaña
         ranges = Rango.objects.filter(cab_id=cab.id)
         # se obtienen las reservas asociadas a la cabaña
@@ -57,6 +58,7 @@ class RegistroReservaView(View):
         context = {
             "form": form,
             "today": today,
+            "costoPorNoche": costoPorNoche,
             "allowed_dates": allowed_dates,
             "disabled_dates": disabled_dates,
         }
@@ -76,14 +78,20 @@ class RegistroReservaView(View):
             myCurstomParser = CustomParser()
             DesdeHastaTupla = myCurstomParser.parsePickerInput(pickerinput=pickerinput)
             date_object1, date_object2 = DesdeHastaTupla
+            # obtengo la cabaña según el slug del url
+            cab = Cab.objects.get(slug=slug)
+            # calculo la cantidad de noches
+            cantNoches = (date_object2 - date_object1).days
             # creo la reserva con los datos cargados por el usuario
             nueva_reserva = Reserva(
                 fechaDesde=date_object1,
                 fechaHasta=date_object2,
                 cantAdultos=form.cleaned_data["cantAdultos"],
                 cantMenores=form.cleaned_data["cantMenores"],
-                # la cabaña se setea según el slug del url
-                cab=Cab.objects.get(slug=slug),
+                # se setea la cabaña obtenida más arriba
+                cab = cab,
+                # se calcula el precio final en el back por seguridad
+                precioFinal = (cantNoches * cab.costoPorNoche),
                 # el estado se setea en pte confirmación
                 estado=Estado.objects.get(nombre="Pte Confirmacion"),
             )
@@ -99,10 +107,13 @@ class RegistroReservaView(View):
         allowed_dates = myCustomParser.parseRanges(ranges=ranges)
         disabled_dates = myCustomParser.parseReservas(reservas=reservas)
         today = myCustomParser.getParsedToday()
+        costoPorNoche = cab.costoPorNoche
         context = {
             "form": form,
             "today": today,
             "allowed_dates": allowed_dates,
             "disabled_dates": disabled_dates,
+            'costoPorNoche' : costoPorNoche,
         }
         return render(request, self.template_name, context)
+

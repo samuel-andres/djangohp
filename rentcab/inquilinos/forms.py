@@ -1,4 +1,3 @@
-from ctypes import c_ssize_t
 import datetime
 from django import forms
 from django.utils.translation import gettext_lazy as _
@@ -83,20 +82,18 @@ class RegResForm(forms.Form):
                 )
 
         return data
-
-    def clean_cantMenores(self):
-        # sobreescribo la validación del campo cantidad de menores
-        # primero se hace la validación por defecto
-        cl_mens = self.cleaned_data["cantMenores"]
-        cl_ads = self.cleaned_data["cantAdultos"]
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        cantMenores = cleaned_data.get("cantMenores")
+        cantAdultos = cleaned_data.get("cantAdultos")
         # si la cantidad de menores seleccionada es mayor a 0
-        if int(cl_mens) > 0:
+        # (el if verifica que solo se realice la validación si los
+        # dos campos que dependen de sí pasaron sus propias validaciones)
+        if cantMenores and cantAdultos:
             # se valida que la suma de menores y mayores sea menor a 5
-            if (int(cl_ads) + int(cl_mens)) > 5:
+            if (int(cantAdultos) + int(cantMenores)) > 5:
                 raise forms.ValidationError("Máxima cantidad de personas = 5")
-        # se devuelven los datos
-        data = cl_mens
-        return data
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -107,6 +104,14 @@ class RegResForm(forms.Form):
                 Field('fechaDesdeHasta', css_class="mb-3 form-control"),
                 Field('cantAdultos',css_class="mb-3 form-control"),
                 Field('cantMenores',css_class="mb-3 form-control"),
+                Div(
+                    HTML(
+                        '''
+                        <p id="ptag"></p>
+                        '''
+                    ),
+                    css_id = "after_reserva",
+                ),
                 'foo_slug',
             ),
             Submit('submit', 'Confirmar', css_class="btn btn-primary cuac"),
@@ -115,12 +120,3 @@ class RegResForm(forms.Form):
         self.helper.form_method = "POST"
         self.helper.form_style = "inline"
         self.fields["foo_slug"].widget = forms.HiddenInput()
-
-
-
-    # huesped = forms.ModelChoiceField(queryset=Estado.objects.filter(ambito='cab'))
-    # form helper para agregar el boton de submit y definir el metodo post en el formulario
-    # helper = FormHelper()
-    # helper.add_input(Submit("submit", "Confirmar", css_class="btn-primary cuac"))
-    # helper.form_method = "POST"
-    # helper.form_style = "inline"
