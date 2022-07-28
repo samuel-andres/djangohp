@@ -6,7 +6,7 @@ class CustomParser:
         """devuelve el día en string con formato dia mes año"""
         today = datetime.date.today()
         # se pasa el día de hoy de datetime obj a str
-        return today.strftime("%d-%m-%Y")
+        return today.strftime("%m-%d-%Y")
 
     def parseRanges(self, ranges):
         """toma como argumento una lista de rangos y devuelve una lista de todas las fechas

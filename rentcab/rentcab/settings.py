@@ -45,13 +45,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "inquilinos.apps.InquilinosConfig",
     "propietarios.apps.PropietariosConfig",
+    "accounts.apps.AccountsConfig",
     "django_extensions",
     "crispy_forms",
-    # "bootstrap_datepicker_plus",
     "bootstrap4",
-    # "crispy_bootstrap5",
-    # "bootstrap_daterangepicker",
-    # 'djmoney',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -138,14 +136,14 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_REDIRECT_URL = "/"
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.mail.yahoo.com'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mail.yahoo.com'
 # EMAIL_PORT = 465 (no TLS)
-# EMAIL_PORT = 587 (TLS)
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'samuel5848@yahoo.com'
-# EMAIL_HOST_PASSWORD =
-# DEFAULT_FROM_EMAIL = 'samuel5848@yahoo.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'samuel5848@yahoo.com'
+EMAIL_HOST_PASSWORD = 'dbvnecpwqbkrwisn'
+DEFAULT_FROM_EMAIL = 'samuel5848@yahoo.com'
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 # CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -155,3 +153,10 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 #     'all_applications': True,
 #     'group_models': True,
 # }
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}

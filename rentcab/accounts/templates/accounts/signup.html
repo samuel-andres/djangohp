@@ -1,0 +1,75 @@
+{% extends "inquilinos/base.html" %} {% block content %} 
+<br>
+<div class="col-md-6 offset-md-3 p-5 d-flex justify-content-center border rounded bg-white" id="divreserva">
+
+
+
+<div class="card-body text-center">
+	<form method="post" action="">
+		{% csrf_token %}
+		<div class="mb-md-2 mt-md-1 pb-2">
+			<h2 class="fw-bold mb-3">Registrarse</h2>
+
+			<div class="form-outline form-white mb-4">
+				<input
+					type="email"
+					id="typeEmailX"
+					name="email"
+					class="form-control form-control-lg"
+					value="{% if form.email.value %} {{ form.email.value }}{% endif %}"
+				/>
+				<label class="form-label" for="typeEmailX">Email</label>
+				<span class="signup">{{ form.email.errors }}</span>
+			</div>
+
+
+
+			<div class="form-outline form-white mb-4">
+				<input
+					type="text"
+					id="typeEmailX"
+					name="username"
+					class="form-control form-control-lg"
+					value = "{% if form.username.value %}{{ form.username.value }}{% endif %}"
+				/>
+				<label class="form-label" for="typeEmailX">Usuario</label>
+				<span class="signup">{{ form.username.errors }}</span>
+			</div>
+			<div class="form-outline form-white mb-4">
+				<input
+					type="password"
+					id="typePasswordX"
+					name="password1"
+					class="form-control form-control-lg"
+					value = "{% if form.password1.value %} {{ form.password1.value }}{% endif %}"
+				/>
+				<label class="form-label" for="typePasswordX">Contraseña</label>
+				<span class="signup">{{ form.password1.errors }}</span>
+			</div>
+
+			<div class="form-outline form-white mb-4">
+				<input
+					type="password"
+					id="typePasswordX"
+					name="password2"
+					class="form-control form-control-lg"
+					value = "{% if form.password1.value %}{{ form.password2.value }}{% endif %}"
+				/>
+				<label class="form-label" for="typePasswordX"
+					>Repetir contraseña</label
+				>
+				<span class="signup">{{ form.password2.errors }}</span>
+			</div>
+			<p class="small pb-lg-2">
+				<a class="text-black-50" href="{% url 'login' %}"
+					>Ya tienes una cuenta?</a
+				>
+			</p>
+			<button class="btn btn-outline-primary btn-lg px-5" type="submit">
+				Registrarme
+			</button>
+		</div>
+	</form>
+</div>
+{% endblock %} 
+

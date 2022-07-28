@@ -6,26 +6,32 @@ from django.contrib.postgres.fields import DateRangeField
 from bootstrap_daterangepicker import widgets
 from datetime import date
 from django.core.validators import MaxValueValidator, MinValueValidator
-
 # Create your models here.
 
 class Huesped(models.Model):
     # attrs
     nombre = models.CharField(max_length=200)
     apellido = models.CharField(max_length=200)
-    email = models.EmailField()
     telefono = models.CharField(max_length=13)
 
     # punteros
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
 
     # métodos
+
+    def asignar_permiso(sender, instance, *args, **kwargs):
+        group = Group.objects.get(name='huesped')
+        instance.usuario.groups.add(group)
+
     def __str__(self) -> str:
-        return f"{self.apellido}, {self.nombre}"
+        return f"{self.apellido.capitalize()}, {self.nombre.capitalize()}"
 
     class Meta:
         verbose_name_plural = "Huespedes"
 
+    def get_absolute_url(self):
+        return reverse("inquilinos:hue-det", kwargs={"pk": self.pk})
+    
 
 class Estado(models.Model):
     # attrs
@@ -76,6 +82,9 @@ class Reserva(models.Model):
     # attrs
     fechaDesde = models.DateField()
     fechaHasta = models.DateField()
+    fechaReserva = models.DateField(
+        auto_now_add=True,
+    )
     precioFinal = models.FloatField(
         null = True,
     )
@@ -110,6 +119,9 @@ class Reserva(models.Model):
 
     class Meta:
         verbose_name_plural = "Reservas"
+        permissions = (
+            ('puede_registrar_reserva', 'Este usuario puede registrar una reserva.'),
+        )
 
 
 class Foto(models.Model):

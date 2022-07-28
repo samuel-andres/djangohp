@@ -5,7 +5,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, Field, HTML, Div
 from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
 from inquilinos.parsers import CustomParser
-from inquilinos.models import Rango, Cab
+from inquilinos.models import Rango, Cab, Huesped
 
 
 class RegResForm(forms.Form):
@@ -50,26 +50,32 @@ class RegResForm(forms.Form):
             raise forms.ValidationError(
                 "Error. La fecha de inicio debe ser <= a la fecha fin."
             )
-        if desde < datetime.datetime.today():
+        if desde.date() < datetime.date.today():
+            print(desde)
+            print(datetime.date.today())
             raise forms.ValidationError(
                 "Error. La fecha ingresada debe ser >= a la fecha actual."
             )
         cab = Cab.objects.get(slug=self.cleaned_data["foo_slug"])
         desde = desde.date()
         hasta = hasta.date()
-        foo = 0
-        bar = 0
+        foobar = False
         for rango in cab.rango_set.all():
+            foo = 0
+            bar = 0
             if rango.fechaDesde <= desde <= rango.fechaHasta:
                 foo = 1
             if rango.fechaDesde <= hasta <= rango.fechaHasta:
                 bar = 1
             if foo >= 1 and bar >= 1:
+                foobar = True
                 break
             else:
-                raise forms.ValidationError(
-                    "Alguna fecha en el rango ingresado no está habilitada"
-                )
+                continue        
+        if not foobar:
+            raise forms.ValidationError(
+                "Alguna fecha en el rango ingresado no está habilitada."
+            )
 
         for reserva in cab.reserva_set.all():
             if reserva.fechaDesde <= desde <= reserva.fechaHasta:
@@ -80,6 +86,15 @@ class RegResForm(forms.Form):
                 raise forms.ValidationError(
                     "Alguna fecha en el rango ingresado no está habilitada"
                 )
+            if desde <= reserva.fechaDesde <= hasta:
+                raise forms.ValidationError(
+                    "Alguna fecha en el rango ingresado no está habilitada"
+                )
+            if desde <= reserva.fechaHasta <= hasta:
+                raise forms.ValidationError(
+                    "Alguna fecha en el rango ingresado no está habilitada"
+                )
+
 
         return data
     
@@ -120,3 +135,28 @@ class RegResForm(forms.Form):
         self.helper.form_method = "POST"
         self.helper.form_style = "inline"
         self.fields["foo_slug"].widget = forms.HiddenInput()
+
+
+class CrearHuespedForm(forms.ModelForm):
+    class Meta:
+        model = Huesped
+        fields = [
+            'nombre',
+            'apellido',
+            'telefono',
+        ]
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                'Cargar datos personales',
+                Field('nombre', css_class="mb-3 form-control"),
+                Field('apellido',css_class="mb-3 form-control"),
+                Field('telefono',css_class="mb-3 form-control"),
+            ),
+            Submit('submit', 'Confirmar', css_class="btn btn-primary cuac"),
+            HTML('<a class="btn btn-secondary" href="/">Cancelar</a>'),
+        )
+        self.helper.form_method = "POST"
+        self.helper.form_style = "inline"

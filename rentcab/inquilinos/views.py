@@ -1,12 +1,13 @@
 import datetime
-from black import DEFAULT_EXCLUDES
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View, generic
 from django.urls import reverse
-from inquilinos.models import Reserva, Cab, Estado, Rango
-from inquilinos.forms import RegResForm
+from inquilinos.models import Reserva, Cab, Estado, Rango, Huesped
+from inquilinos.forms import RegResForm, CrearHuespedForm
 from inquilinos.parsers import CustomParser
+from .user import UserCreateView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 # Views
 class IndexView(View):
@@ -28,12 +29,16 @@ class CabDetailView(generic.DetailView):
     template_name = "inquilinos/cab_detail.html"
 
 
-class RegistroReservaView(View):
+class RegistroReservaView(PermissionRequiredMixin,View):
     """Vista de registro de reserva que utiliza un formulario custom y sobreescribe
     los métodos get y post de la vista abstracta para devolver el formulario con
     los datos cargados en caso de que el formulario sea inválido y guarda el contenido
     del DateRangePicker en dos campos distintos del modelo reserva en caso de que los
     datos sean correctos."""
+
+    permission_required = (
+        'inquilinos.puede_registrar_reserva',
+    )
 
     model = Reserva
     # template_name = "inquilinos/reg_res.html"
@@ -49,7 +54,7 @@ class RegistroReservaView(View):
         # se obtienen los rangos asociados a la cabaña
         ranges = Rango.objects.filter(cab_id=cab.id)
         # se obtienen las reservas asociadas a la cabaña
-        reservas = cab.reserva_set.all()
+        reservas = cab.reserva_set.all() # habría que ver si conviene pasar solo las que son > hoy
         myCustomParser = CustomParser()
         allowed_dates = myCustomParser.parseRanges(ranges=ranges)
         disabled_dates = myCustomParser.parseReservas(reservas=reservas)
@@ -90,6 +95,7 @@ class RegistroReservaView(View):
                 cantMenores=form.cleaned_data["cantMenores"],
                 # se setea la cabaña obtenida más arriba
                 cab = cab,
+                huesped = request.user.huesped,
                 # se calcula el precio final en el back por seguridad
                 precioFinal = (cantNoches * cab.costoPorNoche),
                 # el estado se setea en pte confirmación
@@ -117,3 +123,10 @@ class RegistroReservaView(View):
         }
         return render(request, self.template_name, context)
 
+
+class CrearPerfilHuespedView(UserCreateView):
+    model = Huesped
+    form_class = CrearHuespedForm
+
+class PerfilHuespedDetailView(generic.DetailView):
+    model = Huesped

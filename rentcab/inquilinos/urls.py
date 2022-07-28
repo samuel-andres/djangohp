@@ -11,4 +11,6 @@ urlpatterns = [
     path(
         "cab/<slug:slug>/reservar", views.RegistroReservaView.as_view(), name="reg-res"
     ),
+    path("huesped/perfil/", views.CrearPerfilHuespedView.as_view(), name="crear-huesped"),
+    path("huesped/<int:pk>",views.PerfilHuespedDetailView.as_view(), name="hue-det"),
 ]

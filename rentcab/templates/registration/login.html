@@ -1,0 +1,50 @@
+{% extends "inquilinos/base.html" %}
+{% block content %}
+<br>
+<div class="col-md-3 offset-md-4 p-5 d-flex justify-content-center border rounded bg-white" id="divreserva">
+
+
+            <div class="card-body text-center">
+              <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    {% comment %} <div class="mb-md-2 mt-md-1 pb-2"> {% endcomment %}
+                    
+                    <h3 class="fw-bold mb-2">Iniciar sesión</h3>
+                    {% for message in messages  %}
+                      <p id="messages">{{ message }}</p>
+                    {% endfor %}
+                    <p class="small text-black-50 mb-3">Por favor, ingresa tu usuario y contraseña.</p>
+  
+                    <div class="form-outline form-white mb-4">
+                    <input 
+                      type="text" 
+                      id="typeEmailX" 
+                      name="username" 
+                      class="form-control form-control-lg" 
+                      value= "{% if form.username.value %} {{ form.username.value }}{% endif %}"
+                    />
+                    <label class="form-label" for="typeEmailX">Usuario</label>
+                    </div>
+  
+                    <div class="form-outline form-white mb-2">
+                    <input 
+                      type="password" 
+                      id="typePasswordX"  
+                      name="password" 
+                      class="form-control form-control-lg" 
+                      value="{% if form.password.value %} {{ form.password.value }}{% endif %}"
+                    />
+                    <label class="form-label" for="typePasswordX">Contraseña</label>
+                    </div>
+                    {% if form.errors %}
+                      <p style="color:red"><strong>Usuario o contraseña incorrecta.</strong></p>
+                    {% endif %}
+                    <p class="small mb-3 pb-lg-2"><a class="text-black-50" href="{% url 'password_reset' %}">Has olvidado tu contraseña?</a></p>
+                    <button class="btn btn-outline-primary btn-lg px-5" type="submit" >Login</button>
+                    <input type="hidden" name="next" value="{{ next }}" />
+                    
+                </form>
+                <p class="small mb-0 mt-3 pb-lg-2">No estás registrado? <br><a href="{% url 'accounts:sign-up' %}" class="text-black-50 fw-bold">Registrate ahora</a>
+              </div>
+            </div>
+  {% endblock %}

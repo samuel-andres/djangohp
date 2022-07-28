@@ -17,7 +17,6 @@
   <link rel="stylesheet" href="{% static 'inquilinos/css/stylesheet.css' %}">
   <link href="{% static 'inquilinos/css/bootstrap.min.css' %}" rel="stylesheet">
 
-  <!-- Custom styles for this template -->
   <link href="{% static 'inquilinos/css/navbar.css' %}" rel="stylesheet">
 </head>
 
@@ -25,8 +24,6 @@
 
   <main>
 
-    {% comment %} <nav class="navbar navbar-expand-xl navbar-dark bg-success" aria-label="Sixth navbar example">
-      {% endcomment %}
       <nav class="navbar navbar-expand-xl fixed-top navbar-light border-bottom border-green">
         <div class="container-fluid">
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample06"
@@ -41,9 +38,26 @@
                 <button class="btn btn-outline-success" type="button" <button type="button" onclick="location.href='{% url 'inquilinos:index'%}'">Inicio</button>
                 {% comment %} <a class="nav-link active" aria-current="page" href="{% url 'inquilinos:index' %}">Inicio</a> {% endcomment %}
               </li>
+              {% if user.is_authenticated %}
+              {% if user.huesped %}
               <li class="nav-item">
+                <button class="btn btn-outline-primary active" onclick="location.href='{% url 'inquilinos:hue-det' user.huesped.pk %}'" type="button">{{ user.huesped }}</button>
+              </li>
+              {% else %}
+              <li class="nav-item">
+                <button class="btn btn-outline-primary active" onclick="location.href='{% url 'inquilinos:crear-huesped' %}'" type="button">Datos personales</button>
+              </li>
+              {% endif %}
+              {% endif %}
+              <li class="nav-item px-2">
                 {% comment %} <a class="nav-link" href="#">Iniciar sesión</a> {% endcomment %}
-                <button class="btn btn-outline-success active" type="button">Iniciar sesión</button>
+                {% comment %} <button class="btn btn-outline-success active" onclick="location.href='/accounts/login'" type="button">Iniciar sesión</button> {% endcomment %}
+                {% if user.is_authenticated %}
+                <button class="btn btn-outline-secondary active" onclick="location.href='{% url 'logout' %}'" type="button">Cerrar sesión</button>
+
+                {% else %}
+                <button class="btn btn-outline-success active" onclick="location.href='{% url 'login' %}'" type="button">Iniciar sesión</button>
+                {% endif %}
               </li>
               {% comment %} <li class="nav-item">
                 <a class="nav-link disabled">Disabled</a>
