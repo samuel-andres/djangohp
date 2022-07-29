@@ -1,17 +1,23 @@
 {# 403 #}
 {% extends "inquilinos/base.html" %}
 {% if request.path == '/inquilinos/cab/cabana-chica/reservar' %}
-{% block content %}
-<br>
-<div class="col-md-3 offset-md-4 p-4 d-flex justify-content-center border rounded bg-white">
-    <div class="container">
-        <div class="row">
-    <p><center>Para consultar la disponibilidad de las cabañas y registrar reservas debes completar tus datos personales.</center></p> 
-</div>
-    <div class="row">
-    <button class="btn btn-outline-primary btn-sm px-5" onclick="location.href='{% url 'inquilinos:crear-huesped' %}'" type="button">Completar datos personales.</button></div>
-</div>
-</div>
-</div>
-{% endblock %}
+    {% block content %}
+        <br/>
+        <div class="col-md-3 offset-md-4 p-4 d-flex justify-content-center border rounded bg-white">
+            <div class="container">
+                <div class="row">
+                    <p>
+                        <center>Para consultar la disponibilidad de las cabañas y registrar reservas debes completar tus datos personales.</center>
+                    </p>
+                </div>
+                <div class="row">
+                    <button class="btn btn-outline-primary btn-sm px-5"
+                            onclick="location.href='{% url 'inquilinos:crear-huesped' %}'"
+                            type="button">
+                        Completar datos personales.
+                    </button>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
 {% endif %}

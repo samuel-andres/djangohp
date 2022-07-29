@@ -1,25 +1,28 @@
-{% extends 'inquilinos/base.html' %}{% block content %}{% load static %}
-{% load crispy_forms_tags %}
-<br>
-<div class="col-md-3 offset-md-4 p-5 d-flex justify-content-center border rounded bg-white" id="divreserva">
-    <div class="container">
-        {% for message in messages  %}
+{% extends 'inquilinos/base.html' %}
+{% block content %}
+    {% load static %}
+    {% load crispy_forms_tags %}
+    <br/>
+    <div class="col-md-3 offset-md-4 p-5 d-flex justify-content-center border rounded bg-white"
+         id="divreserva">
+        <div class="container">
+            {% for message in messages  %}
+                <div class="row">
+                    <p id="messages">{{ message }}</p>
+                </div>
+            {% endfor %}
             <div class="row">
-                <p id="messages">{{ message }}</p>
+                <h1>{{ huesped }}</h1>
             </div>
-        {% endfor %}
-        <div class="row">
-            <h1> {{ huesped }} </h1>
-        </div>
-        <div class="row">
-            <h2> {{ huesped.telefono }} </h2>
-        </div>
-        <div class="row">
-            <ul>
-                <li>{{ huesped.usuario.username }}</li>
-                <li>{{ huesped.usuario.email }}</li>
-            </ul>
+            <div class="row">
+                <h2>{{ huesped.telefono }}</h2>
+            </div>
+            <div class="row">
+                <ul>
+                    <li>{{ huesped.usuario.username }}</li>
+                    <li>{{ huesped.usuario.email }}</li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

@@ -1,21 +1,15 @@
-{% extends 'inquilinos/base.html' %}
-{% block content %}
-    {% load static %}
-    <link rel="stylesheet"
-          type="text/css"
-          href="{% static 'inquilinos/icons/bootstrap-icons/font/bootstrap-icons.css' %}"/>
-    <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
-    {% load crispy_forms_tags %}
-    {% csrf_token %}
-    <br/>
-    <div class="col-md-3 offset-md-4 p-5 d-flex justify-content-center border rounded bg-white"
-         id="divreserva">
-        {% if request.user.is_staff %}
-            Por favor, logueate con una cuenta de cliente para probar el registro de reservas.
-        {% else %}
-            {% crispy form %}
-        </div>
-        <script>
+{% extends 'inquilinos/base.html' %}{% block content %}{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'inquilinos/icons/bootstrap-icons/font/bootstrap-icons.css'%}">
+<script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
+{% load crispy_forms_tags %}
+{% csrf_token %}
+<br>
+<div class="col-md-3 offset-md-4 p-5 d-flex justify-content-center border rounded bg-white" id="divreserva">
+{% if request.user.is_staff %} Por favor, logueate con una cuenta de cliente para probar el registro de reservas.
+{% else %}
+{% crispy form %}
+</div>
+<script>
     var today = "{{ today }}";
     var allowedDates = {{allowed_dates|safe}}; // CREAR ENDPOINT
     var disabledDates = {{disabled_dates|safe}}; // CREAT ENDPOINT
@@ -69,6 +63,6 @@
         ptag.appendChild(text);
       };
 
-        </script>
-    {% endif %}
-{% endblock content %}
+</script>
+{% endif %}
+{% endblock content %} 

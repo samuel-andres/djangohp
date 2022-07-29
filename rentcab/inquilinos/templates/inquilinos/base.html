@@ -1,93 +1,122 @@
 <!doctype html>
-<html lang="en">
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <title>Rentcab</title>
-
-  <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/navbars/">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap" rel="stylesheet">
-
-  {% load static %}
-  <link rel="stylesheet" href="{% static 'inquilinos/icons/bootstrap-icons/font/bootstrap-icons.css' %}">
-  <link rel="stylesheet" href="{% static 'inquilinos/css/stylesheet.css' %}">
-  <link href="{% static 'inquilinos/css/bootstrap.min.css' %}" rel="stylesheet">
-
-  <link href="{% static 'inquilinos/css/navbar.css' %}" rel="stylesheet">
-</head>
-
-<body style="font-family: 'Poppins', sans-serif;" class="bg-light">
-
-  <main>
-
-      <nav class="navbar navbar-expand-xl fixed-top navbar-light border-bottom border-green">
-        <div class="container-fluid">
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample06"
-            aria-controls="navbarsExample06" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-
-          <div class="collapse navbar-collapse" id="navbarsExample06">
-              <ul class="navbar-nav me-auto mt-0 mb-0">
-              <li class="nav-item pe-2">
-                <button class="btn btn-outline-success" type="button" <button type="button" onclick="location.href='{% url 'inquilinos:index'%}'">Inicio</button>
-              </li>
-              {% if user.is_authenticated %}
-              {% if user.huesped %}
-              <li class="nav-item pe-2">
-                <button class="btn btn-outline-primary active" onclick="location.href='{% url 'inquilinos:hue-det' user.huesped.pk %}'" type="button">{{ user.huesped }}</button>
-              </li>
-              {% elif user.is_staff %}
-              {% else %}
-              <li class="nav-item pe-2">
-                <button class="btn btn-outline-primary active" onclick="location.href='{% url 'inquilinos:crear-huesped' %}'" type="button">Datos personales</button>
-              </li>
-              {% endif %}
-              {% endif %}
-              <li class="nav-item pe-2">
-                {% comment %} <a class="nav-link" href="#">Iniciar sesión</a> {% endcomment %}
-                {% comment %} <button class="btn btn-outline-success active" onclick="location.href='/accounts/login'" type="button">Iniciar sesión</button> {% endcomment %}
-                {% if user.is_authenticated %}
-                <button class="btn btn-outline-secondary active" onclick="location.href='{% url 'logout' %}'" type="button">Cerrar sesión</button>
-
-                {% else %}
-                <button class="btn btn-outline-success active" onclick="location.href='{% url 'login' %}'" type="button">Iniciar sesión</button>
-                {% endif %}
-              </li>
-              {% if user.is_authenticated %}
-              {% if user.huesped %}
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
-                  aria-expanded="false">Reservas</a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="{% url 'inquilinos:res-h-list' %}">Ver mis reservas</a></li>
-                  <li><a class="dropdown-item" href="#">Cancelar reserva</a></li>
-                  <li><a class="dropdown-item" href="#">Lorem ipsum dolor</a></li>
-                </ul>
-              </li>
-              {% endif %}
-              {% endif %}
-            </ul>
-            {% comment %} <form role="search">
+<html lang="en" meta="">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta name="description" content=""/>
+        {% comment %} <meta name="keywords"/> {% endcomment %}
+        <title>Rentcab</title>
+        <link rel="canonical"
+              href="https://getbootstrap.com/docs/5.2/examples/navbars"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap"
+              rel="stylesheet"/>
+        {% load static %}
+        <link rel="stylesheet"
+              href="{% static 'inquilinos/icons/bootstrap-icons/font/bootstrap-icons.css' %}"/>
+        <link rel="stylesheet" href="{% static 'inquilinos/css/stylesheet.css' %}"/>
+        <link href="{% static 'inquilinos/css/bootstrap.min.css' %}"
+              rel="stylesheet"/>
+        <link href="{% static 'inquilinos/css/navbar.css' %}" rel="stylesheet"/>
+    </head>
+    <body style="font-family: 'Poppins', sans-serif;" class="bg-light">
+        <main>
+            <nav class="navbar navbar-expand-xl fixed-top navbar-light border-bottom border-green">
+                <div class="container-fluid">
+                    <button class="navbar-toggler"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#navbarsExample06"
+                            aria-controls="navbarsExample06"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarsExample06">
+                        <ul class="navbar-nav me-auto mt-0 mb-0">
+                            <li class="nav-item pe-2">
+                                <button class="btn btn-outline-success" type="button"
+                                    <button type="button" onclick="location.href='{% url 'inquilinos:index' %}'">
+                                        Inicio
+                                    </button>
+                                </li>
+                                {% if user.is_authenticated %}
+                                    {% if user.huesped %}
+                                        <li class="nav-item pe-2">
+                                            <button class="btn btn-outline-primary active"
+                                                    onclick="location.href='{% url 'inquilinos:hue-det' user.huesped.pk %}'"
+                                                    type="button">
+                                                {{ user.huesped }}
+                                            </button>
+                                        </li>
+                                    {% elif user.is_staff %}
+                                    {% else %}
+                                        <li class="nav-item pe-2">
+                                            <button class="btn btn-outline-primary active"
+                                                    onclick="location.href='{% url 'inquilinos:crear-huesped' %}'"
+                                                    type="button">
+                                                @{{ user.username }}
+                                            </button>
+                                        </li>
+                                    {% endif %}
+                                {% endif %}
+                                <li class="nav-item pe-2">
+                                    {% comment %} <a class="nav-link" href="#">Iniciar sesión</a> {% endcomment %}
+                                    {% comment %} <button class="btn btn-outline-success active" onclick="location.href='/accounts/login'" type="button">Iniciar sesión</button> {% endcomment %}
+                                    {% if user.is_authenticated %}
+                                        <button class="btn btn-outline-secondary active"
+                                                onclick="location.href='{% url 'logout' %}'"
+                                                type="button">
+                                            Cerrar sesión
+                                        </button>
+                                    {% else %}
+                                        <button class="btn btn-outline-success active"
+                                                onclick="location.href='{% url 'login' %}'"
+                                                type="button">
+                                            Iniciar sesión
+                                        </button>
+                                    {% endif %}
+                                </li>
+                                {% if user.is_authenticated %}
+                                    {% if user.huesped %}
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle"
+                                               href="#"
+                                               data-bs-toggle="dropdown"
+                                               aria-expanded="false">Reservas</a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a class="dropdown-item" href="{% url 'inquilinos:res-h-list' %}">Ver mis reservas</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="#">Cancelar reserva</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="#">Lorem ipsum dolor</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    {% endif %}
+                                {% endif %}
+                            </ul>
+                            {% comment %} <form role="search">
               <input class="form-control" type="search" placeholder="Search" aria-label="Search">
-            </form> {% endcomment %}
-            <a class="navbar-brand" href="#">
-              <img src="{% static 'inquilinos/images/logo2.png' %}" alt="" width="94" height="24">
-            </a>
-          </div>
-        </div>
-      </nav>
-  </main>
-  <div class="mt-5">
-  {% block content %}{% endblock content %}
-  </div>
-  <script src="{% static 'inquilinos/js/bootstrap.bundle.min.js' %}"></script>
-
-
-</body>
-
-</html>
+                            </form> {% endcomment %}
+                            <a class="navbar-brand" href="#">
+                                <img src="{% static 'inquilinos/images/logo2.png' %}"
+                                     alt=""
+                                     width="94"
+                                     height="24"/>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+            </main>
+            <div class="mt-5">
+                {% block content %}
+                {% endblock content %}
+            </div>
+            <script src="{% static 'inquilinos/js/bootstrap.bundle.min.js' %}"></script>
+        </body>
+    </html>
