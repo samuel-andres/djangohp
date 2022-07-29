@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="description" content=""/>
+        <title>Titulo</title>
+    </head>
+    <body>
+        <h1>Reserva #{{ reserva.pk }}</h1>
+        <h2>{{ reserva.cab }}</h2>
+        <ul>
+            <li>
+                <strong>Fecha de ingreso:</strong> {{ reserva.fechaDesde }}
+            </li>
+            <li>
+                <strong>Fecha de salida:</strong> {{ reserva.fechaHasta }}
+            </li>
+            <li>
+                <strong>Cantidad de adultos:</strong> {{ reserva.cantAdultos }}
+            </li>
+            {% if reserva.cantMenores > 0 %}
+                <li>
+                    <strong>Cantidad de menores:</strong> {{ reserva.cantMenores }}
+                </li>
+            {% endif %}
+            <li>
+                <strong>Precio final:</strong> {{ reserva.get_precio_final }}
+            </li>
+            <li>
+                <strong>Reserva realizada por:</strong>
+                <br/>
+                {{ reserva.huesped }} el {{ reserva.fechaReserva }}
+            </li>
+            <br/>
+            <li>
+                {% if reserva.get_estado.ambito == "res" %}
+                    {% if reserva.get_estado.nombre == "Pte Confirmacion"  %}
+                        <mark><strong>La reserva quedara pendiente hasta que sea confirmada o rechazada.</strong></mark>
+                    {% endif %}
+                {% else %}
+                    <strong>Estado:</strong>{{ reserva.get_estado }}
+                {% endif %}
+            </li>
+        </ul>
+    </body>
+</html>

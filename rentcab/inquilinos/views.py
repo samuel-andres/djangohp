@@ -9,7 +9,10 @@ from inquilinos.parsers import CustomParser
 from .user import HuespedOwnerDetailView, HuespedOwnerListView, UserCreateView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+
 
 # Views
 class IndexView(View):
@@ -110,24 +113,28 @@ class RegistroReservaView(PermissionRequiredMixin, View):
             )
             cambioEstado.save()
 
-            send_mail(
+            # se define el template a utilizar para el mail y se pasa en el contexto  la nueva reserva
+            html_content = render_to_string(
+                "inquilinos/email_res_reg.html", 
+                {
+                    'reserva' : nueva_reserva,
+                }
+            )
+            # se eliminan las etiquetas
+            text_content = strip_tags(html_content)
+
+            # se constrye el mail
+            email = EmailMultiAlternatives(
                 subject=f"Nueva Reserva Registrada #{nueva_reserva.pk}", # asunto
-                message=f"""
-                Reserva #{nueva_reserva.pk}\n
-                Fecha de ingreso: {nueva_reserva.fechaDesde}\n
-                Fecha de salida: {nueva_reserva.fechaHasta}\n
-                Cantidad de adultos: {nueva_reserva.cantAdultos}\n
-                Cantidad de menores: {nueva_reserva.cantMenores}\n
-                Precio final: {nueva_reserva.precioFinal}\n
-                Reserva realizada por: {nueva_reserva.huesped}\n
-                Reserva realizada el día {nueva_reserva.fechaReserva}\n
-                La reserva está en estado {cambioEstado.estado.nombre}\n
-                """, # mensaje
-                from_email=None,
-                recipient_list=['samuel5848@gmail.com'], # para
-                fail_silently=False,
+                body=text_content,
+                from_email=None, # acá lo dejé en none para que se use el host definido en settings.py
+                to=['samuel5848@gmail.com'], # para, acá iria el mail de enc de reservas
             )
 
+            # se define el tipo de representación del mail como text/html
+            email.attach_alternative(html_content, "text/html")
+            # se envía el mail al encargado de reservas
+            email.send()
 
             # después del post exitoso se redirige a la vista detalle de la reserva
             return HttpResponseRedirect(
