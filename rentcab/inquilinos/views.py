@@ -9,6 +9,7 @@ from inquilinos.parsers import CustomParser
 from .user import HuespedOwnerDetailView, HuespedOwnerListView, UserCreateView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.mail import send_mail
 
 # Views
 class IndexView(View):
@@ -108,6 +109,26 @@ class RegistroReservaView(PermissionRequiredMixin, View):
                 reserva=nueva_reserva,
             )
             cambioEstado.save()
+
+            send_mail(
+                subject=f"Nueva Reserva Registrada #{nueva_reserva.pk}", # asunto
+                message=f"""
+                Reserva #{nueva_reserva.pk}\n
+                Fecha de ingreso: {nueva_reserva.fechaDesde}\n
+                Fecha de salida: {nueva_reserva.fechaHasta}\n
+                Cantidad de adultos: {nueva_reserva.cantAdultos}\n
+                Cantidad de menores: {nueva_reserva.cantMenores}\n
+                Precio final: {nueva_reserva.precioFinal}\n
+                Reserva realizada por: {nueva_reserva.huesped}\n
+                Reserva realizada el día {nueva_reserva.fechaReserva}\n
+                La reserva está en estado {cambioEstado.estado.nombre}\n
+                """, # mensaje
+                from_email=None,
+                recipient_list=['samuel5848@gmail.com'], # para
+                fail_silently=False,
+            )
+
+
             # después del post exitoso se redirige a la vista detalle de la reserva
             return HttpResponseRedirect(
                 reverse(
