@@ -6,7 +6,9 @@ from django.contrib.postgres.fields import DateRangeField
 from bootstrap_daterangepicker import widgets
 from datetime import date
 from django.core.validators import MaxValueValidator, MinValueValidator
+
 # Create your models here.
+
 
 class Huesped(models.Model):
     # attrs
@@ -20,7 +22,7 @@ class Huesped(models.Model):
     # métodos
 
     def asignar_permiso(sender, instance, *args, **kwargs):
-        group = Group.objects.get(name='huesped')
+        group = Group.objects.get(name="huesped")
         instance.usuario.groups.add(group)
 
     def __str__(self) -> str:
@@ -31,7 +33,7 @@ class Huesped(models.Model):
 
     def get_absolute_url(self):
         return reverse("inquilinos:hue-det", kwargs={"pk": self.pk})
-    
+
 
 class Estado(models.Model):
     # attrs
@@ -52,13 +54,9 @@ class Cab(models.Model):
     )
     cantHabitaciones = models.IntegerField()
     costoPorNoche = models.FloatField(
-        null = True,
+        null=True,
     )
-    slug = models.SlugField(
-        null=False, 
-        blank=False, 
-        unique=True
-        )
+    slug = models.SlugField(null=False, blank=False, unique=True)
 
     # métodos
     def set_slug(sender, instance, *args, **kwargs):
@@ -73,8 +71,8 @@ class Cab(models.Model):
         verbose_name = "Cabaña"
         verbose_name_plural = "Cabañas"
         ordering = [
-            '-costoPorNoche',
-            '-cantHabitaciones',
+            "-costoPorNoche",
+            "-cantHabitaciones",
         ]
 
 
@@ -86,7 +84,7 @@ class Reserva(models.Model):
         auto_now_add=True,
     )
     precioFinal = models.FloatField(
-        null = True,
+        null=True,
     )
     cantAdultos = models.PositiveSmallIntegerField(
         help_text="Cantidad de adultos",
@@ -120,7 +118,7 @@ class Reserva(models.Model):
     class Meta:
         verbose_name_plural = "Reservas"
         permissions = (
-            ('puede_registrar_reserva', 'Este usuario puede registrar una reserva.'),
+            ("puede_registrar_reserva", "Este usuario puede registrar una reserva."),
         )
 
 

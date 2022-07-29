@@ -32,11 +32,9 @@
           </button>
 
           <div class="collapse navbar-collapse" id="navbarsExample06">
-            {% comment %} <ul class="navbar-nav me-auto mb-2 mb-xl-0"> {% endcomment %}
               <ul class="navbar-nav me-auto mt-0 mb-0">
               <li class="nav-item px-2">
                 <button class="btn btn-outline-success" type="button" <button type="button" onclick="location.href='{% url 'inquilinos:index'%}'">Inicio</button>
-                {% comment %} <a class="nav-link active" aria-current="page" href="{% url 'inquilinos:index' %}">Inicio</a> {% endcomment %}
               </li>
               {% if user.is_authenticated %}
               {% if user.huesped %}
@@ -76,8 +74,6 @@
               <input class="form-control" type="search" placeholder="Search" aria-label="Search">
             </form> {% endcomment %}
             <a class="navbar-brand" href="#">
-              {% comment %} <img src="{% static 'inquilinos/images/logo1.png' %}" alt="" width="30" height="24">
-              {% endcomment %}
               <img src="{% static 'inquilinos/images/logo2.png' %}" alt="" width="94" height="24">
             </a>
           </div>

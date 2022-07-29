@@ -2,35 +2,31 @@
 classDiagram
 
     class User{
-
+        -username
+        -password
+        -email
     }
 
     User "0..*" <--> "1..*" Group
 
     class Group{
-
+        -permisos
     }
 
-    Huesped --|> User
-    Huesped --> "1" Group
+    Huesped --> "1" User
 
     class Huesped{
-
-    }
-
-    class Comentario{
-        -int calificacion
+        -str nombre
+        -str apellido
+        -str telefono
+        -User usuario
+        +asignar_permiso()
     }
 
     Reserva --> "1" Cabaña
-    Cabaña --> "0..*" Comentario
-    Comentario --> "1" Huesped
     Reserva --> "1" Huesped
     Reserva --> "1" Estado
     Cabaña --> "0..*" Foto
-    Cabaña "1..*" <--> "0..*" Promocion
-    Cabaña --> "1..*" TipoDeServicio
-    Reserva --> "0..*"  TipoDeServicio
     Cabaña --> "0..*" Instalacion
     Reserva --> "0..*" Instalacion
     Cabaña --> "0..*" Rango
@@ -38,21 +34,22 @@ classDiagram
     class Reserva{
         -date fechaDesde
         -date fechaHasta
+        -date fechaReserva
+        -float precioFinal
         -int cantAdultos
-        -int cantNiños
+        -int cantMenores
         -Huesped huesped
         -Cabaña cabaña
         -Estado estado
     }
 
     class Cabaña{
-        +str ubicacion
-        +str nombre
+        -str ubicacion
+        -str nombre
         -int cantHabitaciones
-        -TipoDeServicio servicio
+        -int costoPorNoche
         -Instalacion instalacion
         -Foto foto
-        -Comentario comentario
         -Rango rango
         -Estado estado
     }
@@ -64,20 +61,12 @@ classDiagram
 
     class Foto{
         -img foto
-        -fecha
-    }
-
-    class Promocion {
-        -int pjeDescuento
-        -cabaña Cabaña
-    }
-
-    class TipoDeServicio{
-        -nombre
+        -str descripcion
     }
 
     class Instalacion{
         -nombre
+        -descripcion
     }
 
     class Rango {

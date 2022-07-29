@@ -4,8 +4,6 @@
     <h1>{{cab.nombre}}</h1>
 </center>
 <div class="col-md-8 offset-md-2">
-    {% comment %} <center> {% endcomment %}
-        {% comment %} <div class=" p-5 d-flex justify-content-center border rounded bg-white"> {% endcomment %}
         <ul class="list-group col-md-6 offset-md-3 mb-3 text-center">
         {% for inst in cab.instalacion_set.all  %}
             <li class="list-group-item">{{ inst.descripcion }}<i class="bi bi-check-all"></i></li>
@@ -13,24 +11,9 @@
         <li class="list-group-item">Precio final por noche: {{ cab.costoPorNoche }}</li>
             <li class="list-group-item">{{ cab.cantHabitaciones }}{% if cab.cantHabitaciones > 1 %} habitaciones.{% else %} habitación.{% endif %}</li>
         </ul>
-        {% comment %} </div> {% endcomment %}
         <button type="button" onclick="location.href='{% url 'inquilinos:reg-res' cab.slug %}'" class="btn btn-primary col-md-6 offset-md-3 mb-3">
             Consultar disponibilidad
         </button> 
-    {% comment %} </center>  {% endcomment %}
-
-
-
-
-
-
-
-
-
-
-
-
-    {% comment %} <div id="gallery" class="carousel slide carousel-fade marigen" data-ride="carousel" data-aos="fade-up" data-aos-delay="300"> {% endcomment %}
         <div id="gallery" class="carousel slide marigen" data-bs-ride="carousel">
         <ul class="carousel-indicators">
             <li data-bs-target="#gallery" data-bs-slide-to="0" class="active"></li>

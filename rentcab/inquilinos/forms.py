@@ -56,6 +56,10 @@ class RegResForm(forms.Form):
             raise forms.ValidationError(
                 "Error. La fecha ingresada debe ser >= a la fecha actual."
             )
+        if hasta.date() == datetime.date.today():
+            raise forms.ValidationError(
+                "Error. Debe alojarse al menos una noche."
+            )
         cab = Cab.objects.get(slug=self.cleaned_data["foo_slug"])
         desde = desde.date()
         hasta = hasta.date()
@@ -71,7 +75,7 @@ class RegResForm(forms.Form):
                 foobar = True
                 break
             else:
-                continue        
+                continue
         if not foobar:
             raise forms.ValidationError(
                 "Alguna fecha en el rango ingresado no está habilitada."
@@ -95,9 +99,8 @@ class RegResForm(forms.Form):
                     "Alguna fecha en el rango ingresado no está habilitada"
                 )
 
-
         return data
-    
+
     def clean(self):
         cleaned_data = super().clean()
         cantMenores = cleaned_data.get("cantMenores")
@@ -115,21 +118,21 @@ class RegResForm(forms.Form):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
-                'Reservar cabaña',
-                Field('fechaDesdeHasta', css_class="mb-3 form-control"),
-                Field('cantAdultos',css_class="mb-3 form-control"),
-                Field('cantMenores',css_class="mb-3 form-control"),
+                "Reservar cabaña",
+                Field("fechaDesdeHasta", css_class="mb-3 form-control"),
+                Field("cantAdultos", css_class="mb-3 form-control"),
+                Field("cantMenores", css_class="mb-3 form-control"),
                 Div(
                     HTML(
-                        '''
+                        """
                         <p id="ptag"></p>
-                        '''
+                        """
                     ),
-                    css_id = "after_reserva",
+                    css_id="after_reserva",
                 ),
-                'foo_slug',
+                "foo_slug",
             ),
-            Submit('submit', 'Confirmar', css_class="btn btn-primary cuac"),
+            Submit("submit", "Confirmar", css_class="btn btn-primary cuac"),
             HTML('<a class="btn btn-secondary" href="/">Cancelar</a>'),
         )
         self.helper.form_method = "POST"
@@ -141,21 +144,22 @@ class CrearHuespedForm(forms.ModelForm):
     class Meta:
         model = Huesped
         fields = [
-            'nombre',
-            'apellido',
-            'telefono',
+            "nombre",
+            "apellido",
+            "telefono",
         ]
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
-                'Cargar datos personales',
-                Field('nombre', css_class="mb-3 form-control"),
-                Field('apellido',css_class="mb-3 form-control"),
-                Field('telefono',css_class="mb-3 form-control"),
+                "Cargar datos personales",
+                Field("nombre", css_class="mb-3 form-control"),
+                Field("apellido", css_class="mb-3 form-control"),
+                Field("telefono", css_class="mb-3 form-control"),
             ),
-            Submit('submit', 'Confirmar', css_class="btn btn-primary cuac"),
+            Submit("submit", "Confirmar", css_class="btn btn-primary cuac"),
             HTML('<a class="btn btn-secondary" href="/">Cancelar</a>'),
         )
         self.helper.form_method = "POST"
