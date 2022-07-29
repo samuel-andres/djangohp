@@ -1,20 +1,19 @@
+*{
+  font-family: 'Poppins', sans-serif;
+}
+
 .maseit {
     max-height: 300px;
-    /* border-style: groove; */
     border-style: outset;
     border-radius: 9px;
   }
 .cuac {
-  /* margin-top: 5px; */
   float: right;
 }
 
 .marigen {
   margin-left: 200px;
   margin-right: 200px;
-  /* border-style: groove; */
-  /* border-radius: 25px; */
-  /* border-radius: 9px; */
 }
 
 .disabled{
@@ -76,4 +75,15 @@
 
 ul {
   list-style-type: none;
+}
+
+.tumneil {
+  max-height:200px;
+  float: left;
+  margin-right: 20px;
+}
+
+.cartelito-pasresconf {
+  font-size: 16px;
+  text-align: center;
 }
