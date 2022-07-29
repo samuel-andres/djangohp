@@ -3,11 +3,12 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View, generic
 from django.urls import reverse
-from inquilinos.models import Reserva, Cab, Estado, Rango, Huesped
+from inquilinos.models import Reserva, Cab, Estado, Rango, Huesped, CambioEstado
 from inquilinos.forms import RegResForm, CrearHuespedForm
 from inquilinos.parsers import CustomParser
-from .user import UserCreateView
+from .user import HuespedOwnerDetailView, HuespedOwnerListView, UserCreateView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 
 # Views
 class IndexView(View):
@@ -98,13 +99,24 @@ class RegistroReservaView(PermissionRequiredMixin, View):
                 huesped=request.user.huesped,
                 # se calcula el precio final en el back por seguridad
                 precioFinal=(cantNoches * cab.costoPorNoche),
-                # el estado se setea en pte confirmación
-                estado=Estado.objects.get(nombre="Pte Confirmacion"),
             )
             # se guarda la reserva en la db
             nueva_reserva.save()
-            # después del post exitoso se redirige al usuario al home
-            return HttpResponseRedirect(reverse("inquilinos:index"))
+            # el estado se setea en pte confirmación
+            cambioEstado = CambioEstado(
+                estado=Estado.objects.get(nombre="Pte Confirmacion"),
+                reserva=nueva_reserva,
+            )
+            cambioEstado.save()
+            # después del post exitoso se redirige a la vista detalle de la reserva
+            return HttpResponseRedirect(
+                reverse(
+                    "inquilinos:res-det",
+                    kwargs={
+                        "pk": nueva_reserva.pk,
+                    },
+                )
+            )
         # si el formulario no fue válido se devuelve el formulario con los datos incorrectos
         cab = Cab.objects.get(slug=slug)
         ranges = Rango.objects.filter(cab_id=cab.id)
@@ -124,12 +136,28 @@ class RegistroReservaView(PermissionRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
-class CrearPerfilHuespedView(UserCreateView):
+class CrearPerfilHuespedView(SuccessMessageMixin, UserCreateView):
     """CreateView que hereda de la vista UserCreateView"""
+
     model = Huesped
     form_class = CrearHuespedForm
+    success_message = "Datos cargados con éxito. Ya puedes realizar reservas!"
 
 
 class PerfilHuespedDetailView(generic.DetailView):
     """DetailView del perfil del huesped"""
+
     model = Huesped
+
+
+class ReservaDetailView(HuespedOwnerDetailView):
+    """DetailView del perfil del huesped que hereda de HuespedOwnerDetailView"""
+
+    model = Reserva
+
+
+class ReservasDeHuespedListView(HuespedOwnerListView):
+    """ListView de las reservas de un huesped que hereda de HuespedOwnerListView"""
+
+    model = Reserva
+    template_name = "inquilinos/reserva_h_list.html"

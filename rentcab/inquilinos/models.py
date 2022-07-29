@@ -41,6 +41,15 @@ class Estado(models.Model):
     ambito = models.CharField(max_length=200)
 
     # métodos
+
+    def esAmbitoCabaña(self, ambito) -> bool:
+        if ambito == "cab":
+            return True
+
+    def esAmbitoReserva(self, ambito) -> bool:
+        if ambito == "res":
+            return True
+
     def __str__(self) -> str:
         if self.ambito == "cab":
             return f"{self.ambito.capitalize()}aña {self.nombre.capitalize()}"
@@ -109,11 +118,20 @@ class Reserva(models.Model):
 
     cab = models.ForeignKey(Cab, on_delete=models.CASCADE, null=True)
 
-    estado = models.ForeignKey(Estado, on_delete=models.SET_NULL, null=True)
+    # estado = models.ForeignKey(Estado, on_delete=models.SET_NULL, null=True)
 
     # métodos
+
+    def get_estado(self):
+        instance = Reserva.objects.get(pk=self.pk)
+        ultimo_cambio_estado = instance.cambioestado_set.get(fechaFin__isnull=True)
+        return ultimo_cambio_estado.estado
+
     def __str__(self) -> str:
         return f"{self.fechaDesde}->{self.fechaHasta}-{self.cab}"
+
+    def get_precio_final(self) -> str:
+        return f"$ {self.precioFinal}"
 
     class Meta:
         verbose_name_plural = "Reservas"
@@ -158,3 +176,15 @@ class Instalacion(models.Model):
 
     class Meta:
         verbose_name_plural = "Instalaciones"
+
+
+class CambioEstado(models.Model):
+    # attrs
+    estado = models.ForeignKey(Estado, on_delete=models.CASCADE)
+    reserva = models.ForeignKey(Reserva, on_delete=models.CASCADE)
+    fechaFin = models.DateField(
+        null=True,
+    )
+    fechaInicio = models.DateField(
+        auto_now_add=True,
+    )

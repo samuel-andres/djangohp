@@ -57,9 +57,7 @@ class RegResForm(forms.Form):
                 "Error. La fecha ingresada debe ser >= a la fecha actual."
             )
         if hasta.date() == datetime.date.today():
-            raise forms.ValidationError(
-                "Error. Debe alojarse al menos una noche."
-            )
+            raise forms.ValidationError("Error. Debe alojarse al menos una noche.")
         cab = Cab.objects.get(slug=self.cleaned_data["foo_slug"])
         desde = desde.date()
         hasta = hasta.date()

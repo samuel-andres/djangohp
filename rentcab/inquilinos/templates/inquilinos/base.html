@@ -33,21 +33,22 @@
 
           <div class="collapse navbar-collapse" id="navbarsExample06">
               <ul class="navbar-nav me-auto mt-0 mb-0">
-              <li class="nav-item px-2">
+              <li class="nav-item pe-2">
                 <button class="btn btn-outline-success" type="button" <button type="button" onclick="location.href='{% url 'inquilinos:index'%}'">Inicio</button>
               </li>
               {% if user.is_authenticated %}
               {% if user.huesped %}
-              <li class="nav-item">
+              <li class="nav-item pe-2">
                 <button class="btn btn-outline-primary active" onclick="location.href='{% url 'inquilinos:hue-det' user.huesped.pk %}'" type="button">{{ user.huesped }}</button>
               </li>
+              {% elif user.is_staff %}
               {% else %}
-              <li class="nav-item">
+              <li class="nav-item pe-2">
                 <button class="btn btn-outline-primary active" onclick="location.href='{% url 'inquilinos:crear-huesped' %}'" type="button">Datos personales</button>
               </li>
               {% endif %}
               {% endif %}
-              <li class="nav-item px-2">
+              <li class="nav-item pe-2">
                 {% comment %} <a class="nav-link" href="#">Iniciar sesión</a> {% endcomment %}
                 {% comment %} <button class="btn btn-outline-success active" onclick="location.href='/accounts/login'" type="button">Iniciar sesión</button> {% endcomment %}
                 {% if user.is_authenticated %}
@@ -57,18 +58,19 @@
                 <button class="btn btn-outline-success active" onclick="location.href='{% url 'login' %}'" type="button">Iniciar sesión</button>
                 {% endif %}
               </li>
-              {% comment %} <li class="nav-item">
-                <a class="nav-link disabled">Disabled</a>
-              </li> {% endcomment %}
-              {% comment %} <li class="nav-item dropdown">
+              {% if user.is_authenticated %}
+              {% if user.huesped %}
+              <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
-                  aria-expanded="false">Dropdown</a>
+                  aria-expanded="false">Reservas</a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                  <li><a class="dropdown-item" href="{% url 'inquilinos:res-h-list' %}">Ver mis reservas</a></li>
+                  <li><a class="dropdown-item" href="#">Cancelar reserva</a></li>
+                  <li><a class="dropdown-item" href="#">Lorem ipsum dolor</a></li>
                 </ul>
-              </li> {% endcomment %}
+              </li>
+              {% endif %}
+              {% endif %}
             </ul>
             {% comment %} <form role="search">
               <input class="form-control" type="search" placeholder="Search" aria-label="Search">

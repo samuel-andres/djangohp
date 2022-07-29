@@ -5,6 +5,8 @@
 {% csrf_token %}
 <br>
 <div class="col-md-3 offset-md-4 p-5 d-flex justify-content-center border rounded bg-white" id="divreserva">
+{% if request.user.is_staff %} Por favor, logueate con una cuenta de cliente para probar el registro de reservas.
+{% else %}
 {% crispy form %}
 </div>
 <script>
@@ -62,4 +64,5 @@
       };
 
 </script>
+{% endif %}
 {% endblock content %} 

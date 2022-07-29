@@ -25,11 +25,12 @@ classDiagram
 
     Reserva --> "1" Cabaña
     Reserva --> "1" Huesped
-    Reserva --> "1" Estado
+    Reserva --> "1..*" CambioEstado 
     Cabaña --> "0..*" Foto
     Cabaña --> "0..*" Instalacion
     Reserva --> "0..*" Instalacion
     Cabaña --> "0..*" Rango
+    CambioEstado --> "1" Estado
 
     class Reserva{
         -date fechaDesde
@@ -40,7 +41,7 @@ classDiagram
         -int cantMenores
         -Huesped huesped
         -Cabaña cabaña
-        -Estado estado
+        -CambioEstado cambioEstado
     }
 
     class Cabaña{
@@ -52,6 +53,12 @@ classDiagram
         -Foto foto
         -Rango rango
         -Estado estado
+    }
+
+    class CambioEstado{
+        -fechaInicio date
+        -fechaFin date
+        -estado Estado
     }
 
     class Estado{

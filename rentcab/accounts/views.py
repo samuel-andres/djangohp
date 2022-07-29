@@ -12,6 +12,8 @@ from django.contrib import messages
 
 
 class RegistrarseView(View):
+    # cuando hagamos los administradores tenemos que cambiar esta vista por
+    # registrarsecomocliente y crear otra que sea registrarsecomoadmin
     form_class = CrearUsuarioForm
     template_name = "accounts/signup.html"
 
@@ -23,7 +25,7 @@ class RegistrarseView(View):
             new_user = form.cleaned_data.get("username")
             messages.success(
                 request,
-                f"Bienvenido {new_user}!",
+                f"Bienvenid@ {new_user}!",
             )
             return HttpResponseRedirect(reverse_lazy("login"))
 

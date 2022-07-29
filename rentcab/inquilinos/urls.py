@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 
-#namespace
+# namespace
 app_name = "inquilinos"
 urlpatterns = [
     # HOMEPAGE
@@ -9,10 +9,13 @@ urlpatterns = [
     # DetailViews
     path("cab/<slug:slug>", views.CabDetailView.as_view(), name="cab-det"),
     path("huesped/<int:pk>", views.PerfilHuespedDetailView.as_view(), name="hue-det"),
+    path("reservas/<int:pk>", views.ReservaDetailView.as_view(), name="res-det"),
     # CreateViews
     path(
         "huesped/perfil/", views.CrearPerfilHuespedView.as_view(), name="crear-huesped"
     ),
+    # ListViews
+    path("reservas/", views.ReservasDeHuespedListView.as_view(), name="res-h-list"),
     # CustomViews
     path(
         "cab/<slug:slug>/reservar", views.RegistroReservaView.as_view(), name="reg-res"

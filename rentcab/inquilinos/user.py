@@ -13,3 +13,19 @@ class UserCreateView(LoginRequiredMixin, generic.edit.CreateView):
         object.usuario = self.request.user
         object.save()
         return super(UserCreateView, self).form_valid(form)
+
+
+class HuespedOwnerListView(LoginRequiredMixin, generic.ListView):
+    def get_queryset(self):
+        """sobreescribe el método get_queryset para que un huesped solo tenga acceso
+        a las las reservas realizadas por el"""
+        qs = super(HuespedOwnerListView, self).get_queryset()
+        return qs.filter(huesped=self.request.user.huesped)
+
+
+class HuespedOwnerDetailView(LoginRequiredMixin, generic.DetailView):
+    def get_queryset(self):
+        """sobreescribe el método get_queryset para que un huesped solo tenga acceso
+        a la reserva realizadas por el"""
+        qs = super(HuespedOwnerDetailView, self).get_queryset()
+        return qs.filter(huesped=self.request.user.huesped)
