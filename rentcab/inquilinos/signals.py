@@ -1,6 +1,9 @@
 from unittest import signals
-from django.db.models.signals import pre_save, post_save, pre_delete
+
+from django.db.models.signals import post_save, pre_delete, pre_save
+
 from inquilinos.models import Cab
+
 from .models import Huesped
 
 # antes de guardar el objeto en la db se envía la señal set slug para que se setee un slug automático en base al nombre definido para la cabaña

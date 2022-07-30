@@ -1,11 +1,13 @@
 import datetime
+
+from crispy_forms.bootstrap import AppendedText, FormActions, PrependedText
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import HTML, Div, Field, Fieldset, Layout, Submit
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit, Field, HTML, Div
-from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
+
+from inquilinos.models import Cab, Huesped, Rango
 from inquilinos.parsers import CustomParser
-from inquilinos.models import Rango, Cab, Huesped
 
 
 class RegResForm(forms.Form):

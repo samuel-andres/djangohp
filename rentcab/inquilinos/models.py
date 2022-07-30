@@ -1,11 +1,12 @@
+from datetime import date
+
+from bootstrap_daterangepicker import widgets
+from django.contrib.auth.models import Group, User
+from django.contrib.postgres.fields import DateRangeField
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
-from django.contrib.auth.models import User, Group
-from django.contrib.postgres.fields import DateRangeField
-from bootstrap_daterangepicker import widgets
-from datetime import date
-from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Create your models here.
 

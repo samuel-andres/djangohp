@@ -1,17 +1,22 @@
 import datetime
+
+from django.contrib.auth.mixins import (LoginRequiredMixin,
+                                        PermissionRequiredMixin)
+from django.contrib.messages.views import SuccessMessageMixin
+from django.core.mail import EmailMultiAlternatives, send_mail
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from django.views import View, generic
-from django.urls import reverse
-from inquilinos.models import Reserva, Cab, Estado, Rango, Huesped, CambioEstado
-from inquilinos.forms import RegResForm, CrearHuespedForm
-from inquilinos.parsers import CustomParser
-from .user import HuespedOwnerDetailView, HuespedOwnerListView, UserCreateView
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.contrib.messages.views import SuccessMessageMixin
-from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.html import strip_tags
+from django.views import View, generic
+
+from inquilinos.forms import CrearHuespedForm, RegResForm
+from inquilinos.models import (Cab, CambioEstado, Estado, Huesped, Rango,
+                               Reserva)
+from inquilinos.parsers import CustomParser
+
+from .user import HuespedOwnerDetailView, HuespedOwnerListView, UserCreateView
 
 
 # Views
@@ -115,20 +120,22 @@ class RegistroReservaView(PermissionRequiredMixin, View):
 
             # se define el template a utilizar para el mail y se pasa en el contexto  la nueva reserva
             html_content = render_to_string(
-                "inquilinos/email_res_reg.html", 
+                "inquilinos/email_res_reg.html",
                 {
-                    'reserva' : nueva_reserva,
-                }
+                    "reserva": nueva_reserva,
+                },
             )
             # se eliminan las etiquetas
             text_content = strip_tags(html_content)
 
             # se constrye el mail
             email = EmailMultiAlternatives(
-                subject=f"Nueva Reserva Registrada #{nueva_reserva.pk}", # asunto
+                subject=f"Nueva Reserva Registrada #{nueva_reserva.pk}",  # asunto
                 body=text_content,
-                from_email=None, # acá lo dejé en none para que se use el host definido en settings.py
-                to=['samuel5848@gmail.com'], # para, acá iria el mail de enc de reservas
+                from_email=None,  # acá lo dejé en none para que se use el host definido en settings.py
+                to=[
+                    "samuel5848@gmail.com"
+                ],  # para, acá iria el mail de enc de reservas
             )
 
             # se define el tipo de representación del mail como text/html

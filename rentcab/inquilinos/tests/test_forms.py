@@ -1,10 +1,11 @@
 import datetime
 
+from django.contrib.auth.models import User
 from django.test import TestCase
 from django.utils import timezone
-from inquilinos.models import Cab, Rango, Reserva, Huesped
-from inquilinos.forms import RegResForm, CrearHuespedForm
-from django.contrib.auth.models import User
+
+from inquilinos.forms import CrearHuespedForm, RegResForm
+from inquilinos.models import Cab, Huesped, Rango, Reserva
 
 
 class RegistrarReservaFormTest(TestCase):

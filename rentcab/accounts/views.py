@@ -1,14 +1,13 @@
+from django.contrib import messages
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-
+from django.urls import reverse, reverse_lazy
 # Create your views here.
 from django.views import View, generic
 
 # from django.contrib.auth.forms import UserCreationForm
 from .forms import CrearUsuarioForm
-from django.urls import reverse, reverse_lazy
-from django.contrib.auth.models import User
-from django.contrib import messages
 
 
 class RegistrarseView(View):

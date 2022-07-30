@@ -1,10 +1,11 @@
-"""locallibrary URL Configuration"""
-from django.contrib import admin
-from django.urls import path, include
-from django.views.generic import RedirectView
+
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
 from django.contrib.auth.models import User
+from django.urls import include, path
+from django.views.generic import RedirectView
+
 from api.routers import router
 
 urlpatterns = [

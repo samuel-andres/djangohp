@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Cab, Rango, Reserva, Foto, Huesped, Estado, Rango, Instalacion
+
+from .models import Cab, Estado, Foto, Huesped, Instalacion, Rango, Reserva
 
 
 class FotosInLine(admin.StackedInline):
