@@ -27,6 +27,9 @@
 
 ## Notion
 - <a href="https://www.notion.so/26194ecc630d42e9b03eca7938eae158?v=0aea7ccf0db449918457444431d7a86c"> notion.so/rentcab </a>
+
+<hr/>
+
 ``` mermaid
 classDiagram
 
