@@ -1,7 +1,6 @@
 import datetime
 
-from django.contrib.auth.mixins import (LoginRequiredMixin,
-                                        PermissionRequiredMixin)
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import EmailMultiAlternatives, send_mail
 from django.http import HttpResponse, HttpResponseRedirect
@@ -12,8 +11,7 @@ from django.utils.html import strip_tags
 from django.views import View, generic
 
 from inquilinos.forms import CrearHuespedForm, RegResForm
-from inquilinos.models import (Cab, CambioEstado, Estado, Huesped, Rango,
-                               Reserva)
+from inquilinos.models import Cab, CambioEstado, Estado, Huesped, Rango, Reserva
 from inquilinos.parsers import CustomParser
 
 from .user import HuespedOwnerDetailView, HuespedOwnerListView, UserCreateView
@@ -83,9 +81,6 @@ class RegistroReservaView(PermissionRequiredMixin, View):
     def post(self, request, slug):
         # guarda el formulario con los datos ingresados
         form = self.form_class(request.POST, initial={"foo_slug": slug})
-        # context = {
-        #     "form": form,
-        # }
         if form.is_valid():
             # si el formulario es válido parseo las fechas del datepicker
             # y las convierto a objetos datetime

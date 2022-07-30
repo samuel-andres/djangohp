@@ -4,7 +4,6 @@
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <meta name="description" content=""/>
-        {% comment %} <meta name="keywords"/> {% endcomment %}
         <title>Rentcab</title>
         <link rel="canonical"
               href="https://getbootstrap.com/docs/5.2/examples/navbars"/>
@@ -19,9 +18,10 @@
         <link href="{% static 'inquilinos/css/bootstrap.min.css' %}"
               rel="stylesheet"/>
         <link href="{% static 'inquilinos/css/navbar.css' %}" rel="stylesheet"/>
-        <link rel="shortcut icon" type="image/png" href="{% static 'inquilinos/images/favicon.ico' %}"/>
+        <link rel="shortcut icon"
+              type="image/png"
+              href="{% static 'inquilinos/images/favicon.ico' %}"/>
     </head>
-    {% comment %} <body style="font-family: 'Poppins', sans-serif;" class="bg-light"> {% endcomment %}
     <body class="bg-light">
         <main>
             <nav class="navbar navbar-expand-xl fixed-top navbar-light border-bottom border-green">
@@ -64,8 +64,6 @@
                                     {% endif %}
                                 {% endif %}
                                 <li class="nav-item pe-2">
-                                    {% comment %} <a class="nav-link" href="#">Iniciar sesión</a> {% endcomment %}
-                                    {% comment %} <button class="btn btn-outline-success active" onclick="location.href='/accounts/login'" type="button">Iniciar sesión</button> {% endcomment %}
                                     {% if user.is_authenticated %}
                                         <button class="btn btn-outline-secondary active"
                                                 onclick="location.href='{% url 'logout' %}'"

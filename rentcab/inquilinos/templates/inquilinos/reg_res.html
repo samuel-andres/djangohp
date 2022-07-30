@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
     {% load crispy_forms_tags %}
     {% csrf_token %}
-    <br/>
+    <br />
     <div class="col-md-3 offset-md-4 p-5 d-flex justify-content-center border rounded bg-white"
          id="divreserva">
         {% if request.user.is_staff %}
@@ -15,60 +15,10 @@
         {% else %}
             {% crispy form %}
         </div>
-        <script>
-    var today = "{{ today }}";
-    var allowedDates = {{allowed_dates|safe}}; // CREAR ENDPOINT
-    var disabledDates = {{disabled_dates|safe}}; // CREAT ENDPOINT
-    const picker = new Litepicker({
-        element: document.getElementById('litepicker'),
-        singleMode: false,
-        tooltipText: {
-          one: 'noche',
-          other: 'noches'
-        },
-        tooltipNumber: (totalDays) => {
-          return totalDays - 1;},
-        lockDays: disabledDates,
-        format : "DD/MM/YYYY",
-        lockDaysFormat : "DD/MM/YYYY",
-        minDate : today,
-        startDate: today,
-        numberOfMonths : 2,
-        numberOfColumns: 2,
-        lang : 'es-AR',
-        minDays : 2,
-        disallowLockDaysInRange: true,
-        lockDaysFilter: (date1, date2, pickedDates) => {
-            if (!date2) {
-                return !allowedDates.includes(date1.format('DD/MM/YYYY'));
-            }
-            while (date1.toJSDate() < date2.toJSDate()) {
-                const day = date1.getDay();
-                isProhibited = !allowedDates.includes(date1.format('DD/MM/YYYY'));
-                if (isProhibited) { return true; }
-                date1.add(1, 'day');
-              }
-          
-              return false;
-        },
-        resetButton: true,
-        setup: (picker) => {
-          picker.on('selected', (date1, date2) => {
-            let costoPorNoche = parseFloat({{ costoPorNoche }}) ;
-            let precioFinal = (date2.diff(date1, 'days')) * costoPorNoche;
-            updatePrecio(precioFinal);
-          });
-        },
-      });
-
-      function updatePrecio(precioFinal) {
-        console.log(precioFinal);
-        var ptag = document.getElementById('ptag');
-        ptag.innerHTML = ''
-        var text = document.createTextNode("Precio final: $" + precioFinal);
-        ptag.appendChild(text);
-      };
-
-        </script>
+        {{ today|json_script:"today" }}
+        {{ allowed_dates|json_script:"allowed_dates" }}
+        {{ disabled_dates|json_script:"disabled_dates" }}
+        {{ costoPorNoche|json_script:"costoPorNoche" }}
+        <script src="{% static 'inquilinos/js/reg_res.js' %}"></script>
     {% endif %}
 {% endblock content %}
