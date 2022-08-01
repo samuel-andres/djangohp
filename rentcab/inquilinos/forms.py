@@ -7,7 +7,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from inquilinos.models import Cab, Huesped, Rango
-from inquilinos.parsers import CustomParser
+from .utils import CustomParser
 
 
 class RegResForm(forms.Form):
@@ -43,9 +43,8 @@ class RegResForm(forms.Form):
     def clean_fechaDesdeHasta(self):
         # validación por si el usuario tipea a mano
         data = self.cleaned_data["fechaDesdeHasta"]
-        myCustomParser = CustomParser()
         try:
-            desde, hasta = myCustomParser.parsePickerInput(data)
+            desde, hasta = CustomParser.parsePickerInput(data)
         except:
             raise forms.ValidationError("Error. El formato correcto es DD/MM/AAAA")
         if desde > hasta:

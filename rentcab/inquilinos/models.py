@@ -7,6 +7,10 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives, send_mail
+from django.utils.html import strip_tags
+from .utils import CustomParser, EmailSender
 
 # Create your models here.
 
@@ -74,6 +78,30 @@ class Cab(models.Model):
             return
         instance.slug = slugify(instance.nombre)
 
+    def get_fechas_habilitadas(self):
+        return CustomParser.parseRanges(ranges=self.rango_set.all())
+
+    def get_fechas_deshabilitadas(self):
+        return CustomParser.parseReservas(reservas=self.reserva_set.all())
+
+    def get_fechas_hab_y_des(self):
+        return (self.get_fechas_habilitadas, self.get_fechas_deshabilitadas)
+
+    def crear_reserva(self, datos_reserva):
+        nueva_reserva = Reserva(
+            fechaDesde=datos_reserva['fechaDesde'],
+            fechaHasta=datos_reserva['fechaHasta'],
+            cantAdultos=datos_reserva['cantAdultos'],
+            cantMenores=datos_reserva['cantMenores'],
+            cab=self,
+            huesped=datos_reserva['huesped'],
+        )        
+        nueva_reserva.set_precio_final()
+        nueva_reserva.save()
+        nueva_reserva.set_estado('Pte Confirmacion')
+        nueva_reserva.send_mail_enc_res()
+        return nueva_reserva
+        
     def __str__(self) -> str:
         return self.nombre
 
@@ -127,6 +155,26 @@ class Reserva(models.Model):
         instance = Reserva.objects.get(pk=self.pk)
         ultimo_cambio_estado = instance.cambioestado_set.get(fechaFin__isnull=True)
         return ultimo_cambio_estado.estado
+
+    def get_cant_noches(self):
+        return (self.fechaHasta - self.fechaDesde).days
+
+    def calcular_precio_final(self):
+        return self.get_cant_noches() * self.cab.costoPorNoche
+
+    def set_precio_final(self):
+        self.precioFinal = self.calcular_precio_final()
+
+    def set_estado(self, nombre_estado):
+        cambioEstado = CambioEstado(
+            estado=Estado.objects.get(nombre=nombre_estado),
+            reserva=self,
+        )
+        cambioEstado.save()
+
+    def send_mail_enc_res(self):
+        print('DESDE RESERVA: EmailSender.mail_reseerva(self, template_name)')
+        EmailSender.mail_reserva(reserva=self, template_name='email_res_reg.html')
 
     def __str__(self) -> str:
         return f"{self.fechaDesde}->{self.fechaHasta}-{self.cab}"

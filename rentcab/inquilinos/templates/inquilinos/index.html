@@ -9,7 +9,7 @@
                      alt=""/>
                 <h1>La Pradera</h1>
                 <p align="justify">
-                    Disponemos de {{ cabs.count }} excelentes cabañas equipadas completamente para seis personas. Las mismas cuentan con dos habitaciones, baño, antebaño y cocina comedor.
+                    Disponemos de {{ cab_list.count }} excelentes cabañas equipadas completamente para seis personas. Las mismas cuentan con dos habitaciones, baño, antebaño y cocina comedor.
                 </p>
             </div>
         </div>
@@ -17,7 +17,7 @@
     <div class="album py-5 bg-light">
         <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                {% for cab in cabs %}
+                {% for cab in cab_list %}
                     <div class="col">
                         <div class="card shadow-sm">
                             <img src="{{ cab.foto_set.first.foto.url }}" alt=""/>
