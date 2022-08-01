@@ -89,19 +89,19 @@ class Cab(models.Model):
 
     def crear_reserva(self, datos_reserva):
         nueva_reserva = Reserva(
-            fechaDesde=datos_reserva['fechaDesde'],
-            fechaHasta=datos_reserva['fechaHasta'],
-            cantAdultos=datos_reserva['cantAdultos'],
-            cantMenores=datos_reserva['cantMenores'],
+            fechaDesde=datos_reserva["fechaDesde"],
+            fechaHasta=datos_reserva["fechaHasta"],
+            cantAdultos=datos_reserva["cantAdultos"],
+            cantMenores=datos_reserva["cantMenores"],
             cab=self,
-            huesped=datos_reserva['huesped'],
-        )        
+            huesped=datos_reserva["huesped"],
+        )
         nueva_reserva.set_precio_final()
         nueva_reserva.save()
-        nueva_reserva.set_estado('Pte Confirmacion')
+        nueva_reserva.set_estado("Pte Confirmacion")
         nueva_reserva.send_mail_enc_res()
         return nueva_reserva
-        
+
     def __str__(self) -> str:
         return self.nombre
 
@@ -173,8 +173,8 @@ class Reserva(models.Model):
         cambioEstado.save()
 
     def send_mail_enc_res(self):
-        print('DESDE RESERVA: EmailSender.mail_reseerva(self, template_name)')
-        EmailSender.mail_reserva(reserva=self, template_name='email_res_reg.html')
+        print("DESDE RESERVA: EmailSender.mail_reseerva(self, template_name)")
+        EmailSender.mail_reserva(reserva=self, template_name="email_res_reg.html")
 
     def __str__(self) -> str:
         return f"{self.fechaDesde}->{self.fechaHasta}-{self.cab}"

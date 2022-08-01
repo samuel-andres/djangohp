@@ -64,9 +64,10 @@ class CustomParser:
         date_object2 = datetime.datetime.strptime(date_string2, "%d/%m/%Y")
         return (date_object1, date_object2)
 
+
 class EmailSender:
     def mail_reserva(template_name, reserva):
-        template = f'inquilinos/{template_name}'
+        template = f"inquilinos/{template_name}"
         html_content = render_to_string(
             template,
             {
@@ -82,12 +83,10 @@ class EmailSender:
             subject=f"Nueva Reserva Registrada #{reserva.pk}",  # asunto
             body=text_content,
             from_email=None,  # acá lo dejé en none para que se use el host definido en settings.py
-            to=[
-                "samuel5848@gmail.com"
-            ],  # para, acá iria el mail de enc de reservas
+            to=["samuel5848@gmail.com"],  # para, acá iria el mail de enc de reservas
         )
 
         # se define el tipo de representación del mail como text/html
         email.attach_alternative(html_content, "text/html")
         # se envía el mail al encargado de reservas
-        email.send()    
+        email.send()

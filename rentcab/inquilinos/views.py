@@ -21,8 +21,9 @@ from .user import HuespedOwnerDetailView, HuespedOwnerListView, UserCreateView
 class IndexView(generic.ListView):
     """Vista del home que acepta get requests y renderiza el template index.html
     con las cabañas como contexto"""
+
     model = Cab
-    template_name = 'inquilinos/index.html'
+    template_name = "inquilinos/index.html"
 
 
 class CabDetailView(generic.DetailView):
@@ -77,14 +78,14 @@ class RegistroReservaView(PermissionRequiredMixin, View):
             # obtengo la cabaña según el slug del url
             cab = Cab.objects.get(slug=slug)
             datos_reserva = {
-                'fechaDesde' : date_object1,
-                'fechaHasta' : date_object2,
-                'cantAdultos' : form.cleaned_data["cantAdultos"],
-                'cantMenores' : form.cleaned_data["cantMenores"],
-                'huesped' : request.user.huesped,
+                "fechaDesde": date_object1,
+                "fechaHasta": date_object2,
+                "cantAdultos": form.cleaned_data["cantAdultos"],
+                "cantMenores": form.cleaned_data["cantMenores"],
+                "huesped": request.user.huesped,
             }
             res = cab.crear_reserva(datos_reserva)
-            
+
             # después del post exitoso se redirige a la vista detalle de la reserva
             return HttpResponseRedirect(
                 reverse(
