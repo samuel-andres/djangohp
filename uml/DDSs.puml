@@ -1,0 +1,55 @@
+@startuml CU_REG_RES
+!include https://raw.githubusercontent.com/ptrkcsk/one-dark-plantuml-theme/v1.0.0/theme.puml
+
+actor "logueado:Huesped" as HUE
+control "RegistroReservaView" as VIEW
+participant "RegResForm" as FORM
+entity ":Cab" as CAB
+entity "slug:Cab" as ACAB
+entity "deCabaña:Rango" as RANGO
+entity "deReserva:Reserva" as RESERVA
+participant "TemplateEngine" as TEMP_ENG
+entity "nueva:Reserva" as NRES 
+entity "Estado" as ESTADO 
+entity "nuevo:CambioEstado" as NCE
+
+HUE -> VIEW: http Request GET(slug, request)
+VIEW -> RegResForm: new(slug)
+loop 
+    VIEW -> CAB: get(slug=slug)
+end
+VIEW -> ACAB: get_costo_por_noche()
+VIEW -> ACAB: get_fechas_hab_y_des()
+ACAB -> ACAB: get_fechas_habilitadas()
+loop
+    ACAB -> RANGO: get_fecha_inicio()
+    ACAB -> RANGO: get_fecha_fin()
+end
+ACAB -> ACAB: get_fechas_deshabilitadas()
+loop
+    ACAB -> RESERVA: get_fecha_inicio()
+    ACAB -> RESERVA: get_fecha_fin()
+end
+VIEW -> VIEW: parse_fecha_actual()
+VIEW -> TEMP_ENG: render(request, template, context)
+VIEW -> HUE: http Response(reg_res.html, staticfiles)
+HUE -> VIEW: http Request POST(fecha_desde, fecha_hasta, cant_adultos, cant_menores)
+VIEW -> FORM: new(slug, POST data)
+VIEW -> FORM: is_valid()
+FORM -> FORM: clean(POST data)
+VIEW -> FORM: get_cleaned_fechaDesdeHasta()
+VIEW -> VIEW: parse_picker_input()
+VIEW -> FORM: get_cleaned_cantAdultos()
+VIEW -> FORM: get_cleaned_cantMenores()
+VIEW -> ACAB: crear_reserva(datos_reserva)
+CAB -> NRES: new(datos_reserva)
+CAB -> NRES: set_precio_final()
+NRES -> NRES: calcular_precio_final()
+CAB -> NRES: set_estado('Pte Confirmacion')
+loop
+    NRES -> ESTADO: get(nombre='Pte Confirmacion')
+end
+NRES -> NCE: new(reserva, estado)
+CAB -> NRES: send_mail_enc_res()
+VIEW -> HUE: http ResponseRedirect (res-det)
+@enduml

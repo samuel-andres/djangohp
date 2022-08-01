@@ -119,6 +119,8 @@ classDiagram
 
 ## DDS - CU Registrar Reserva
 
+![](./uml/DDSs/CU_REG_RES.png)
+
 ``` mermaid
 sequenceDiagram
     actor HUE as Huesped
@@ -149,7 +151,7 @@ sequenceDiagram
         ACAB ->> RESERVA: get_fecha_inicio()
         ACAB ->> RESERVA: get_fecha_fin()
     end
-    ACAB ->> ACAB: context(fechas_habilitadas, fechas_deshabilitadas, costoPorNoche, form)
+    VIEW ->> VIEW: parse_fecha_actual()
     VIEW ->> TEMP_ENG: render(request, template, context)
     VIEW ->> HUE: http Response(reg_res.html, staticfiles)
     HUE ->> VIEW: http Request POST(fecha_desde, fecha_hasta, cant_adultos, cant_menores)
@@ -157,7 +159,7 @@ sequenceDiagram
     VIEW ->> FORM: is_valid()
     FORM ->> FORM: clean(POST data)
     VIEW ->> FORM: get_cleaned_fechaDesdeHasta()
-    VIEW ->> VIEW: parse_fechaDesdeHasta()
+    VIEW ->> VIEW: parse_picker_input()
     VIEW ->> FORM: get_cleaned_cantAdultos()
     VIEW ->> FORM: get_cleaned_cantMenores()
     VIEW ->> ACAB: crear_reserva(datos_reserva)
@@ -169,5 +171,6 @@ sequenceDiagram
         NRES ->> ESTADO: get(nombre='Pte Confirmacion')
     end
     NRES ->> NCE: new(reserva, estado)
+    CAB ->> NRES: send_mail_enc_res()
     VIEW ->> HUE: http ResponseRedirect (res-det)
 ```

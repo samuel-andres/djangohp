@@ -7,7 +7,7 @@ from django.utils.html import strip_tags
 
 class CustomParser:
     def getParsedToday():
-        """devuelve el día en string con formato dia mes año"""
+        """devuelve el día en string con formato mes día año"""
         today = datetime.date.today()
         # se pasa el día de hoy de datetime obj a str
         return today.strftime("%m-%d-%Y")
@@ -76,7 +76,6 @@ class EmailSender:
         )
         # se eliminan las etiquetas
         text_content = strip_tags(html_content)
-        print(text_content)
 
         # se constrye el mail
         email = EmailMultiAlternatives(

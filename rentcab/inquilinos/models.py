@@ -27,6 +27,7 @@ class Huesped(models.Model):
     # métodos
 
     def asignar_permiso(sender, instance, *args, **kwargs):
+        """agrega al huésped al grupo huesped"""
         group = Group.objects.get(name="huesped")
         instance.usuario.groups.add(group)
 
@@ -36,7 +37,8 @@ class Huesped(models.Model):
     class Meta:
         verbose_name_plural = "Huespedes"
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
+        """devuelve el url de la vista detalle del huesped(perfil)"""
         return reverse("inquilinos:hue-det", kwargs={"pk": self.pk})
 
 
@@ -48,10 +50,14 @@ class Estado(models.Model):
     # métodos
 
     def esAmbitoCabaña(self, ambito) -> bool:
+        """toma como parámetro el ámbito y retorna True si el mismo es
+        el ambito correspondiente a las cabañas"""
         if ambito == "cab":
             return True
 
     def esAmbitoReserva(self, ambito) -> bool:
+        """toma como parámetro el ámbito y retorna True si el mismo es
+        el ambito correspondiente a las reservas"""
         if ambito == "res":
             return True
 
@@ -74,20 +80,29 @@ class Cab(models.Model):
 
     # métodos
     def set_slug(sender, instance, *args, **kwargs):
+        """método para utilizar en señales que setea el slug de la cab en el momento
+        previo a que se guarde en la db"""
         if instance.slug:
             return
         instance.slug = slugify(instance.nombre)
 
     def get_fechas_habilitadas(self):
+        """retorna todas las fechas habilitadas en una lista de strings"""
         return CustomParser.parseRanges(ranges=self.rango_set.all())
 
     def get_fechas_deshabilitadas(self):
+        """retorna los rangos de reserva de todas las reservas asociadas
+        a la cabaña en formato [[d,h],[d,h],...]"""
         return CustomParser.parseReservas(reservas=self.reserva_set.all())
 
     def get_fechas_hab_y_des(self):
+        """retorna una tupla (fechas_habilitadas, fechas_deshabilitadas)"""
         return (self.get_fechas_habilitadas, self.get_fechas_deshabilitadas)
 
     def crear_reserva(self, datos_reserva):
+        """crea una nueva reserva asociada a la cabaña, y llama al método
+        set_precio_final, set_estado y send_mail_enc_res de la nueva reserva.
+        Toma como args=fechaDesde, fechaHasta, cantAdultos, cantMenores y huesped"""
         nueva_reserva = Reserva(
             fechaDesde=datos_reserva["fechaDesde"],
             fechaHasta=datos_reserva["fechaHasta"],
@@ -152,28 +167,39 @@ class Reserva(models.Model):
     # métodos
 
     def get_estado(self):
-        instance = Reserva.objects.get(pk=self.pk)
-        ultimo_cambio_estado = instance.cambioestado_set.get(fechaFin__isnull=True)
+        """retorna el estado asociado al último cambioestado de la reserva,
+        es decir, quien tiene la fechafin == Null"""
+        ultimo_cambio_estado = self.cambioestado_set.get(fechaFin__isnull=True)
         return ultimo_cambio_estado.estado
 
     def get_cant_noches(self):
+        """retorna la cantidad de noches correspondiente al rango de la reserva"""
         return (self.fechaHasta - self.fechaDesde).days
 
     def calcular_precio_final(self):
+        """retorna el cálculo de precio final de la reserva"""
         return self.get_cant_noches() * self.cab.costoPorNoche
 
     def set_precio_final(self):
+        """setea el precio final de la reserva llamando al método
+        calcular_precio_final"""
         self.precioFinal = self.calcular_precio_final()
 
     def set_estado(self, nombre_estado):
-        cambioEstado = CambioEstado(
-            estado=Estado.objects.get(nombre=nombre_estado),
-            reserva=self,
-        )
-        cambioEstado.save()
+        """toma como argumento el nombre del estado a setear y se encarga
+        de manejar la creación y seteo del cambio estado -falta completar"""
+        if not self.cambioestado_set.all().exists():
+            cambioEstado = CambioEstado(
+                estado=Estado.objects.get(nombre=nombre_estado),
+                reserva=self,
+            )
+            cambioEstado.save()
+        else:
+            pass  # acá hay que completar el cambio de estado, setear fecha fin del anterior y crear uno nuevo
 
     def send_mail_enc_res(self):
-        print("DESDE RESERVA: EmailSender.mail_reseerva(self, template_name)")
+        """envía el mail con los datos de la reserva al encargado de reservas utilizando
+        el EmailSender"""
         EmailSender.mail_reserva(reserva=self, template_name="email_res_reg.html")
 
     def __str__(self) -> str:

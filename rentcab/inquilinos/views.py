@@ -2,19 +2,20 @@ import datetime
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.core.mail import EmailMultiAlternatives, send_mail
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.template.loader import render_to_string
 from django.urls import reverse
-from django.utils.html import strip_tags
 from django.views import View, generic
 
 from inquilinos.forms import CrearHuespedForm, RegResForm
 from inquilinos.models import Cab, CambioEstado, Estado, Huesped, Rango, Reserva
 from inquilinos.utils import CustomParser
 
-from .user import HuespedOwnerDetailView, HuespedOwnerListView, UserCreateView
+from .restricted import (
+    HuespedRestrictedDetailView,
+    HuespedRestrictedListView,
+    UserRestrictedCreateView,
+)
 
 
 # Views
@@ -34,11 +35,13 @@ class CabDetailView(generic.DetailView):
 
 
 class RegistroReservaView(PermissionRequiredMixin, View):
-    """Vista de registro de reserva que utiliza un formulario custom y sobreescribe
+    """
+    Vista de registro de reserva que utiliza un formulario custom y sobreescribe
     los métodos get y post de la vista abstracta para devolver el formulario con
     los datos cargados en caso de que el formulario sea inválido y guarda el contenido
     del DateRangePicker en dos campos distintos del modelo reserva en caso de que los
-    datos sean correctos."""
+    datos sean correctos.
+    """
 
     permission_required = ("inquilinos.puede_registrar_reserva",)
 
@@ -54,7 +57,7 @@ class RegistroReservaView(PermissionRequiredMixin, View):
         costoPorNoche = cab.costoPorNoche
         # se obtienen las fechas en que la cabaña está habilitada y deshabilitada
         fechas_habilitadas, fechas_deshabilitadas = cab.get_fechas_hab_y_des()
-        today = CustomParser.getParsedToday()
+        today = self.parse_fecha_actual()
         # se pasa como contexto el formulario vacío, el día de hoy y las fechas habilitadas y deshabilitadas
         context = {
             "form": form,
@@ -73,13 +76,12 @@ class RegistroReservaView(PermissionRequiredMixin, View):
             # si el formulario es válido parseo las fechas del datepicker
             # y las convierto a objetos datetime
             pickerinput = form.cleaned_data["fechaDesdeHasta"]
-            DesdeHastaTupla = CustomParser.parsePickerInput(pickerinput=pickerinput)
-            date_object1, date_object2 = DesdeHastaTupla
+            fechaDesde, fechaHasta = self.parse_picker_input(pickerinput=pickerinput)
             # obtengo la cabaña según el slug del url
             cab = Cab.objects.get(slug=slug)
             datos_reserva = {
-                "fechaDesde": date_object1,
-                "fechaHasta": date_object2,
+                "fechaDesde": fechaDesde,
+                "fechaHasta": fechaHasta,
                 "cantAdultos": form.cleaned_data["cantAdultos"],
                 "cantMenores": form.cleaned_data["cantMenores"],
                 "huesped": request.user.huesped,
@@ -100,7 +102,7 @@ class RegistroReservaView(PermissionRequiredMixin, View):
         costoPorNoche = cab.costoPorNoche
         # se obtienen las fechas en que la cabaña está habilitada y deshabilitada
         fechas_habilitadas, fechas_deshabilitadas = cab.get_fechas_hab_y_des()
-        today = CustomParser.getParsedToday()
+        today = self.parse_fecha_actual()
         context = {
             "form": form,
             "today": today,
@@ -110,8 +112,23 @@ class RegistroReservaView(PermissionRequiredMixin, View):
         }
         return render(request, self.template_name, context)
 
+    def parse_fecha_actual(self):
+        """
+        devuelve el día de hoy parseado en formato str mm/dd/YYYY
+        """
 
-class CrearPerfilHuespedView(SuccessMessageMixin, UserCreateView):
+        return CustomParser.getParsedToday()
+
+    def parse_picker_input(self, pickerinput):
+        """
+        toma como entrada el valor clean del picker y devuelve dos
+        objetos datetime
+        """
+
+        return CustomParser.parsePickerInput(pickerinput=pickerinput)
+
+
+class CrearPerfilHuespedView(SuccessMessageMixin, UserRestrictedCreateView):
     """CreateView que hereda de la vista UserCreateView"""
 
     model = Huesped
@@ -125,13 +142,13 @@ class PerfilHuespedDetailView(generic.DetailView):
     model = Huesped
 
 
-class ReservaDetailView(HuespedOwnerDetailView):
+class ReservaDetailView(HuespedRestrictedDetailView):
     """DetailView del perfil del huesped que hereda de HuespedOwnerDetailView"""
 
     model = Reserva
 
 
-class ReservasDeHuespedListView(HuespedOwnerListView):
+class ReservasDeHuespedListView(HuespedRestrictedListView):
     """ListView de las reservas de un huesped que hereda de HuespedOwnerListView"""
 
     model = Reserva
