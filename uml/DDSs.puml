@@ -1,5 +1,7 @@
 @startuml CU_REG_RES
-!include https://raw.githubusercontent.com/ptrkcsk/one-dark-plantuml-theme/v1.0.0/theme.puml
+' !include https://raw.githubusercontent.com/ptrkcsk/one-dark-plantuml-theme/v1.0.0/theme.puml
+!include https://raw.githubusercontent.com/bschwarz/puml-themes/master/themes/cyborg-outline/puml-theme-cyborg-outline.puml
+
 
 actor "logueado:Huesped" as HUE
 control "RegistroReservaView" as VIEW
@@ -14,7 +16,7 @@ entity "Estado" as ESTADO
 entity "nuevo:CambioEstado" as NCE
 
 HUE -> VIEW: http Request GET(slug, request)
-VIEW -> RegResForm: new(slug)
+VIEW -> FORM: new(slug)
 loop 
     VIEW -> CAB: get(slug=slug)
 end
