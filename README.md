@@ -123,7 +123,7 @@ classDiagram
 sequenceDiagram
     actor HUE as Huesped
     participant VIEW as RegistroReservaView
-    VIEW ->> RegResForm: new(slug)
+    PARTICIPANT FORM as RegResForm
     participant CAB as Cab
     participant ACAB as slug:Cab
     participant RANGO as deCabaña:Rango
@@ -133,6 +133,7 @@ sequenceDiagram
     participant ESTADO as Estado
     participant NCE as nuevo:CambioEstado
     HUE ->> VIEW: http Request GET(slug, request)
+    VIEW ->> RegResForm: new(slug)
     loop 
         VIEW ->> CAB: get(slug=slug)
     end
