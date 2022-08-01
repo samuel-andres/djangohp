@@ -161,7 +161,6 @@ sequenceDiagram
     VIEW ->> FORM: get_cleaned_cantAdultos()
     VIEW ->> FORM: get_cleaned_cantMenores()
     VIEW ->> ACAB: crear_reserva(datos_reserva)
-    VIEW ->> HUE: http ResponseRedirect (res-det)
     CAB ->> NRES: new(datos_reserva)
     CAB ->> NRES: set_precio_final()
     NRES ->> NRES: calcular_precio_final()
@@ -170,4 +169,5 @@ sequenceDiagram
         NRES ->> ESTADO: get(nombre='Pte Confirmacion')
     end
     NRES ->> NCE: new(reserva, estado)
+    VIEW ->> HUE: http ResponseRedirect (res-det)
 ```
