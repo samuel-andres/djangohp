@@ -1,7 +1,8 @@
 @startuml CU_REG_RES
-' !include https://raw.githubusercontent.com/ptrkcsk/one-dark-plantuml-theme/v1.0.0/theme.puml
-!include https://raw.githubusercontent.com/bschwarz/puml-themes/master/themes/cyborg-outline/puml-theme-cyborg-outline.puml
-
+!include https://raw.githubusercontent.com/ptrkcsk/one-dark-plantuml-theme/v1.0.0/theme.puml
+' !include https://raw.githubusercontent.com/bschwarz/puml-themes/master/themes/cyborg-outline/puml-theme-cyborg-outline.puml
+' !include https://raw.githubusercontent.com/future-architect/puml-themes/master/themes/puml-theme-vibrant.puml
+' !include https://raw.githubusercontent.com/bschwarz/puml-themes/master/themes/cyborg-outline/puml-theme-cyborg-outline.puml
 
 actor "logueado:Huesped" as HUE
 control "RegistroReservaView" as VIEW
@@ -10,11 +11,8 @@ entity ":Cab" as CAB
 entity "slug:Cab" as ACAB
 entity "deCabaña:Rango" as RANGO
 entity "deReserva:Reserva" as RESERVA
-participant "TemplateEngine" as TEMP_ENG
-entity "nueva:Reserva" as NRES 
 entity "Estado" as ESTADO 
-entity "nuevo:CambioEstado" as NCE
-
+note over of VIEW: GRASP - Controlador
 HUE -> VIEW: http Request GET(slug, request)
 VIEW -> FORM: new(slug)
 loop 
@@ -22,6 +20,7 @@ loop
 end
 VIEW -> ACAB: get_costo_por_noche()
 VIEW -> ACAB: get_fechas_hab_y_des()
+note right of FORM: GRASP - Experto
 ACAB -> ACAB: get_fechas_habilitadas()
 loop
     ACAB -> RANGO: get_fecha_inicio()
@@ -33,7 +32,7 @@ loop
     ACAB -> RESERVA: get_fecha_fin()
 end
 VIEW -> VIEW: parse_fecha_actual()
-VIEW -> TEMP_ENG: render(request, template, context)
+VIEW -> VIEW: render(request, template, context)
 VIEW -> HUE: http Response(reg_res.html, staticfiles)
 HUE -> VIEW: http Request POST(fecha_desde, fecha_hasta, cant_adultos, cant_menores)
 VIEW -> FORM: new(slug, POST data)
@@ -44,14 +43,112 @@ VIEW -> VIEW: parse_picker_input()
 VIEW -> FORM: get_cleaned_cantAdultos()
 VIEW -> FORM: get_cleaned_cantMenores()
 VIEW -> ACAB: crear_reserva(datos_reserva)
-CAB -> NRES: new(datos_reserva)
-CAB -> NRES: set_precio_final()
+note right of ACAB: GRASP - Creador
+create entity "nueva:Reserva" as NRES 
+ACAB -> NRES: new(datos_reserva)
+ACAB -> NRES: set_precio_final()
 NRES -> NRES: calcular_precio_final()
-CAB -> NRES: set_estado('Pte Confirmacion')
+ACAB -> NRES: set_estado('Pte Confirmacion')
 loop
     NRES -> ESTADO: get(nombre='Pte Confirmacion')
 end
+create entity "nuevo:CambioEstado" as NCE
 NRES -> NCE: new(reserva, estado)
-CAB -> NRES: send_mail_enc_res()
+ACAB -> NRES: send_mail_enc_res()
 VIEW -> HUE: http ResponseRedirect (res-det)
+@enduml
+
+@startuml DDC_REG_RES
+!include https://raw.githubusercontent.com/ptrkcsk/one-dark-plantuml-theme/v1.0.0/theme.puml
+
+class RegistroReservaView <<control>> {
+    model
+    template_name
+    form_class
+    permission_required
+    get()
+    post()
+    parse_fecha_actual()
+    parse_picker_input()
+}
+
+class RegResForm {
+    fechaDesdeHasta
+    cantAdultos
+    cantMenores
+    new()
+    is_valid()
+    clean()
+    clean_fechaDesdeHasta()
+    get_cleaned_cantAdultos()
+    get_cleaned_cantMenores()
+}
+
+abstract class Form {
+    clean()
+}
+
+class Cab <<entity>> {
+    nombre
+    cantHabitaciones
+    costoPorNoche
+    slug
+    get()
+    get_costo_por_noche()
+    get_fechas_hab_y_des()
+    get_fechas_habilitadas()
+    get_fechas_deshabilitadas()
+    crear_reserva()
+
+}
+class Rango <<entity>> {
+    fechaDesde
+    fechaHasta
+    get_fecha_inicio()
+    get_fecha_fin()
+}
+class Reserva <<entity>> {
+    fechaDesde
+    fechaHasta
+    fechaReserva
+    precioFinal
+    cantAdultos
+    cantMenores
+    get_fecha_inicio()
+    get_fecha_fin()
+    new()
+    set_precio_final()
+    calcular_precio_final()
+    set_estado()
+    send_mail_enc_res()
+}
+
+class CambioEstado <<entity>> {
+    fechaInicio
+    fechaFin
+    new()
+}
+
+class Estado <<entity>> {
+    nombre
+    ambito
+    get()
+}
+
+RegistroReservaView -[dotted]-> Cab
+RegistroReservaView -[dotted]l-> RegResForm
+
+Cab --> "0..*" Rango: rangos
+Cab --> "0..*" Reserva: reservas
+Cab -[dotted]-> Estado
+Cab --> "1..*" CambioEstado : cambios_estado
+CambioEstado -r-> "1" Estado
+
+View <|-l- RegistroReservaView
+Form <|-u- RegResForm
+Model <|-u- Cab
+Model <|-u- Rango
+Model <|-u- Estado
+Model <|-u- CambioEstado
+
 @enduml
