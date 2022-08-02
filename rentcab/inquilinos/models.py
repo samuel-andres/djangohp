@@ -1,4 +1,4 @@
-from datetime import date
+import datetime
 from django.contrib.auth.models import Group, User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -161,10 +161,21 @@ class Reserva(models.Model):
 
     # métodos
 
+    def cancelar_reserva(self):
+        ultimo_cambio_estado = self.get_ultimo_cambio_estado()
+        ultimo_cambio_estado.fechaFin = datetime.date.today()
+        ultimo_cambio_estado.save()
+        estado_cancelado = Estado.objects.get(nombre='Cancelada')
+        nuevo_cambio_estado = CambioEstado(fechaInicio=datetime.date.today(), estado=estado_cancelado, reserva=self)
+        nuevo_cambio_estado.save()
+
+    def get_ultimo_cambio_estado(self):
+        return self.cambioestado_set.get(fechaFin__isnull=True)
+
     def get_estado(self):
         """retorna el estado asociado al último cambioestado de la reserva,
         es decir, quien tiene la fechafin == Null"""
-        ultimo_cambio_estado = self.cambioestado_set.get(fechaFin__isnull=True)
+        ultimo_cambio_estado = self.get_ultimo_cambio_estado()
         return ultimo_cambio_estado.estado
 
     def get_cant_noches(self):

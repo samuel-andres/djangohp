@@ -1,0 +1,20 @@
+{% extends 'inquilinos/base.html' %}
+{% block content %}
+<br/>
+<div class="col-md-3 offset-md-4 p-4 d-flex justify-content-center border rounded bg-white">
+    <div class="container">
+        <div class="row">
+            <p>
+                <center>Reserva cancelada con éxito.</center>
+            </p>
+        </div>
+        <div class="row">
+            <button class="btn btn-outline-primary active"
+                onclick="location.href='{% url 'inquilinos:res-h-list' %}'"
+                type="button">
+                    Volver a Mis Reservas
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock content %}

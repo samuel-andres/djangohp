@@ -32,10 +32,10 @@
 
 ## Realización - CU Registrar Reserva
 
-### Parte dinámica
+### Vista dinámica
 
 ![](./uml/DDSs/CU_REG_RES.png)
 
-### Parte estática
+### Vista estática
 
 ![](./uml/DDSs/DDC_REG_RES.png)

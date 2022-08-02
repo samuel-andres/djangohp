@@ -46,6 +46,15 @@
                             <strong>Estado:</strong>{{ reserva.get_estado }}
                         {% endif %}
                     </li>
+                    {% if reserva.get_estado.nombre != "Cancelada" %}
+                    <hr/>
+                    <li>
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <input class="btn btn-secondary" type="submit" value="Cancelar reserva">
+                        </form>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

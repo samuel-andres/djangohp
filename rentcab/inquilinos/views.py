@@ -1,8 +1,10 @@
 import datetime
+from multiprocessing import context
+from re import template
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import View, generic
@@ -142,14 +144,32 @@ class PerfilHuespedDetailView(generic.DetailView):
     model = Huesped
 
 
-class ReservaDetailView(HuespedRestrictedDetailView):
-    """DetailView del perfil del huesped que hereda de HuespedOwnerDetailView"""
-
+class ReservaDetailAndCancelView(HuespedRestrictedDetailView):
+    """DetailView del perfil del huesped que hereda de HuespedRestrictedDetailView"""
     model = Reserva
+    template_name = "inquilinos/reserva_detail.html"
+    def get(self, request, pk):
+        reserva = get_object_or_404(Reserva, pk=pk)
+        context = {
+            'reserva':reserva,
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, pk):
+        print(request.POST)
+        reserva = get_object_or_404(Reserva, pk=pk)
+        if reserva.get_estado().nombre != "Cancelada":
+            reserva.cancelar_reserva()
+        return render(request, 'inquilinos/reserva_cancelada.html')
+
 
 
 class ReservasDeHuespedListView(HuespedRestrictedListView):
-    """ListView de las reservas de un huesped que hereda de HuespedOwnerListView"""
+    """ListView de las reservas de un huesped que hereda de HuespedRestrictedListView"""
 
     model = Reserva
     template_name = "inquilinos/reserva_h_list.html"
+
+def test_view(request):
+    context = {}
+    return render(request, 'inquilinos/test.html',context)
