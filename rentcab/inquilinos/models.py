@@ -18,7 +18,11 @@ class Huesped(models.Model):
     telefono = models.CharField(max_length=13)
 
     # punteros
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
+    usuario = models.OneToOneField(
+        User, 
+        on_delete=models.CASCADE,
+        related_name='huesped',
+    )
 
     # métodos
 

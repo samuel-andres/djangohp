@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.views import View, generic
 
@@ -21,14 +21,6 @@ class HuespedRestrictedListView(LoginRequiredMixin, generic.ListView):
         """sobreescribe el método get_queryset para que un huesped solo tenga acceso
         a las las reservas realizadas por el"""
         qs = super(HuespedRestrictedListView, self).get_queryset()
-        return qs.filter(huesped=self.request.user.huesped)
-
-
-class HuespedRestrictedDetailView(LoginRequiredMixin, View):
-    def get_queryset(self):
-        """sobreescribe el método get_queryset para que un huesped solo tenga acceso
-        a la reserva realizadas por el"""
-        qs = super(HuespedRestrictedDetailView, self).get_queryset()
         return qs.filter(huesped=self.request.user.huesped)
 
 

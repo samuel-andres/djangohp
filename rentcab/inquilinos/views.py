@@ -1,4 +1,5 @@
 import datetime
+from math import perm
 from multiprocessing import context
 from re import template
 
@@ -13,9 +14,8 @@ from django.views import View, generic
 from inquilinos.forms import CrearHuespedForm, RegResForm
 from inquilinos.models import Cab, Huesped, Reserva
 from inquilinos.utils import CustomParser
-
-from .restricted import (HuespedRestrictedDetailView,
-                         HuespedRestrictedListView, UserRestrictedCreateView)
+from django.core.exceptions import PermissionDenied
+from .restricted import (HuespedRestrictedListView, UserRestrictedCreateView)
 
 
 # Views
@@ -44,7 +44,7 @@ class RegistroReservaView(PermissionRequiredMixin, View):
     """
 
     permission_required = ("inquilinos.puede_registrar_reserva",)
-
+    permission_denied_message = 'Para consultar la disponibilidad de las cabañas y registrar reservas debes completar tus datos personales.'
     model = Reserva
     template_name = "inquilinos/reg_res.html"
     form_class = RegResForm
@@ -142,22 +142,26 @@ class PerfilHuespedDetailView(generic.DetailView):
     model = Huesped
 
 
-class ReservaDetailAndCancelView(HuespedRestrictedDetailView):
-    """DetailView del perfil del huesped que hereda de HuespedRestrictedDetailView"""
-
+class ReservaDetailAndCancelView(PermissionRequiredMixin, View):
+    """Vista de reserva con opción de cancelar. Un huesped solo tiene acceso a las reservas que
+    registró."""
+    permission_required = ("inquilinos.puede_registrar_reserva",)
+    permission_denied_message = "Esta reserva no te pertenece."
     model = Reserva
-    template_name = "inquilinos/reserva_detail.html"
 
     def get(self, request, pk):
         reserva = get_object_or_404(Reserva, pk=pk)
+        if reserva.huesped != request.user.huesped:
+            raise PermissionDenied(self.permission_denied_message)
         context = {
             "reserva": reserva,
         }
-        return render(request, self.template_name, context)
+        return render(request, "inquilinos/reserva_detail.html", context)
 
     def post(self, request, pk):
-        print(request.POST)
         reserva = get_object_or_404(Reserva, pk=pk)
+        if reserva.huesped != request.user.huesped:
+            raise PermissionDenied(self.permission_denied_message)
         if reserva.get_estado().nombre != "Cancelada":
             reserva.cancelar_reserva()
         return render(request, "inquilinos/reserva_cancelada.html")
