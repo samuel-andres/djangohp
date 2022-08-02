@@ -1,14 +1,14 @@
 import datetime
 
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import View, generic
 
 from inquilinos.forms import CrearHuespedForm, RegResForm
-from inquilinos.models import Cab, CambioEstado, Estado, Huesped, Rango, Reserva
+from inquilinos.models import Cab, Huesped, Reserva
 from inquilinos.utils import CustomParser
 
 from .restricted import (
@@ -53,7 +53,7 @@ class RegistroReservaView(PermissionRequiredMixin, View):
         # se genera el formulario vacío
         form = self.form_class(initial={"foo_slug": slug})
         # se obtiene la cabaña actual
-        cab = Cab.objects.get(slug=slug)
+        cab = get_object_or_404(Cab, slug=slug)
         costoPorNoche = cab.costoPorNoche
         # se obtienen las fechas en que la cabaña está habilitada y deshabilitada
         fechas_habilitadas, fechas_deshabilitadas = cab.get_fechas_hab_y_des()
@@ -78,7 +78,7 @@ class RegistroReservaView(PermissionRequiredMixin, View):
             pickerinput = form.cleaned_data["fechaDesdeHasta"]
             fechaDesde, fechaHasta = self.parse_picker_input(pickerinput=pickerinput)
             # obtengo la cabaña según el slug del url
-            cab = Cab.objects.get(slug=slug)
+            cab = get_object_or_404(Cab, slug=slug)
             datos_reserva = {
                 "fechaDesde": fechaDesde,
                 "fechaHasta": fechaHasta,
@@ -98,7 +98,7 @@ class RegistroReservaView(PermissionRequiredMixin, View):
                 )
             )
         # si el formulario no fue válido se devuelve el formulario con los datos incorrectos
-        cab = Cab.objects.get(slug=slug)
+        cab = get_object_or_404(Cab, slug=slug)
         costoPorNoche = cab.costoPorNoche
         # se obtienen las fechas en que la cabaña está habilitada y deshabilitada
         fechas_habilitadas, fechas_deshabilitadas = cab.get_fechas_hab_y_des()

@@ -1,14 +1,8 @@
 from datetime import date
-
-from bootstrap_daterangepicker import widgets
 from django.contrib.auth.models import Group, User
-from django.contrib.postgres.fields import DateRangeField
-from django.core.mail import EmailMultiAlternatives, send_mail
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.template.loader import render_to_string
 from django.urls import reverse
-from django.utils.html import strip_tags
 from django.utils.text import slugify
 
 from .utils import CustomParser, EmailSender
