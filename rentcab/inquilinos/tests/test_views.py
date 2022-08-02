@@ -1,20 +1,14 @@
-from inquilinos.models import (
-    Cab,
-    Reserva,
-    Rango,
-    Estado,
-    CambioEstado,
-    Huesped,
-    Reserva,
-)
+import datetime
 
 # Required to assign User as a borrower
-from django.contrib.auth.models import User, Group, Permission
+from django.contrib.auth.models import Group, Permission, User
 from django.contrib.contenttypes.models import ContentType
-from django.utils import timezone
-import datetime
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
+
+from inquilinos.models import (Cab, CambioEstado, Estado, Huesped, Rango,
+                               Reserva)
 
 
 class RegistroReservaViewTest(TestCase):

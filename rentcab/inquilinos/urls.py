@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from django.urls import path
 
 from . import views
@@ -11,7 +12,9 @@ urlpatterns = [
     # DetailViews
     path("cab/<slug:slug>", views.CabDetailView.as_view(), name="cab-det"),
     path("huesped/<int:pk>", views.PerfilHuespedDetailView.as_view(), name="hue-det"),
-    path("reservas/<int:pk>", views.ReservaDetailAndCancelView.as_view(), name="res-det"),
+    path(
+        "reservas/<int:pk>", views.ReservaDetailAndCancelView.as_view(), name="res-det"
+    ),
     # CreateViews
     path(
         "huesped/perfil/", views.CrearPerfilHuespedView.as_view(), name="crear-huesped"

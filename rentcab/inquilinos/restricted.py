@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
-from django.views import generic, View
+from django.views import View, generic
 
 from .models import Huesped
 
@@ -30,6 +30,7 @@ class HuespedRestrictedDetailView(LoginRequiredMixin, View):
         a la reserva realizadas por el"""
         qs = super(HuespedRestrictedDetailView, self).get_queryset()
         return qs.filter(huesped=self.request.user.huesped)
+
 
 class HuespedRestrictedUpdateView(LoginRequiredMixin, generic.UpdateView):
     def get_queryset(self):

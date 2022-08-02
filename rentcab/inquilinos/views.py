@@ -4,8 +4,9 @@ from re import template
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import Http404, HttpResponse, HttpResponseNotFound, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.http import (Http404, HttpResponse, HttpResponseNotFound,
+                         HttpResponseRedirect)
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import View, generic
 
@@ -13,11 +14,8 @@ from inquilinos.forms import CrearHuespedForm, RegResForm
 from inquilinos.models import Cab, Huesped, Reserva
 from inquilinos.utils import CustomParser
 
-from .restricted import (
-    HuespedRestrictedDetailView,
-    HuespedRestrictedListView,
-    UserRestrictedCreateView,
-)
+from .restricted import (HuespedRestrictedDetailView,
+                         HuespedRestrictedListView, UserRestrictedCreateView)
 
 
 # Views
@@ -146,12 +144,14 @@ class PerfilHuespedDetailView(generic.DetailView):
 
 class ReservaDetailAndCancelView(HuespedRestrictedDetailView):
     """DetailView del perfil del huesped que hereda de HuespedRestrictedDetailView"""
+
     model = Reserva
     template_name = "inquilinos/reserva_detail.html"
+
     def get(self, request, pk):
         reserva = get_object_or_404(Reserva, pk=pk)
         context = {
-            'reserva':reserva,
+            "reserva": reserva,
         }
         return render(request, self.template_name, context)
 
@@ -160,8 +160,7 @@ class ReservaDetailAndCancelView(HuespedRestrictedDetailView):
         reserva = get_object_or_404(Reserva, pk=pk)
         if reserva.get_estado().nombre != "Cancelada":
             reserva.cancelar_reserva()
-        return render(request, 'inquilinos/reserva_cancelada.html')
-
+        return render(request, "inquilinos/reserva_cancelada.html")
 
 
 class ReservasDeHuespedListView(HuespedRestrictedListView):
@@ -170,6 +169,7 @@ class ReservasDeHuespedListView(HuespedRestrictedListView):
     model = Reserva
     template_name = "inquilinos/reserva_h_list.html"
 
+
 def test_view(request):
     context = {}
-    return render(request, 'inquilinos/test.html',context)
+    return render(request, "inquilinos/test.html", context)

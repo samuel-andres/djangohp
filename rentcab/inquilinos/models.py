@@ -1,4 +1,5 @@
 import datetime
+
 from django.contrib.auth.models import Group, User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -165,8 +166,10 @@ class Reserva(models.Model):
         ultimo_cambio_estado = self.get_ultimo_cambio_estado()
         ultimo_cambio_estado.fechaFin = datetime.date.today()
         ultimo_cambio_estado.save()
-        estado_cancelado = Estado.objects.get(nombre='Cancelada')
-        nuevo_cambio_estado = CambioEstado(fechaInicio=datetime.date.today(), estado=estado_cancelado, reserva=self)
+        estado_cancelado = Estado.objects.get(nombre="Cancelada")
+        nuevo_cambio_estado = CambioEstado(
+            fechaInicio=datetime.date.today(), estado=estado_cancelado, reserva=self
+        )
         nuevo_cambio_estado.save()
 
     def get_ultimo_cambio_estado(self):

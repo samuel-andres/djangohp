@@ -133,7 +133,8 @@ class RegResForm(forms.Form):
                 "foo_slug",
             ),
             # Submit("submit", "Confirmar", css_class="btn btn-primary cuac"),
-            HTML("""
+            HTML(
+                """
                 <button type="button" class="btn btn-primary cuac" data-toggle="modal" data-target="#exampleModal">
                     Reservar
                 </button>
@@ -157,7 +158,8 @@ class RegResForm(forms.Form):
                     </div>
                     </div>
                 </div>
-            """),
+            """
+            ),
             HTML('<a class="btn btn-secondary" href="/">Cancelar</a>'),
         )
         self.helper.form_method = "POST"
