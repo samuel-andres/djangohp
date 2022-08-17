@@ -1,6 +1,7 @@
 import datetime
 
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
+from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
@@ -19,7 +20,7 @@ class Huesped(models.Model):
 
     # punteros
     usuario = models.OneToOneField(
-        User, 
+        get_user_model(),
         on_delete=models.CASCADE,
         related_name='huesped',
     )
