@@ -86,27 +86,27 @@ WSGI_APPLICATION = "rentcab.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "rentcabdb_2",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
-        "HOST": "10.0.3.3",
-        "PORT": "5432",
-    }
-}
-
 # DATABASES = {
 #     "default": {
 #         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "rentcadbak",
+#         "NAME": "rentcabdb_2",
 #         "USER": "postgres",
-#         "PASSWORD": "",
-#         "HOST": "localhost",
+#         "PASSWORD": "postgres",
+#         "HOST": "10.0.3.3",
 #         "PORT": "5432",
 #     }
 # }
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "rentcab_db_2",
+        "USER": "postgres",
+        "PASSWORD": "xbbttfa8",
+        "HOST": "localhost",
+        "PORT": "5432",
+    }
+}
 
 
 # Password validation
