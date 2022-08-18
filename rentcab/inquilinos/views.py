@@ -1,12 +1,6 @@
-import datetime
-from math import perm
-from multiprocessing import context
-from re import template
-
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import (Http404, HttpResponse, HttpResponseNotFound,
-                         HttpResponseRedirect)
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import View, generic

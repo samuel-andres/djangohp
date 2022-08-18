@@ -15,12 +15,12 @@ class RegResForm(forms.Form):
     foo_slug = forms.SlugField()
     # cantidades predefinidas para los campos adultos y menores
     cant_choices = [
-        (0, "Cero"),
-        (1, "Uno"),
-        (2, "Dos"),
-        (3, "Tres"),
-        (4, "Cuatro"),
-        (5, "Cinco"),
+        (0, "0"),
+        (1, "1"),
+        (2, "2"),
+        (3, "3"),
+        (4, "4"),
+        (5, "5"),
     ]
     # textinput con el id que usa el datepicker
     fechaDesdeHasta = forms.CharField(
@@ -36,6 +36,7 @@ class RegResForm(forms.Form):
     cantAdultos = forms.ChoiceField(
         choices=cant_choices[1:], label="Cantidad de adultos"
     )
+
     cantMenores = forms.ChoiceField(
         choices=cant_choices,
         label="Cantidad de niños",
@@ -120,8 +121,8 @@ class RegResForm(forms.Form):
             Fieldset(
                 "Reservar cabaña",
                 Field("fechaDesdeHasta", css_class="mb-3 form-control"),
-                Field("cantAdultos", css_class="mb-3 form-control"),
-                Field("cantMenores", css_class="mb-3 form-control"),
+                Field("cantAdultos", css_class="mb-3 form-control text-center"),
+                Field("cantMenores", css_class="mb-3 form-control text-center"),
                 Div(
                     HTML(
                         """

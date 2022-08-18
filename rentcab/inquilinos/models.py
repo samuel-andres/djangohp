@@ -89,6 +89,7 @@ class Cab(models.Model):
 
     def get_fechas_habilitadas(self):
         """retorna todas las fechas habilitadas en una lista de strings"""
+        # return CustomParser.parseRanges(ranges=self.rango_set.all())
         return CustomParser.parseRanges(ranges=self.rango_set.all())
 
     def get_fechas_deshabilitadas(self):

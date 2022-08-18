@@ -13,35 +13,6 @@ class CustomParser:
         # se pasa el día de hoy de datetime obj a str
         return today.strftime("%m-%d-%Y")
 
-    def parseRanges(ranges):
-        """toma como argumento una lista de rangos y devuelve una lista de todas las fechas
-        incluidas en los mismos parseadas para usar en js"""
-        strp, strf, fmt = (
-            datetime.datetime.strptime,
-            datetime.datetime.strftime,
-            "%d/%m/%Y",
-        )
-        foo = list()
-        # se guardan todos los rangos (desde-hasta) en una lista
-        for rango in ranges:
-            foo.append(rango.fechaDesde.strftime("%d/%m/%Y"))
-            foo.append(rango.fechaHasta.strftime("%d/%m/%Y"))
-
-        # se generan todas las fechas intermedias entre los rangos especificados
-        allowed_dates = [
-            [
-                strf(k, fmt)
-                for k in (
-                    strp(i, fmt) + datetime.timedelta(days=n)
-                    for n in range((strp(j, fmt) - strp(i, fmt)).days + 1)
-                )
-            ]
-            for i, j in zip(foo[::2], foo[1::2])
-        ]
-
-        # se flatea la lista (elimina los [])
-        allowed_dates = [x for xs in allowed_dates for x in xs]
-        return allowed_dates
 
     def parseReservas(reservas):
         """toma como argumento una lista de reservas y devuelve una lista con las fechas
@@ -55,6 +26,16 @@ class CustomParser:
             disabled_dates.append(bar)
 
         return disabled_dates
+
+    def parseRanges(ranges):
+        allowed_dates = list()
+        for range in ranges:
+            bar = []
+            bar.append(range.fechaDesde)
+            bar.append(range.fechaHasta)
+            allowed_dates.append(bar)
+
+        return allowed_dates
 
     def parsePickerInput(pickerinput):
         """toma como argumento un string proveniente de un date range picker y devuelve

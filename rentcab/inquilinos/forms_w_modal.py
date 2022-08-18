@@ -15,12 +15,12 @@ class RegResForm(forms.Form):
     foo_slug = forms.SlugField()
     # cantidades predefinidas para los campos adultos y menores
     cant_choices = [
-        (0, "Cero"),
-        (1, "Uno"),
-        (2, "Dos"),
-        (3, "Tres"),
-        (4, "Cuatro"),
-        (5, "Cinco"),
+        (0, "0"),
+        (1, "1"),
+        (2, "2"),
+        (3, "3"),
+        (4, "4"),
+        (5, "5"),
     ]
     # textinput con el id que usa el datepicker
     fechaDesdeHasta = forms.CharField(
@@ -138,7 +138,7 @@ class RegResForm(forms.Form):
                 <button type="button" class="btn btn-primary cuac" data-toggle="modal" data-target="#exampleModal">
                     Reservar
                 </button>
-                
+
                 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                     <div class="modal-content">
