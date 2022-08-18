@@ -1,20 +1,17 @@
 import datetime
-
-# Required to assign User as a borrower
-from django.contrib.auth.models import Group, Permission, User
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import Group, Permission
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-from django.utils import timezone
 
-from inquilinos.models import (Cab, CambioEstado, Estado, Huesped, Rango,
+from inquilinos.models import (Cab, Huesped, Rango,
                                Reserva)
 
 
 class RegistroReservaViewTest(TestCase):
     def setUp(self):
         # Creación de un usuario para testeo
-        self.user = User.objects.create_user(
+        self.user = get_user_model().objects.create_user(
             username="testuser1", password="1X<ISRUkw+tuK", email="test@test.com"
         )
         self.user.save()

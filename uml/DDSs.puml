@@ -1,5 +1,4 @@
 @startuml CU_REG_RES
-!include https://raw.githubusercontent.com/ptrkcsk/one-dark-plantuml-theme/v1.0.0/theme.puml
 ' !include https://raw.githubusercontent.com/bschwarz/puml-themes/master/themes/cyborg-outline/puml-theme-cyborg-outline.puml
 ' !include https://raw.githubusercontent.com/future-architect/puml-themes/master/themes/puml-theme-vibrant.puml
 ' !include https://raw.githubusercontent.com/bschwarz/puml-themes/master/themes/cyborg-outline/puml-theme-cyborg-outline.puml
@@ -11,11 +10,11 @@ entity ":Cab" as CAB
 entity "slug:Cab" as ACAB
 entity "deCabaña:Rango" as RANGO
 entity "deReserva:Reserva" as RESERVA
-entity "Estado" as ESTADO 
+entity "Estado" as ESTADO
 note over of VIEW: GRASP - Controlador
 HUE -> VIEW: http Request GET(slug, request)
 VIEW -> FORM: new(slug)
-loop 
+loop
     VIEW -> CAB: get(slug=slug)
 end
 VIEW -> ACAB: get_costo_por_noche()
@@ -44,7 +43,7 @@ VIEW -> FORM: get_cleaned_cantAdultos()
 VIEW -> FORM: get_cleaned_cantMenores()
 VIEW -> ACAB: crear_reserva(datos_reserva)
 note right of ACAB: GRASP - Creador
-create entity "nueva:Reserva" as NRES 
+create entity "nueva:Reserva" as NRES
 ACAB -> NRES: new(datos_reserva)
 ACAB -> NRES: set_precio_final()
 NRES -> NRES: calcular_precio_final()
@@ -152,3 +151,4 @@ Model <|-u- Estado
 Model <|-u- CambioEstado
 
 @enduml
+
