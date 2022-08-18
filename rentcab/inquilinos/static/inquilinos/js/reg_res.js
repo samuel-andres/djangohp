@@ -1,7 +1,8 @@
-const today = JSON.parse(document.getElementById('today').textContent);
 const allowedDates = JSON.parse(document.getElementById('allowed_dates').textContent);
 const disabledDates = JSON.parse(document.getElementById('disabled_dates').textContent);
 const costoPorNoche = JSON.parse(document.getElementById('costoPorNoche').textContent);
+let TODAY = new Date()
+TODAY.setDate(TODAY.getDate() - 1);
 
 function getDatesInRange(startDate, endDate) {
 	const date = new Date(startDate.getTime());
@@ -40,8 +41,8 @@ const picker = new Litepicker({
 	lockDays: disabledDates,
 	format: "DD/MM/YYYY",
 	lockDaysFormat: "DD/MM/YYYY",
-	minDate: today,
-	startDate: today,
+	minDate: TODAY,
+	startDate: TODAY,
 	numberOfMonths: 2,
 	numberOfColumns: 2,
 	lang: 'es-AR',
