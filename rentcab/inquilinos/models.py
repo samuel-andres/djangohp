@@ -91,12 +91,10 @@ class Cab(models.Model):
     def get_fechas_habilitadas(self):
         """retorna todas las fechas habilitadas en [[d,h],[d,h],...]"""
 
-        # fechas_habilitadas = CustomParser.parseRanges(ranges=self.rango_set.all())
         fechas_habilitadas = CustomParser.parseRanges(queryset=self.rango_set.all(), formatear=False)
         return fechas_habilitadas
 
     def get_reservas_abiertas(self):
-        # reservas_abiertas =
         reservas_abiertas = []
         for reserva in self.reserva_set.all():
             e = reserva.get_ultimo_cambio_estado().estado.nombre
