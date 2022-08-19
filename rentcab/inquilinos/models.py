@@ -189,17 +189,14 @@ class Reserva(models.Model):
     # métodos
 
     def cancelar_reserva(self):
-        ultimo_cambio_estado = self.get_ultimo_cambio_estado()
-        ultimo_cambio_estado.fechaFin = datetime.date.today()
-        ultimo_cambio_estado.save()
-        estado_cancelado = Estado.objects.get(nombre="Cancelada")
-        nuevo_cambio_estado = CambioEstado(
-            fechaInicio=datetime.date.today(), estado=estado_cancelado, reserva=self
-        )
-        nuevo_cambio_estado.save()
+        self.set_estado(nombre_estado="Cancelada")
 
     def get_ultimo_cambio_estado(self):
-        return self.cambioestado_set.get(fechaFin__isnull=True)
+        try:
+            ultimo_cambio_estado = self.cambioestado_set.get(fechaFin__isnull=True)
+        except:
+            return None
+        return ultimo_cambio_estado
 
     def get_estado(self):
         """retorna el estado asociado al último cambioestado de la reserva,
@@ -222,15 +219,16 @@ class Reserva(models.Model):
 
     def set_estado(self, nombre_estado):
         """toma como argumento el nombre del estado a setear y se encarga
-        de manejar la creación y seteo del cambio estado -falta completar"""
-        if not self.cambioestado_set.all().exists():
-            cambioEstado = CambioEstado(
-                estado=Estado.objects.get(nombre=nombre_estado),
-                reserva=self,
-            )
-            cambioEstado.save()
-        else:
-            pass  # acá hay que completar el cambio de estado, setear fecha fin del anterior y crear uno nuevo
+        de manejar la creación y seteo del cambio estado"""
+        ultimo_cambio_estado = self.get_ultimo_cambio_estado()
+        if ultimo_cambio_estado:
+            ultimo_cambio_estado.fechaFin = datetime.date.today()
+            ultimo_cambio_estado.save()
+        cambioEstado = CambioEstado(
+            estado=Estado.objects.get(nombre=nombre_estado),
+            reserva=self,
+        )
+        cambioEstado.save()
 
     def send_mail_enc_res(self):
         """envía el mail con los datos de la reserva al encargado de reservas utilizando
