@@ -1,21 +1,26 @@
 from django import forms
 from django.contrib import admin
-from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
+
 from .models import User
+
 
 # Register your models here.
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+
+    password1 = forms.CharField(label="Password", widget=forms.PasswordInput)
+    password2 = forms.CharField(
+        label="Password confirmation", widget=forms.PasswordInput
+    )
 
     class Meta:
         model = User
-        fields = ('username',)
+        fields = ("username",)
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -39,11 +44,12 @@ class UserChangeForm(forms.ModelForm):
     the user, but replaces the password field with admin's
     disabled password hash display field.
     """
+
     password = ReadOnlyPasswordHashField()
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'is_active', 'is_admin')
+        fields = ("username", "password", "is_active", "is_admin")
 
 
 class UserAdmin(BaseUserAdmin):
@@ -54,26 +60,34 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('username', 'email', 'is_admin')
-    list_filter = ('is_admin',)
+    list_display = ("username", "email", "is_admin")
+    list_filter = ("is_admin",)
     fieldsets = (
-        (None, {'fields': ('username', 'email', 'password')}),
+        (None, {"fields": ("username", "email", "password")}),
         # ('Permissions', {'fields': ('is_admin',)}),
-        ('Group Permissions', {
-            'fields': ('groups', 'user_permissions', )
-            }
-        )
+        (
+            "Group Permissions",
+            {
+                "fields": (
+                    "groups",
+                    "user_permissions",
+                )
+            },
+        ),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2'),
-        }),
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("username", "email", "password1", "password2"),
+            },
+        ),
     )
-    search_fields = ('username',)
-    ordering = ('username',)
+    search_fields = ("username",)
+    ordering = ("username",)
     filter_horizontal = ()
 
 

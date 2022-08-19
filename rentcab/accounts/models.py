@@ -1,31 +1,29 @@
 from django.conf import settings
-from django.db import models #used for fields
-from django.contrib.auth.models import (
-    AbstractBaseUser,
-    BaseUserManager,
-    PermissionsMixin,
-)
+from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
+                                        PermissionsMixin)
+from django.db import models  # used for fields
 
 # Create your models here.
 
+
 class UserManager(BaseUserManager):
     """Manager for users"""
+
     def create_user(self, username, email, password=None):
         """
         Creates and saves a User with the given username, and password.
         """
         if not username:
-            raise ValueError('Users must have a username')
+            raise ValueError("Users must have a username")
 
         user = self.model(
             username=username,
             email=self.normalize_email(email),
-            )
+        )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
-
 
     def create_superuser(self, username, email, password):
         """Creates and saves a new super user"""
@@ -44,8 +42,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     Mixins: PermissionsMixin"""
 
     username = models.CharField(
-        max_length = 255,
-        unique = True,
+        max_length=255,
+        unique=True,
     )
 
     email = models.EmailField(
@@ -59,7 +57,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    REQUIRED_FIELDS = ['email']
+    REQUIRED_FIELDS = ["email"]
 
     USERNAME_FIELD = "username"
 

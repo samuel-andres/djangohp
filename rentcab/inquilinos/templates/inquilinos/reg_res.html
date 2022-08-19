@@ -15,7 +15,6 @@
         {% else %}
             {% crispy form %}
         </div>
-        {{ today|json_script:"today" }}
         {{ allowed_dates|json_script:"allowed_dates" }}
         {{ disabled_dates|json_script:"disabled_dates" }}
         {{ costoPorNoche|json_script:"costoPorNoche" }}

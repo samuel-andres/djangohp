@@ -7,13 +7,6 @@ from django.utils.html import strip_tags
 
 
 class CustomParser:
-    def getParsedToday():
-        """devuelve el día en string con formato mes día año"""
-        today = datetime.date.today()
-        # se pasa el día de hoy de datetime obj a str
-        return today.strftime("%m-%d-%Y")
-
-
     def parseReservas(reservas):
         """toma como argumento una lista de reservas y devuelve una lista con las fechas
         desde hasta de cada una en forma de listas"""
@@ -28,7 +21,10 @@ class CustomParser:
         return disabled_dates
 
     def parseRanges(ranges):
+        """toma como argumento una lista de rangos y devuelve una lista con las fechas
+        desde hasta de cada uno en forma de listas"""
         allowed_dates = list()
+        # se genera una lista de arreglos con los rangos de disponibilidad
         for range in ranges:
             bar = []
             bar.append(range.fechaDesde)

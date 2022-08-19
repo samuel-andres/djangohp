@@ -1,7 +1,7 @@
 import datetime
 
-from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
@@ -22,7 +22,7 @@ class Huesped(models.Model):
     usuario = models.OneToOneField(
         get_user_model(),
         on_delete=models.CASCADE,
-        related_name='huesped',
+        related_name="huesped",
     )
 
     # métodos
@@ -83,22 +83,29 @@ class Cab(models.Model):
     def set_slug(sender, instance, *args, **kwargs):
         """método para utilizar en señales que setea el slug de la cab en el momento
         previo a que se guarde en la db"""
+
         if instance.slug:
             return
         instance.slug = slugify(instance.nombre)
 
     def get_fechas_habilitadas(self):
         """retorna todas las fechas habilitadas en una lista de strings"""
-        # return CustomParser.parseRanges(ranges=self.rango_set.all())
-        return CustomParser.parseRanges(ranges=self.rango_set.all())
+
+        fechas_habilitadas = CustomParser.parseRanges(ranges=self.rango_set.all())
+        return fechas_habilitadas
 
     def get_fechas_deshabilitadas(self):
         """retorna los rangos de reserva de todas las reservas asociadas
         a la cabaña en formato [[d,h],[d,h],...]"""
-        return CustomParser.parseReservas(reservas=self.reserva_set.all())
+
+        fechas_deshabilitadas = CustomParser.parseReservas(
+            reservas=self.reserva_set.all()
+        )
+        return fechas_deshabilitadas
 
     def get_fechas_hab_y_des(self):
         """retorna una tupla (fechas_habilitadas, fechas_deshabilitadas)"""
+
         return (self.get_fechas_habilitadas, self.get_fechas_deshabilitadas)
 
     def crear_reserva(self, datos_reserva):

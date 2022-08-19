@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -8,8 +9,8 @@ from django.views import View, generic
 from inquilinos.forms import CrearHuespedForm, RegResForm
 from inquilinos.models import Cab, Huesped, Reserva
 from inquilinos.utils import CustomParser
-from django.core.exceptions import PermissionDenied
-from .restricted import (HuespedRestrictedListView, UserRestrictedCreateView)
+
+from .restricted import HuespedRestrictedListView, UserRestrictedCreateView
 
 
 # Views
@@ -38,7 +39,7 @@ class RegistroReservaView(PermissionRequiredMixin, View):
     """
 
     permission_required = ("inquilinos.puede_registrar_reserva",)
-    permission_denied_message = 'Para consultar la disponibilidad de las cabañas y registrar reservas debes completar tus datos personales.'
+    permission_denied_message = "Para consultar la disponibilidad de las cabañas y registrar reservas debes completar tus datos personales."
     model = Reserva
     template_name = "inquilinos/reg_res.html"
     form_class = RegResForm
@@ -51,11 +52,9 @@ class RegistroReservaView(PermissionRequiredMixin, View):
         costoPorNoche = cab.costoPorNoche
         # se obtienen las fechas en que la cabaña está habilitada y deshabilitada
         fechas_habilitadas, fechas_deshabilitadas = cab.get_fechas_hab_y_des()
-        today = self.parse_fecha_actual()
         # se pasa como contexto el formulario vacío, el día de hoy y las fechas habilitadas y deshabilitadas
         context = {
             "form": form,
-            "today": today,
             "costoPorNoche": costoPorNoche,
             "allowed_dates": fechas_habilitadas,
             "disabled_dates": fechas_deshabilitadas,
@@ -96,26 +95,17 @@ class RegistroReservaView(PermissionRequiredMixin, View):
         costoPorNoche = cab.costoPorNoche
         # se obtienen las fechas en que la cabaña está habilitada y deshabilitada
         fechas_habilitadas, fechas_deshabilitadas = cab.get_fechas_hab_y_des()
-        today = self.parse_fecha_actual()
         context = {
             "form": form,
-            "today": today,
             "allowed_dates": fechas_habilitadas,
             "disabled_dates": fechas_deshabilitadas,
             "costoPorNoche": costoPorNoche,
         }
         return render(request, self.template_name, context)
 
-    def parse_fecha_actual(self):
-        """
-        devuelve el día de hoy parseado en formato str mm/dd/YYYY
-        """
-
-        return CustomParser.getParsedToday()
-
     def parse_picker_input(self, pickerinput):
         """
-        toma como entrada el valor clean del picker y devuelve dos
+        toma como entrada el valor validado del picker y devuelve dos
         objetos datetime
         """
 
@@ -139,6 +129,7 @@ class PerfilHuespedDetailView(generic.DetailView):
 class ReservaDetailAndCancelView(PermissionRequiredMixin, View):
     """Vista de reserva con opción de cancelar. Un huesped solo tiene acceso a las reservas que
     registró."""
+
     permission_required = ("inquilinos.puede_registrar_reserva",)
     permission_denied_message = "Esta reserva no te pertenece."
     model = Reserva
