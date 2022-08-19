@@ -82,7 +82,8 @@ class RegResForm(forms.Form):
                 "Alguna fecha en el rango ingresado no está habilitada."
             )
 
-        for reserva in cab.reserva_set.all():
+        # for reserva in cab.reserva_set.all():
+        for reserva in cab.get_reservas_abiertas():
             if reserva.fechaDesde <= desde <= reserva.fechaHasta:
                 raise forms.ValidationError(
                     "Alguna fecha en el rango ingresado no está habilitada"

@@ -89,17 +89,29 @@ class Cab(models.Model):
         instance.slug = slugify(instance.nombre)
 
     def get_fechas_habilitadas(self):
-        """retorna todas las fechas habilitadas en una lista de strings"""
+        """retorna todas las fechas habilitadas en [[d,h],[d,h],...]"""
 
-        fechas_habilitadas = CustomParser.parseRanges(ranges=self.rango_set.all())
+        # fechas_habilitadas = CustomParser.parseRanges(ranges=self.rango_set.all())
+        fechas_habilitadas = CustomParser.parseRanges(queryset=self.rango_set.all(), formatear=False)
         return fechas_habilitadas
+
+    def get_reservas_abiertas(self):
+        # reservas_abiertas =
+        reservas_abiertas = []
+        for reserva in self.reserva_set.all():
+            e = reserva.get_ultimo_cambio_estado().estado.nombre
+            if e != "Cancelada" and e != "Finalizada" and e != "Rechazada":
+                reservas_abiertas.append(reserva)
+        return reservas_abiertas
 
     def get_fechas_deshabilitadas(self):
         """retorna los rangos de reserva de todas las reservas asociadas
         a la cabaña en formato [[d,h],[d,h],...]"""
 
-        fechas_deshabilitadas = CustomParser.parseReservas(
-            reservas=self.reserva_set.all()
+        fechas_deshabilitadas = CustomParser.parseRanges(
+            # queryset=self.reserva_set.all(),
+            queryset = self.get_reservas_abiertas(),
+            formatear=True
         )
         return fechas_deshabilitadas
 
@@ -123,7 +135,7 @@ class Cab(models.Model):
         nueva_reserva.set_precio_final()
         nueva_reserva.save()
         nueva_reserva.set_estado("Pte Confirmacion")
-        nueva_reserva.send_mail_enc_res()
+        # nueva_reserva.send_mail_enc_res()
         return nueva_reserva
 
     def __str__(self) -> str:

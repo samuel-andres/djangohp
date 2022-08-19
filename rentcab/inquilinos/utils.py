@@ -7,31 +7,25 @@ from django.utils.html import strip_tags
 
 
 class CustomParser:
-    def parseReservas(reservas):
-        """toma como argumento una lista de reservas y devuelve una lista con las fechas
-        desde hasta de cada una en forma de listas"""
-        disabled_dates = list()
-        # se genera una lista de listas con los rangos a deshabilitar correspondientes a las reservas que existen en la db
-        for reserva in reservas:
-            bar = []
-            bar.append(reserva.fechaDesde.strftime("%d/%m/%Y"))
-            bar.append(reserva.fechaHasta.strftime("%d/%m/%Y"))
-            disabled_dates.append(bar)
+    def parseRanges(queryset, formatear):
+        """toma como argumento un queryset y devuelve una lista con los rangos de fechas
+        desde hasta de cada objeto en forma de array"""
+        date_ranges = list()
+        if not formatear:
+            for obj in queryset:
+                bar = []
+                bar.append(obj.fechaDesde)
+                bar.append(obj.fechaHasta)
+                date_ranges.append(bar)
+        if formatear:
+            for obj in queryset:
+                bar = []
+                bar.append(obj.fechaDesde.strftime("%d/%m/%Y"))
+                bar.append(obj.fechaHasta.strftime("%d/%m/%Y"))
+                date_ranges.append(bar)
 
-        return disabled_dates
+        return date_ranges
 
-    def parseRanges(ranges):
-        """toma como argumento una lista de rangos y devuelve una lista con las fechas
-        desde hasta de cada uno en forma de listas"""
-        allowed_dates = list()
-        # se genera una lista de arreglos con los rangos de disponibilidad
-        for range in ranges:
-            bar = []
-            bar.append(range.fechaDesde)
-            bar.append(range.fechaHasta)
-            allowed_dates.append(bar)
-
-        return allowed_dates
 
     def parsePickerInput(pickerinput):
         """toma como argumento un string proveniente de un date range picker y devuelve

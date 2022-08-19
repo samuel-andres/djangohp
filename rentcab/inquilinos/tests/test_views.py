@@ -1,6 +1,7 @@
 import datetime
-from django.contrib.auth.models import Group, Permission
+
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group, Permission
 from django.test import TestCase
 from django.urls import reverse
 
