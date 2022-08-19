@@ -811,8 +811,9 @@ ALTER TABLE ONLY public.inquilinos_reserva ALTER COLUMN id SET DEFAULT nextval('
 COPY public.accounts_user (id, password, last_login, is_superuser, username, is_active, is_admin, email, is_staff) FROM stdin;
 10	pbkdf2_sha256$320000$iwOInJ1c0jn6IW3X8AVjZs$X6nNUKbcKsRSXVYfJa3m/Wkq7YyqUVA4hLI6D3HCzGY=	2022-08-17 14:16:33.779924-03	f	samuca	t	f	samuel5848@gmail.com	f
 11	pbkdf2_sha256$320000$PDIT4ZcpWlE0yTKkJl0wrL$IVe+qOLPY48os5aDRCU5ukQ3dhvuOyp5l9wRiceHZ5g=	2022-08-17 16:52:30.74877-03	f	usuario5	t	f	usuarioprueba@gmail.com	f
-12	pbkdf2_sha256$320000$caktCGDdpyiCNTFTpGuZsr$VfdritVa1yfRuUPo5+nRNH63V4h4Hxm/53nNaEFIsII=	2022-08-18 09:44:05.686693-03	f	tswift	t	f	tswift@gmail.com	f
-5	pbkdf2_sha256$320000$IGPAtsETUUKMBKCAIYtCbV$1md76kfxAx101ifZwqJLmdoDnQRAiqFQeNLfJ5eBGBQ=	2022-08-18 11:39:51.844842-03	t	admin	t	t	admin@example.com	t
+5	pbkdf2_sha256$320000$IGPAtsETUUKMBKCAIYtCbV$1md76kfxAx101ifZwqJLmdoDnQRAiqFQeNLfJ5eBGBQ=	2022-08-19 11:29:04.664511-03	t	admin	t	t	admin@example.com	t
+12	pbkdf2_sha256$320000$caktCGDdpyiCNTFTpGuZsr$VfdritVa1yfRuUPo5+nRNH63V4h4Hxm/53nNaEFIsII=	2022-08-19 11:31:01.004266-03	f	tswift	t	f	tswift@gmail.com	f
+13	pbkdf2_sha256$320000$w80heR1jyx9Pmw0sYp67kq$GyxrXnSbUTkphyTHvsA+QS0feAnsJWeqkPta4lvgbZU=	2022-08-19 12:36:22.278728-03	f	rihanna	t	f	rihanna@yahoo.com	f
 \.
 
 
@@ -824,6 +825,7 @@ COPY public.accounts_user_groups (id, user_id, group_id) FROM stdin;
 7	10	1
 9	11	1
 11	12	1
+13	13	1
 \.
 
 
@@ -958,6 +960,18 @@ COPY public.django_admin_log (id, action_time, object_id, object_repr, action_fl
 33	2022-08-18 11:40:26.019498-03	2	Cabaña Mediana	2	[{"added": {"name": "rango", "object": "2023-03-05=>2027-03-05"}}]	6	5
 34	2022-08-18 11:41:02.654153-03	5	2023-03-05=>2256-03-05	2	[{"changed": {"fields": ["FechaHasta"]}}]	10	5
 35	2022-08-18 11:52:20.202401-03	5	2023-03-05=>2024-03-05	2	[{"changed": {"fields": ["FechaHasta"]}}]	10	5
+36	2022-08-18 16:19:49.977629-03	3	Cabaña Chica	2	[{"added": {"name": "rango", "object": "2022-08-03=>2022-09-16"}}]	6	5
+37	2022-08-18 16:23:08.955396-03	3	Cabaña Chica	2	[{"added": {"name": "rango", "object": "2022-09-23=>2022-09-30"}}]	6	5
+38	2022-08-18 17:01:47.026001-03	9	2022-08-18->2022-08-21-Cabaña Mediana	3		9	5
+39	2022-08-18 17:01:47.032007-03	8	2022-08-18->2022-08-21-Cabaña Chica	3		9	5
+40	2022-08-18 17:01:47.034004-03	7	2022-09-15->2022-09-17-Cabaña Mediana	3		9	5
+41	2022-08-18 17:01:47.037005-03	6	2022-09-12->2022-09-15-Cabaña Principal	3		9	5
+42	2022-08-18 17:01:47.039004-03	5	2022-08-18->2022-08-19-Cabaña Principal	3		9	5
+43	2022-08-19 11:37:15.098005-03	14	2022-09-27->2022-09-29-Cabaña Principal	3		9	5
+44	2022-08-19 11:37:15.113002-03	13	2022-09-08->2022-09-11-Cabaña Principal	3		9	5
+45	2022-08-19 11:37:15.114002-03	12	2022-09-15->2022-09-17-Cabaña Mediana	3		9	5
+46	2022-08-19 11:37:15.116002-03	11	2022-08-18->2022-08-24-Cabaña Mediana	3		9	5
+47	2022-08-19 11:37:15.118005-03	10	2022-08-18->2022-08-19-Cabaña Principal	3		9	5
 \.
 
 
@@ -1022,9 +1036,10 @@ COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
 aidu1uszvri244vwrptqfmg2pj2h6wqu	.eJxVjEEOwiAQRe_C2hAKpYBL956BzMCMVA0kpV0Z765NutDtf-_9l4iwrSVunZY4Z3EWVpx-N4T0oLqDfId6azK1ui4zyl2RB-3y2jI9L4f7d1Cgl2_tVR4YjAI9oE5kR2smQJgACLxBSkoheq2Ddc5xAg6BkBgzah5Zs3h_AAYOOW8:1oOHDH:YobEo3AO57eibjWNUUHpulmtS97xzfUElx8Ey8W6o9Y	2022-08-31 08:27:55.29583-03
 0cjmc6aercefkewvyign6kd4h6e68y4f	.eJxVjMEOwiAQRP-FsyFAC7IevfsNhF0WqRqalPZk_Hdp0oNmTjNvZt4ixG0tYWu8hCmJiwBx-s0w0pPrDtIj1vssaa7rMqHcK_KgTd7mxK_r0f07KLGVvsZsWBkD5MmPA3gEIIXkNGrtfTfJKQKGaMecztlyosGDs1YBU5f4fAHqOjhj:1oOHGE:P_EXIDvkzm0IjL7ut2nXBS2nWswR-sSbucs5dA3nO5Q	2022-08-31 08:30:58.192826-03
 ijpel6oh1fjclscss1ookapiuggeu9df	.eJxVjDEOwjAMRe-SGUUJISZmZO8ZKttxSAG1UtNOiLtDpQ6w_vfef5me1qX2a9O5H7K5GO_M4XdkkoeOG8l3Gm-TlWlc5oHtptidNttNWZ_X3f07qNTqt0bw0UuCmDSRDzmigBbBcJTkICMFBo0lYjqxB2VGV5AD0xkQJTvz_gD6Xzgm:1oOMef:MXHJUIUVG34IWI_5TuQS4ccX6yI1Dbmwwg_0v3katHI	2022-08-31 14:16:33.779924-03
-chw7mgas61we4ma57li4ldkyfqg3lo5d	.eJxVjEEOwiAQRe_C2hAKpYBL956BzMCMVA0kpV0Z765NutDtf-_9l4iwrSVunZY4Z3EWVpx-N4T0oLqDfId6azK1ui4zyl2RB-3y2jI9L4f7d1Cgl2_tVR4YjAI9oE5kR2smQJgACLxBSkoheq2Ddc5xAg6BkBgzah5Zs3h_AAYOOW8:1oOOZZ:9kSsNrSbw7F5J7p-G3WbITD0JAjzORzWjNO8GEQCqoI	2022-08-31 16:19:25.860685-03
 5gh4xvzsihymjclk0saj0dp0fupkaj8c	.eJxVjDkOwjAUBe_iGlnxGkxJnzNYf7FxANlSnFSIu0OkFNC-mXkvEWFbS9x6WuLM4iKUFqffEYEeqe6E71BvTVKr6zKj3BV50C6nxul5Pdy_gwK9fOuMpIkgsc3oXfLWqHPwls2AAXzgHFxWSlPOyqGBYRwBNVsLrKw3jsT7AzI4OLo:1oOesX:wURxNBPfKrbrAFk0bQtOZ3zcPyb5ZIKgH4x8x0NjQXo	2022-09-01 09:44:05.694696-03
-qdg8d3t39fol3y8f6gvv70z0cihyerqu	.eJxVjEEOwiAQRe_C2hAKpYBL956BzMCMVA0kpV0Z765NutDtf-_9l4iwrSVunZY4Z3EWVpx-N4T0oLqDfId6azK1ui4zyl2RB-3y2jI9L4f7d1Cgl2_tVR4YjAI9oE5kR2smQJgACLxBSkoheq2Ddc5xAg6BkBgzah5Zs3h_AAYOOW8:1oOggZ:6wzRYbBV-UHRnTX4sxcsBpdSZhDCA1I9pCU57h_AqXY	2022-09-01 11:39:51.854871-03
+91owp78iltqz6i6c4e36qtvtqfhc257l	.eJxVjEEOwiAQRe_C2hAKpYBL956BzMCMVA0kpV0Z765NutDtf-_9l4iwrSVunZY4Z3EWVpx-N4T0oLqDfId6azK1ui4zyl2RB-3y2jI9L4f7d1Cgl2_tVR4YjAI9oE5kR2smQJgACLxBSkoheq2Ddc5xAg6BkBgzah5Zs3h_AAYOOW8:1oOl3C:fcXnn0SXRPAHV3Uih7SCZa_S4kP-3J9E2EPTnAwkJ-k	2022-09-01 16:19:30.034566-03
+wpltpngf7ra8xeulaxgolyy3vqs3mhue	.eJxVjDkOwjAUBe_iGlnxGkxJnzNYf7FxANlSnFSIu0OkFNC-mXkvEWFbS9x6WuLM4iKUFqffEYEeqe6E71BvTVKr6zKj3BV50C6nxul5Pdy_gwK9fOuMpIkgsc3oXfLWqHPwls2AAXzgHFxWSlPOyqGBYRwBNVsLrKw3jsT7AzI4OLo:1oP31Z:wFE7R_2MB3IlCIPzTk4oIkXydgtnmX_1Kj8MCBdxCgY	2022-09-02 11:31:01.006019-03
+9cwsqxdk9vat5n6ym8q4laxe0x48m6fc	.eJxVjMEOwiAQRP-FsyEiXaAevfcbyLK7SNXQpLQn47_bJj3ocea9mbeKuC4lrk3mOLK6KmPV6bdMSE-pO-EH1vukaarLPCa9K_qgTQ8Ty-t2uH8HBVvZ1s4JAPVZLuxznzvMACFswREYQkjJkbdnSwkRvEkWhDsA55iNmODV5wsd_Dh3:1oP42o:Q9J4ui4nMVtcqBm7EBsQfEgXq9U1EXEek-fshgTSGds	2022-09-02 12:36:22.278728-03
 \.
 
 
@@ -1033,9 +1048,9 @@ qdg8d3t39fol3y8f6gvv70z0cihyerqu	.eJxVjEEOwiAQRe_C2hAKpYBL956BzMCMVA0kpV0Z765Nut
 --
 
 COPY public.inquilinos_cab (id, nombre, "cantHabitaciones", "costoPorNoche", slug) FROM stdin;
-3	Cabaña Chica	1	1500	cabana-chica
 1	Cabaña Principal	4	2500	cabana-principal
 2	Cabaña Mediana	3	2000	cabana-mediana
+3	Cabaña Chica	1	1500	cabana-chica
 \.
 
 
@@ -1044,10 +1059,19 @@ COPY public.inquilinos_cab (id, nombre, "cantHabitaciones", "costoPorNoche", slu
 --
 
 COPY public.inquilinos_cambioestado (id, "fechaFin", "fechaInicio", estado_id, reserva_id) FROM stdin;
-5	\N	2022-08-17	3	5
-6	2022-08-17	2022-08-17	3	6
-7	\N	2022-08-17	6	6
-8	\N	2022-08-18	3	7
+19	\N	2022-08-19	3	15
+21	\N	2022-08-19	3	17
+23	\N	2022-08-19	3	19
+20	2022-08-19	2022-08-19	3	16
+24	\N	2022-08-19	6	16
+22	2022-08-19	2022-08-19	3	18
+25	\N	2022-08-19	6	18
+26	\N	2022-08-19	3	20
+27	2022-08-19	2022-08-19	3	21
+28	\N	2022-08-19	6	21
+29	2022-08-19	2022-08-19	3	22
+30	\N	2022-08-19	6	22
+31	\N	2022-08-19	3	23
 \.
 
 
@@ -1088,6 +1112,7 @@ COPY public.inquilinos_huesped (id, nombre, apellido, telefono, usuario_id) FROM
 4	Samuel	Andrés	3534237553	10
 5	Nombre	Apellido	123456	11
 6	Taylor	Swift	1234656	12
+7	Rihanna	Fenty	35346789	13
 \.
 
 
@@ -1125,6 +1150,8 @@ COPY public.inquilinos_rango (id, "fechaDesde", "fechaHasta", cab_id) FROM stdin
 3	2022-08-18	2022-08-24	2
 4	2022-09-12	2022-09-21	2
 5	2023-03-05	2024-03-05	2
+6	2022-08-03	2022-09-16	3
+7	2022-09-23	2022-09-30	3
 \.
 
 
@@ -1133,9 +1160,15 @@ COPY public.inquilinos_rango (id, "fechaDesde", "fechaHasta", cab_id) FROM stdin
 --
 
 COPY public.inquilinos_reserva (id, "fechaDesde", "fechaHasta", "fechaReserva", "precioFinal", "cantAdultos", "cantMenores", cab_id, huesped_id) FROM stdin;
-5	2022-08-18	2022-08-19	2022-08-17	2500	1	0	1	4
-6	2022-09-12	2022-09-15	2022-08-17	7500	2	1	1	5
-7	2022-09-15	2022-09-17	2022-08-18	4000	2	0	2	6
+15	2022-08-19	2022-08-21	2022-08-19	5000	1	0	1	6
+16	2022-09-13	2022-09-15	2022-08-19	5000	1	0	1	6
+17	2022-09-28	2022-09-30	2022-08-19	5000	1	0	1	6
+18	2022-09-24	2022-09-25	2022-08-19	2500	1	0	1	6
+19	2022-08-23	2022-08-26	2022-08-19	7500	1	0	1	6
+20	2022-09-13	2022-09-15	2022-08-19	5000	1	0	1	6
+21	2022-09-08	2022-09-11	2022-08-19	7500	1	0	1	7
+22	2022-09-08	2022-09-11	2022-08-19	7500	1	2	1	7
+23	2022-09-05	2022-09-11	2022-08-19	15000	1	0	1	7
 \.
 
 
@@ -1143,14 +1176,14 @@ COPY public.inquilinos_reserva (id, "fechaDesde", "fechaHasta", "fechaReserva", 
 -- Name: accounts_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.accounts_user_groups_id_seq', 12, true);
+SELECT pg_catalog.setval('public.accounts_user_groups_id_seq', 14, true);
 
 
 --
 -- Name: accounts_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.accounts_user_id_seq', 12, true);
+SELECT pg_catalog.setval('public.accounts_user_id_seq', 13, true);
 
 
 --
@@ -1185,7 +1218,7 @@ SELECT pg_catalog.setval('public.auth_permission_id_seq', 57, true);
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.django_admin_log_id_seq', 35, true);
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 47, true);
 
 
 --
@@ -1213,7 +1246,7 @@ SELECT pg_catalog.setval('public.inquilinos_cab_id_seq', 3, true);
 -- Name: inquilinos_cambioestado_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.inquilinos_cambioestado_id_seq', 8, true);
+SELECT pg_catalog.setval('public.inquilinos_cambioestado_id_seq', 31, true);
 
 
 --
@@ -1234,7 +1267,7 @@ SELECT pg_catalog.setval('public.inquilinos_foto_id_seq', 6, true);
 -- Name: inquilinos_huesped_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.inquilinos_huesped_id_seq', 6, true);
+SELECT pg_catalog.setval('public.inquilinos_huesped_id_seq', 7, true);
 
 
 --
@@ -1255,14 +1288,14 @@ SELECT pg_catalog.setval('public.inquilinos_instalacion_id_seq', 3, true);
 -- Name: inquilinos_rango_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.inquilinos_rango_id_seq', 5, true);
+SELECT pg_catalog.setval('public.inquilinos_rango_id_seq', 7, true);
 
 
 --
 -- Name: inquilinos_reserva_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.inquilinos_reserva_id_seq', 7, true);
+SELECT pg_catalog.setval('public.inquilinos_reserva_id_seq', 23, true);
 
 
 --
