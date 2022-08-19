@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 from django.utils.text import slugify
 
@@ -90,16 +91,21 @@ class Cab(models.Model):
 
     def get_fechas_habilitadas(self):
         """retorna todas las fechas habilitadas en [[d,h],[d,h],...]"""
-
-        fechas_habilitadas = CustomParser.parseRanges(queryset=self.rango_set.all(), formatear=False)
+        today = datetime.datetime.today()
+        fechas_habilitadas = CustomParser.parseRanges(
+            queryset=self.rango_set.filter(
+                fechaHasta__gte=today
+            ),
+            formatear=False)
         return fechas_habilitadas
 
     def get_reservas_abiertas(self):
-        reservas_abiertas = []
-        for reserva in self.reserva_set.all():
-            e = reserva.get_ultimo_cambio_estado().estado.nombre
-            if e != "Cancelada" and e != "Finalizada" and e != "Rechazada":
-                reservas_abiertas.append(reserva)
+        reservas_abiertas = self.reserva_set.filter(
+            cambioestado__fechaFin__isnull=True).exclude(
+                Q(cambioestado__estado__nombre="Cancelada") |
+                Q(cambioestado__estado__nombre = "Finalizada") |
+                Q(cambioestado__estado__nombre="Rechazada")
+            )
         return reservas_abiertas
 
     def get_fechas_deshabilitadas(self):
@@ -107,7 +113,6 @@ class Cab(models.Model):
         a la cabaña en formato [[d,h],[d,h],...]"""
 
         fechas_deshabilitadas = CustomParser.parseRanges(
-            # queryset=self.reserva_set.all(),
             queryset = self.get_reservas_abiertas(),
             formatear=True
         )

@@ -4,6 +4,7 @@
     "jquery": "^3.6.0",
     "litepicker": "^2.0.12",
     "mermaid.cli": "^0.5.1",
-    "moment": "^2.29.4"
+    "moment": "^2.29.4",
+    "package.json": "^2.0.1"
   }
 }

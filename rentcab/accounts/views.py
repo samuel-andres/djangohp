@@ -19,7 +19,7 @@ class RegistrarseView(View):
         form = self.form_class(request.POST)
 
         if form.is_valid():
-            user = form.save()
+            form.save()
             new_user = form.cleaned_data.get("username")
             messages.success(
                 request,

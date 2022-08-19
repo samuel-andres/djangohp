@@ -65,7 +65,7 @@ class RegResForm(forms.Form):
         desde = desde.date()
         hasta = hasta.date()
         foobar = False
-        for rango in cab.rango_set.all():
+        for rango in cab.rango_set.filter(fechaHasta__gt=datetime.date.today()):
             foo = 0
             bar = 0
             if rango.fechaDesde <= desde <= rango.fechaHasta:
@@ -82,7 +82,6 @@ class RegResForm(forms.Form):
                 "Alguna fecha en el rango ingresado no está habilitada."
             )
 
-        # for reserva in cab.reserva_set.all():
         for reserva in cab.get_reservas_abiertas():
             if reserva.fechaDesde <= desde <= reserva.fechaHasta:
                 raise forms.ValidationError(
