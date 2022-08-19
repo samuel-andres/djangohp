@@ -1,20 +1,18 @@
 import datetime
 
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group, Permission
 from django.test import TestCase
 
 from inquilinos.forms import CrearHuespedForm, RegResForm
-from inquilinos.models import Cab, Rango, Reserva, Huesped, Estado
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group, Permission
+from inquilinos.models import Cab, Estado, Huesped, Rango, Reserva
+
 
 def get_a_cab():
-    cab = Cab(
-        nombre="foo_slug",
-        cantHabitaciones=2,
-        costoPorNoche = 2500.0
-    )
+    cab = Cab(nombre="foo_slug", cantHabitaciones=2, costoPorNoche=2500.0)
     cab.save()
     return cab
+
 
 def get_a_huesped(user):
     huesped = Huesped(
@@ -27,22 +25,22 @@ def get_a_huesped(user):
     huesped.save()
     return huesped
 
-def crear_reserva(cab, user, fechaDesde, fechaHasta, cantAdultos = 2, cantMenores = 2):
+
+def crear_reserva(cab, user, fechaDesde, fechaHasta, cantAdultos=2, cantMenores=2):
 
     huesped = get_a_huesped(user)
 
     datos_reserva = {
-        "fechaDesde" : fechaDesde,
-        "fechaHasta" : fechaHasta,
-        "cantAdultos" : cantAdultos,
+        "fechaDesde": fechaDesde,
+        "fechaHasta": fechaHasta,
+        "cantAdultos": cantAdultos,
         "cantMenores": cantMenores,
-        "huesped" : huesped
+        "huesped": huesped,
     }
 
     reserva = cab.crear_reserva(datos_reserva)
 
     return reserva
-
 
 
 class RegistrarReservaFormTest(TestCase):
@@ -77,13 +75,8 @@ class RegistrarReservaFormTest(TestCase):
         permission.save()
         group.permissions.add(permission)
 
-        PteConf = Estado(
-            nombre = "Pte Confirmacion",
-            ambito = "res"
-        )
+        PteConf = Estado(nombre="Pte Confirmacion", ambito="res")
         PteConf.save()
-
-
 
     # tests para la fechaDesde
     def test_fecha_desde_antes_de_hoy(self):
@@ -183,10 +176,10 @@ class RegistrarReservaFormTest(TestCase):
         rango.save()
 
         crear_reserva(
-            cab = cab,
-            user = self.user,
-            fechaDesde = datetime.date.today() + datetime.timedelta(weeks=2),
-            fechaHasta = datetime.date.today() + datetime.timedelta(weeks=4)
+            cab=cab,
+            user=self.user,
+            fechaDesde=datetime.date.today() + datetime.timedelta(weeks=2),
+            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=4),
         )
 
         fechaDesdeHasta = (
@@ -301,10 +294,10 @@ class RegistrarReservaFormTest(TestCase):
         rango.save()
 
         crear_reserva(
-            cab = cab,
-            user = self.user,
-            fechaDesde = datetime.date.today() + datetime.timedelta(weeks=2),
-            fechaHasta = datetime.date.today() + datetime.timedelta(weeks=4)
+            cab=cab,
+            user=self.user,
+            fechaDesde=datetime.date.today() + datetime.timedelta(weeks=2),
+            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=4),
         )
 
         fechaDesdeHasta = (
@@ -370,10 +363,10 @@ class RegistrarReservaFormTest(TestCase):
         rango.save()
 
         crear_reserva(
-            cab = cab,
-            user = self.user,
+            cab=cab,
+            user=self.user,
             fechaDesde=datetime.date.today() + datetime.timedelta(weeks=2),
-            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=3)
+            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=3),
         )
 
         fechaDesdeHasta = (

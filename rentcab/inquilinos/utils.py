@@ -26,7 +26,6 @@ class CustomParser:
 
         return date_ranges
 
-
     def parsePickerInput(pickerinput):
         """toma como argumento un string proveniente de un date range picker y devuelve
         una tupla con dos objetos datetime (desde, hasta)"""

@@ -93,19 +93,18 @@ class Cab(models.Model):
         """retorna todas las fechas habilitadas en [[d,h],[d,h],...]"""
         today = datetime.datetime.today()
         fechas_habilitadas = CustomParser.parseRanges(
-            queryset=self.rango_set.filter(
-                fechaHasta__gte=today
-            ),
-            formatear=False)
+            queryset=self.rango_set.filter(fechaHasta__gte=today), formatear=False
+        )
         return fechas_habilitadas
 
     def get_reservas_abiertas(self):
         reservas_abiertas = self.reserva_set.filter(
-            cambioestado__fechaFin__isnull=True).exclude(
-                Q(cambioestado__estado__nombre="Cancelada") |
-                Q(cambioestado__estado__nombre = "Finalizada") |
-                Q(cambioestado__estado__nombre="Rechazada")
-            )
+            cambioestado__fechaFin__isnull=True
+        ).exclude(
+            Q(cambioestado__estado__nombre="Cancelada")
+            | Q(cambioestado__estado__nombre="Finalizada")
+            | Q(cambioestado__estado__nombre="Rechazada")
+        )
         return reservas_abiertas
 
     def get_fechas_deshabilitadas(self):
@@ -113,8 +112,7 @@ class Cab(models.Model):
         a la cabaña en formato [[d,h],[d,h],...]"""
 
         fechas_deshabilitadas = CustomParser.parseRanges(
-            queryset = self.get_reservas_abiertas(),
-            formatear=True
+            queryset=self.get_reservas_abiertas(), formatear=True
         )
         return fechas_deshabilitadas
 
