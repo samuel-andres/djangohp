@@ -22,7 +22,7 @@ class HuespedRestrictedListView(LoginRequiredMixin, generic.ListView):
         """sobreescribe el método get_queryset para que un huesped solo tenga acceso
         a las las reservas realizadas por el"""
         qs = super(HuespedRestrictedListView, self).get_queryset()
-        return qs.filter(huesped=self.request.user.huesped)
+        return qs.filter(huesped=self.request.user.huesped).order_by('-id')
 
 
 class HuespedRestrictedUpdateView(LoginRequiredMixin, generic.UpdateView):

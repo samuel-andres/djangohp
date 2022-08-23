@@ -21,6 +21,11 @@
                         habitación.
                     {% endif %}
                 </li>
+                {% if cab.calificacion_promedio %}
+                <li class="list-group-item" id="calificacion_id">
+                    Calificación promedio: <span id="estrellas" style="color:goldenrod;"></span>
+                </li>
+                {% endif %}
             </ul>
             <button type="button"
                     onclick="location.href='{% url 'inquilinos:reg-res' cab.slug %}'"
@@ -64,4 +69,16 @@
             </div>
         </div>
     </div>
+    <p id="cal_prom_id" style="display: none">{{cab.calificacion_promedio}}</p>
+    <script>
+        let avgPython = "{{ cab.calificacion_promedio }}"
+        let avgStars = avgPython.replaceAll(',', '.');
+        console.log(avgStars)
+        let stars = '&#9733;';
+        for(var i = 0 ;i<(Math.round(avgStars))-1;i++)
+        {
+          stars=stars+' &#9733;';
+        }
+        document.getElementById('estrellas').innerHTML = stars;
+    </script>
 {% endblock content %}

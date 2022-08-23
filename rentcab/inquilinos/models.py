@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Avg
 from django.urls import reverse
 from django.utils.text import slugify
 
@@ -65,7 +65,12 @@ class Cab(models.Model):
     )
     slug = models.SlugField(null=False, blank=False, unique=True)
 
+    @property
+    def calificacion_promedio(self):
+        return self.comentario_set.aggregate(cal_prom = Avg('calificacion'))['cal_prom']
+
     # métodos
+    # cal_prom = models.FloatField(null=True, blank=True)
     def set_slug(sender, instance, *args, **kwargs):
         """método para utilizar en señales que setea el slug de la cab en el momento
         previo a que se guarde en la db"""
@@ -308,4 +313,7 @@ class Comentario(models.Model):
         blank=True,
     )
     fechaPublicacion = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.calificacion}/5'
 
