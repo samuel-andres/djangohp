@@ -100,7 +100,7 @@ WSGI_APPLICATION = "rentcab.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "rentcabdb",
+        "NAME": "rentcabdb_2",
         "USER": "postgres",
         "PASSWORD": "postgres",
         "HOST": "localhost",

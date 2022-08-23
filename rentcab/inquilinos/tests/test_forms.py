@@ -75,7 +75,7 @@ class RegistrarReservaFormTest(TestCase):
         permission.save()
         group.permissions.add(permission)
 
-        PteConf = Estado(nombre="Pte Confirmacion", ambito="res")
+        PteConf = Estado(nombre="Pte Confirmacion")
         PteConf.save()
 
     # tests para la fechaDesde

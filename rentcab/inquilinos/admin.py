@@ -1,6 +1,15 @@
 from django.contrib import admin
 
-from .models import Cab, Estado, Foto, Huesped, Instalacion, Rango, Reserva
+from .models import (
+    Cab,
+    Estado,
+    Foto,
+    Huesped,
+    Instalacion,
+    Rango,
+    Reserva,
+    Comentario,
+)
 
 
 class FotosInLine(admin.StackedInline):
@@ -55,7 +64,7 @@ class HuespedAdmin(admin.ModelAdmin):
 
 @admin.register(Estado)
 class EstadoAdmin(admin.ModelAdmin):
-    list_filter = ("ambito",)
+    pass
 
 
 @admin.register(Rango)
@@ -69,3 +78,7 @@ class InstalacionAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
+
+@admin.register(Comentario)
+class ComentarioAdmin(admin.ModelAdmin):
+    pass

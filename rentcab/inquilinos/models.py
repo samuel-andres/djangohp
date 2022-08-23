@@ -47,26 +47,11 @@ class Huesped(models.Model):
 class Estado(models.Model):
     # attrs
     nombre = models.CharField(max_length=200)
-    ambito = models.CharField(max_length=200)
 
     # métodos
 
-    def esAmbitoCabaña(self, ambito) -> bool:
-        """toma como parámetro el ámbito y retorna True si el mismo es
-        el ambito correspondiente a las cabañas"""
-        if ambito == "cab":
-            return True
-
-    def esAmbitoReserva(self, ambito) -> bool:
-        """toma como parámetro el ámbito y retorna True si el mismo es
-        el ambito correspondiente a las reservas"""
-        if ambito == "res":
-            return True
-
     def __str__(self) -> str:
-        if self.ambito == "cab":
-            return f"{self.ambito.capitalize()}aña {self.nombre.capitalize()}"
-        return f"{self.ambito.capitalize()}erva {self.nombre.capitalize()}"
+        return self.nombre
 
 
 class Cab(models.Model):
@@ -296,3 +281,31 @@ class CambioEstado(models.Model):
     fechaInicio = models.DateField(
         auto_now_add=True,
     )
+
+class Comentario(models.Model):
+    # attrs
+    huesped = models.ForeignKey(
+        Huesped,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=False
+    )
+    cab = models.ForeignKey(
+        Cab,
+        on_delete=models.CASCADE,
+    )
+    comentario = models.TextField()
+    CALIFICACION_CHOICES = (
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5),
+    )
+    calificacion = models.IntegerField(
+        choices=CALIFICACION_CHOICES,
+        null=True,
+        blank=True,
+    )
+    fechaPublicacion = models.DateField(auto_now_add=True)
+
