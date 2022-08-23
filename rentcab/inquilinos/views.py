@@ -28,6 +28,12 @@ class CabDetailView(generic.DetailView):
     model = Cab
     template_name = "inquilinos/cab_detail.html"
 
+    def get_context_data(self, **kwargs):
+        context = super(CabDetailView, self).get_context_data(**kwargs)
+        context['comentarios'] = self.get_object().comentario_set.all().order_by('-id')[:12]
+        print(context['comentarios'])
+        return context
+
 
 class RegistroReservaView(PermissionRequiredMixin, View):
     """

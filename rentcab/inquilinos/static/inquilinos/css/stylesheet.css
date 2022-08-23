@@ -3,9 +3,12 @@
 }
 
 .maseit {
-    max-height: 300px;
-    border-style: outset;
-    border-radius: 9px;
+    max-height: 350px;
+    min-height: auto;
+    min-width: auto;
+    max-width: auto;
+    /* border-style: outset; */
+    /* border-radius: 9px; */
   }
 .cuac {
   float: right;
