@@ -231,6 +231,10 @@ class Reserva(models.Model):
     def get_precio_final(self) -> str:
         return f"$ {self.precioFinal}"
 
+    def se_puede_calificar(self) -> bool:
+        estado = self.get_estado()
+        return estado.nombre == "Finalizada" or estado.nombre == "Confirmada"
+
     class Meta:
         verbose_name_plural = "Reservas"
         permissions = (
@@ -282,6 +286,7 @@ class CambioEstado(models.Model):
     reserva = models.ForeignKey(Reserva, on_delete=models.CASCADE)
     fechaFin = models.DateField(
         null=True,
+        blank=True,
     )
     fechaInicio = models.DateField(
         auto_now_add=True,
@@ -316,4 +321,8 @@ class Comentario(models.Model):
 
     def __str__(self):
         return f'{self.calificacion}/5'
+
+    def get_absolute_url(self):
+        return reverse("inquilinos:index")
+
 

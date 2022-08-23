@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import (
     Cab,
+    CambioEstado,
     Estado,
     Foto,
     Huesped,
@@ -64,6 +65,10 @@ class HuespedAdmin(admin.ModelAdmin):
 
 @admin.register(Estado)
 class EstadoAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(CambioEstado)
+class CambioEstadoAdmin(admin.ModelAdmin):
     pass
 
 

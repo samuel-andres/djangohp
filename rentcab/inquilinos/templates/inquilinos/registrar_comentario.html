@@ -1,0 +1,10 @@
+{% extends 'inquilinos/base.html' %}
+{% block content %}
+    {% load static %}
+    {% load crispy_forms_tags %}
+    {% csrf_token %}
+    <br/>
+    <div class="col-md-3 offset-md-4 p-5 d-flex justify-content-center border rounded bg-white">
+        {% crispy form %}
+    </div>
+{% endblock %}

@@ -29,3 +29,9 @@ class HuespedRestrictedUpdateView(LoginRequiredMixin, generic.UpdateView):
     def get_queryset(self):
         qs = super(HuespedRestrictedUpdateView, self).get_queryset()
         return qs.filter(huesped=self.request.user.huesped)
+
+class HuespedRestrictedCreateView(LoginRequiredMixin, generic.CreateView):
+    def get_queryset(self):
+        qs = super(HuespedRestrictedUpdateView, self).get_queryset()
+        return qs.filter(huesped=self.request.user.huesped)
+

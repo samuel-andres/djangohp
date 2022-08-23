@@ -22,6 +22,7 @@ urlpatterns = [
     path(
         "huesped/perfil/editar", views.EditarPerfilHuespedView.as_view(), name="editar-huesped"
     ),
+    path("reservas/<int:pk>/calificar", views.ComentarioCreateView.as_view(), name="crear-comentario"),
     # ListViews
     path("reservas/", views.ReservasDeHuespedListView.as_view(), name="res-h-list"),
     # CustomViews

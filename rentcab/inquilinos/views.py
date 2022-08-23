@@ -6,11 +6,11 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import View, generic
 
-from inquilinos.forms import CrearHuespedForm, RegResForm
-from inquilinos.models import Cab, Huesped, Reserva
+from inquilinos.forms import CrearHuespedForm, RegResForm, ComentarioCreateForm
+from inquilinos.models import Cab, Huesped, Reserva, Comentario
 from inquilinos.utils import CustomParser
 
-from .restricted import HuespedRestrictedListView, UserRestrictedCreateView, HuespedRestrictedUpdateView
+from .restricted import HuespedRestrictedListView, UserRestrictedCreateView, HuespedRestrictedUpdateView, HuespedRestrictedCreateView
 
 
 # Views
@@ -155,6 +155,7 @@ class ReservaDetailAndCancelView(PermissionRequiredMixin, View):
             raise PermissionDenied(self.permission_denied_message)
         context = {
             "reserva": reserva,
+            "estadoreserva": reserva.get_estado().nombre,
         }
         return render(request, "inquilinos/reserva_detail.html", context)
 
@@ -162,8 +163,10 @@ class ReservaDetailAndCancelView(PermissionRequiredMixin, View):
         reserva = get_object_or_404(Reserva, pk=pk)
         if reserva.huesped != request.user.huesped:
             raise PermissionDenied(self.permission_denied_message)
-        if reserva.get_estado().nombre != "Cancelada":
+        if reserva.get_estado().nombre == "Pte Confirmacion":
             reserva.cancelar_reserva()
+        else:
+            raise PermissionDenied(f'No se puede cancelar una reserva {self.get_estado()}')
         return render(request, "inquilinos/reserva_cancelada.html")
 
 
@@ -172,6 +175,21 @@ class ReservasDeHuespedListView(HuespedRestrictedListView):
 
     model = Reserva
     template_name = "inquilinos/reserva_h_list.html"
+
+class ComentarioCreateView(HuespedRestrictedCreateView):
+    """CreateView de comentario"""
+
+    model = Comentario
+    template_name = "inquilinos/registrar_comentario.html"
+    form_class = ComentarioCreateForm
+
+    def form_valid(self, form):
+        reserva = Reserva.objects.get(id = self.kwargs['pk'])
+        object = form.save(commit=False)
+        object.huesped = self.request.user.huesped
+        object.cab = reserva.cab
+        object.save()
+        return super(ComentarioCreateView, self).form_valid(form)
 
 
 def test_view(request):

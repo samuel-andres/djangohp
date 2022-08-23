@@ -10,9 +10,13 @@ let coms = document.querySelectorAll('.star-place-holder')
 for (let com of coms){
     let com_stars = '&#9733;';
     let count_stars = com.textContent;
-    for (let i = 0 ;i<count_stars-1;){
+    if (!isNaN(parseFloat(count_stars))){
+      for (let i = 0 ;i<count_stars-1;){
         com_stars=com_stars+' &#9733;';
         i += 1;
     }
     com.innerHTML = com_stars;
+    } else {
+      com.innerHTML = '';
+    }
 }

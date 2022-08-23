@@ -6,7 +6,7 @@ from crispy_forms.layout import HTML, Div, Field, Fieldset, Layout, Submit
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from inquilinos.models import Cab, Huesped, Rango
+from inquilinos.models import Cab, Huesped, Rango, Comentario
 
 from .utils import CustomParser
 
@@ -158,6 +158,31 @@ class CrearHuespedForm(forms.ModelForm):
                 "Cargar datos personales",
                 Field("nombre", css_class="mb-3 form-control"),
                 Field("apellido", css_class="mb-3 form-control"),
+                Field("telefono", css_class="mb-3 form-control"),
+            ),
+            Submit("submit", "Confirmar", css_class="btn btn-primary cuac"),
+            HTML('<a class="btn btn-secondary" href="/">Cancelar</a>'),
+        )
+        self.helper.form_method = "POST"
+        self.helper.form_style = "inline"
+
+
+class ComentarioCreateForm(forms.ModelForm):
+    class Meta:
+        model = Comentario
+        fields = [
+            "comentario",
+            "calificacion",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                "Deja un comentario",
+                Field("comentario", css_class="mb-3 form-control"),
+                Field("calificacion", css_class="mb-3 form-control"),
                 Field("telefono", css_class="mb-3 form-control"),
             ),
             Submit("submit", "Confirmar", css_class="btn btn-primary cuac"),

@@ -53,7 +53,7 @@
                             {{ inst.descripcion }}<i class="bi bi-check-all"></i>
                         </li>
                     {% endfor %}
-                    <li class="list-group-item">Precio final por noche: {{ cab.costoPorNoche }}</li>
+                    <li class="list-group-item">Precio final por noche: ${{ cab.costoPorNoche }}</li>
                     <li class="list-group-item">
                         {{ cab.cantHabitaciones }}
                         {% if cab.cantHabitaciones > 1 %}
