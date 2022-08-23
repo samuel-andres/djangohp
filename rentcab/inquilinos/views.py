@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
@@ -10,7 +10,7 @@ from inquilinos.forms import CrearHuespedForm, RegResForm
 from inquilinos.models import Cab, Huesped, Reserva
 from inquilinos.utils import CustomParser
 
-from .restricted import HuespedRestrictedListView, UserRestrictedCreateView
+from .restricted import HuespedRestrictedListView, UserRestrictedCreateView, HuespedRestrictedUpdateView
 
 
 # Views
@@ -130,6 +130,15 @@ class PerfilHuespedDetailView(generic.DetailView):
     """DetailView del perfil del huesped"""
 
     model = Huesped
+
+class EditarPerfilHuespedView(LoginRequiredMixin, generic.UpdateView):
+    """UpdateView para el perfil del huesped"""
+    model = Huesped
+    form_class = CrearHuespedForm
+
+    def get_object(self, *args, **kwargs):
+        return self.request.user.huesped
+
 
 
 class ReservaDetailAndCancelView(PermissionRequiredMixin, View):

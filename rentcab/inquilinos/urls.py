@@ -19,6 +19,9 @@ urlpatterns = [
     path(
         "huesped/perfil/", views.CrearPerfilHuespedView.as_view(), name="crear-huesped"
     ),
+    path(
+        "huesped/perfil/editar", views.EditarPerfilHuespedView.as_view(), name="editar-huesped"
+    ),
     # ListViews
     path("reservas/", views.ReservasDeHuespedListView.as_view(), name="res-h-list"),
     # CustomViews
