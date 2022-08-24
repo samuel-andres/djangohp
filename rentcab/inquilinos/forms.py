@@ -183,7 +183,6 @@ class ComentarioCreateForm(forms.ModelForm):
                 "Deja un comentario",
                 Field("comentario", css_class="mb-3 form-control"),
                 Field("calificacion", css_class="mb-3 form-control"),
-                Field("telefono", css_class="mb-3 form-control"),
             ),
             Submit("submit", "Confirmar", css_class="btn btn-primary cuac"),
             HTML('<a class="btn btn-secondary" href="/">Cancelar</a>'),

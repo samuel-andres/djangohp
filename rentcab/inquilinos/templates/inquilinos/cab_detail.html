@@ -9,7 +9,9 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <div id="gallery" class="carousel slide me-2 ms-5 mt-2 mb-2" data-bs-ride="carousel">
+            <div id="gallery"
+                 class="carousel slide me-2 ms-5 mt-2 mb-2"
+                 data-bs-ride="carousel">
                 <ul class="carousel-indicators">
                     <li data-bs-target="#gallery" data-bs-slide-to="0" class="active"></li>
                     {% for foto in cab.foto_set.all %}
@@ -46,50 +48,45 @@
             </div>
         </div>
         <div class="col-md-6">
-                <ul class="list-group col-md-10 offset-md-1 mb-3 mt-4 text-center">
-                {% comment %} <ul class="list-group mb-3 text-center"> {% endcomment %}
-                    {% for inst in cab.instalacion_set.all  %}
-                        <li class="list-group-item">
-                            {{ inst.descripcion }}<i class="bi bi-check-all"></i>
-                        </li>
-                    {% endfor %}
-                    <li class="list-group-item">Precio final por noche: ${{ cab.costoPorNoche }}</li>
+            <ul class="list-group col-md-10 offset-md-1 mb-3 mt-4 text-center">
+                {% for inst in cab.instalacion_set.all  %}
                     <li class="list-group-item">
-                        {{ cab.cantHabitaciones }}
-                        {% if cab.cantHabitaciones > 1 %}
-                            habitaciones.
-                        {% else %}
-                            habitación.
-                        {% endif %}
+                        {{ inst.descripcion }}<i class="bi bi-check-all"></i>
                     </li>
-                    {% if cab.calificacion_promedio %}
+                {% endfor %}
+                <li class="list-group-item">Precio final por noche: ${{ cab.costoPorNoche }}</li>
+                <li class="list-group-item">
+                    {{ cab.cantHabitaciones }}
+                    {% if cab.cantHabitaciones > 1 %}
+                        habitaciones.
+                    {% else %}
+                        habitación.
+                    {% endif %}
+                </li>
+                {% if cab.calificacion_promedio %}
                     <li class="list-group-item" id="calificacion_id">
                         Calificación promedio: <span id="estrellas" style="color:goldenrod;"></span>
                     </li>
-                    {% endif %}
-                </ul>
-                <button type="button"
-                        onclick="location.href='{% url 'inquilinos:reg-res' cab.slug %}'"
-                        class="btn btn-primary col-md-6 offset-md-3 mb-3">
-                    Consultar disponibilidad
-                </button>
+                {% endif %}
+            </ul>
+            <button type="button"
+                    onclick="location.href='{% url 'inquilinos:reg-res' cab.slug %}'"
+                    class="btn btn-primary col-md-6 offset-md-3 mb-3">
+                Consultar disponibilidad
+            </button>
         </div>
     </div>
     <div class="album py-5 bg-light">
         <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                {% for comentario in cab.comentarios  %}
+                {% for comentario in comentarios  %}
                     <div class="col">
                         <div class="card shadow-sm">
                             <div class="card-body">
-                                <p class="card-text">
-                                    {{ comentario.comentario}}
-                                </p>
+                                <p class="card-text">{{ comentario.comentario }}</p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <small class="text-muted">{{ comentario.huesped }}</small>
-                                    <small class="text-muted star-place-holder">
-                                        {{ comentario.calificacion }}
-                                    </small>
+                                    <small class="text-muted star-place-holder">{{ comentario.calificacion }}</small>
                                 </div>
                             </div>
                         </div>

@@ -68,8 +68,11 @@ class Cab(models.Model):
 
     @property
     def calificacion_promedio(self):
-        # return self.comentarios.aggregate(cal_prom = Avg('calificacion'))['cal_prom']
-        return np.average([comentario.calificacion for comentario in self.comentarios ])
+        return self.comentarios.aggregate(cal_prom = Avg('calificacion'))['cal_prom']
+        # try:
+        #     return np.average([comentario.calificacion for comentario in self.comentarios ])
+        # except:
+        #     return None
 
 
     # métodos
@@ -132,10 +135,10 @@ class Cab(models.Model):
         # nueva_reserva.send_mail_enc_res()
         return nueva_reserva
 
-    @property
-    def comentarios(self):
-        comentarios = [reserva.comentario for reserva in self.reserva_set.exclude(comentario__isnull=True)]
-        return comentarios
+    # @property
+    # def comentarios(self):
+    #     comentarios = [reserva.comentario for reserva in self.reserva_set.exclude(comentario__isnull=True)]
+    #     return comentarios
 
     def __str__(self) -> str:
         return self.nombre
@@ -321,6 +324,12 @@ class Comentario(models.Model):
         null=True,
         related_name='comentario',
         on_delete=models.CASCADE,
+    )
+
+    cab = models.ForeignKey(
+        Cab,
+        on_delete=models.CASCADE,
+        related_name='comentarios',
     )
 
 
