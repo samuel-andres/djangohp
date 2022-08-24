@@ -1,6 +1,5 @@
 const allowedDates = JSON.parse(document.getElementById('allowed_dates').textContent);
 const disabledDates = JSON.parse(document.getElementById('disabled_dates').textContent);
-const costoPorNoche = JSON.parse(document.getElementById('costoPorNoche').textContent);
 const costoPorAdulto = JSON.parse(document.getElementById('costoPorAdulto').textContent);
 const costoPorMenor = JSON.parse(document.getElementById('costoPorMenor').textContent);
 const cantMenoresElement = document.getElementById('id_cantMenores');
@@ -75,7 +74,6 @@ const picker = new Litepicker({
 	resetButton: true,
 	setup: (picker) => {
 		picker.on('selected', (date1, date2) => {
-			let costo_por_noche = parseFloat(costoPorNoche);
 			cantNoches =  (date2.diff(date1, 'days'))
 			console.log(document.getElementById('id_cantAdultos').value);
 			updatePrecio(cantNoches);

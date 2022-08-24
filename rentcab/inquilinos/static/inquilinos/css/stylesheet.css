@@ -90,3 +90,25 @@ ul {
   font-size: 16px;
   text-align: center;
 }
+
+
+
+.list-group-item.left-side,
+.list-group-item.right-side {
+  float: left;
+  width: 50%;
+  border-bottom-width:0px;
+  border-top-width: 0px;
+}
+
+.split-items .list-group-item.left-side{
+  border-top-right-radius:0px;
+  border-bottom-right-radius:0px;
+}
+
+.split-items .list-group-item.right-side{
+  border-top-left-radius:0px;
+  border-bottom-left-radius:0px;
+  border-bottom-right-radius:0px;
+  border-left: 0;
+}

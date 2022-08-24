@@ -61,7 +61,6 @@ class RegistroReservaView(PermissionRequiredMixin, View):
         form = self.form_class(initial={"foo_slug": slug})
         # se obtiene la cabaña actual
         cab = get_object_or_404(Cab, slug=slug)
-        costoPorNoche = cab.costoPorNoche
         costoPorAdulto = cab.costoPorAdulto
         costoPorMenor = cab.costoPorMenor
         # se obtienen las fechas en que la cabaña está habilitada y deshabilitada
@@ -69,7 +68,6 @@ class RegistroReservaView(PermissionRequiredMixin, View):
         # se pasa como contexto el formulario vacío, el día de hoy y las fechas habilitadas y deshabilitadas
         context = {
             "form": form,
-            "costoPorNoche": costoPorNoche,
             "allowed_dates": fechas_habilitadas,
             "disabled_dates": fechas_deshabilitadas,
             "costoPorAdulto" : costoPorAdulto,

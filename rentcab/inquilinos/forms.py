@@ -54,8 +54,6 @@ class RegResForm(forms.Form):
                 "Error. La fecha de inicio debe ser <= a la fecha fin."
             )
         if desde.date() < datetime.date.today():
-            print(desde)
-            print(datetime.date.today())
             raise forms.ValidationError(
                 "Error. La fecha ingresada debe ser >= a la fecha actual."
             )

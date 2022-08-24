@@ -61,9 +61,9 @@ class Cab(models.Model):
         max_length=200,
     )
     cantHabitaciones = models.IntegerField()
-    costoPorNoche = models.FloatField(
-        null=True,
-    )
+    # costoPorNoche = models.FloatField(
+    #     null=True,
+    # )
 
     costoPorAdulto = models.FloatField(null=True)
     costoPorMenor = models.FloatField(null=True)
@@ -132,8 +132,8 @@ class Cab(models.Model):
         nueva_reserva = Reserva(
             fechaDesde=datos_reserva["fechaDesde"],
             fechaHasta=datos_reserva["fechaHasta"],
-            cantAdultos=datos_reserva["cantAdultos"],
-            cantMenores=datos_reserva["cantMenores"],
+            cantAdultos=int(datos_reserva["cantAdultos"]),
+            cantMenores=int(datos_reserva["cantMenores"]),
             cab=self,
             huesped=datos_reserva["huesped"],
         )
@@ -155,7 +155,7 @@ class Cab(models.Model):
         verbose_name = "Cabaña"
         verbose_name_plural = "Cabañas"
         ordering = [
-            "-costoPorNoche",
+            # "-costoPorNoche",
             "-cantHabitaciones",
         ]
 
@@ -219,7 +219,7 @@ class Reserva(models.Model):
 
     def calcular_precio_final(self):
         """retorna el cálculo de precio final de la reserva"""
-        return self.get_cant_noches() * self.cab.costoPorNoche
+        return self.get_cant_noches() * ((self.cantAdultos * self.cab.costoPorAdulto) + (self.cantMenores * self.cab.costoPorMenor))
 
     def set_precio_final(self):
         """setea el precio final de la reserva llamando al método

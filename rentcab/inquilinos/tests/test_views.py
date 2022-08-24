@@ -17,7 +17,12 @@ class RegistroReservaViewTest(TestCase):
         self.user.save()
 
         # creación de una cabaña
-        test_cab = Cab(nombre="cab_test", cantHabitaciones=2, costoPorNoche=2500.0)
+        test_cab = Cab(
+            nombre="cab_test",
+            cantHabitaciones=2,
+            costoPorAdulto=500.0,
+            costoPorMenor=200.0
+        )
         test_cab.save()
 
         # creación de un rango y una reserva
