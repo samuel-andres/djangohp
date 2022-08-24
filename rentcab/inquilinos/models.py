@@ -68,12 +68,11 @@ class Cab(models.Model):
 
     @property
     def calificacion_promedio(self):
-        return self.comentarios.aggregate(cal_prom = Avg('calificacion'))['cal_prom']
+        return self.comentarios.aggregate(cal_prom=Avg("calificacion"))["cal_prom"]
         # try:
         #     return np.average([comentario.calificacion for comentario in self.comentarios ])
         # except:
         #     return None
-
 
     # métodos
     # cal_prom = models.FloatField(null=True, blank=True)
@@ -246,8 +245,9 @@ class Reserva(models.Model):
         """Retorna true si la reserva esta finalizada o confirmada al mismo tiempo}
         que el usuario no registro ya algún comentario sobre la reserva"""
         estado = self.get_estado()
-        return (estado.nombre == "Finalizada" or estado.nombre == "Confirmada") and not self.tiene_comentario
-
+        return (
+            estado.nombre == "Finalizada" or estado.nombre == "Confirmada"
+        ) and not self.tiene_comentario
 
     @property
     def tiene_comentario(self):
@@ -310,28 +310,25 @@ class CambioEstado(models.Model):
         auto_now_add=True,
     )
 
+
 class Comentario(models.Model):
     # attrs
     huesped = models.ForeignKey(
-        Huesped,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=False
+        Huesped, on_delete=models.SET_NULL, null=True, blank=False
     )
 
     reserva = models.OneToOneField(
         Reserva,
         null=True,
-        related_name='comentario',
+        related_name="comentario",
         on_delete=models.CASCADE,
     )
 
     cab = models.ForeignKey(
         Cab,
         on_delete=models.CASCADE,
-        related_name='comentarios',
+        related_name="comentarios",
     )
-
 
     comentario = models.TextField()
     CALIFICACION_CHOICES = (
@@ -349,9 +346,7 @@ class Comentario(models.Model):
     fechaPublicacion = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.calificacion}/5'
+        return f"{self.calificacion}/5"
 
     def get_absolute_url(self):
         return reverse("inquilinos:index")
-
-

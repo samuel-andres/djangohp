@@ -67,6 +67,7 @@ class HuespedAdmin(admin.ModelAdmin):
 class EstadoAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(CambioEstado)
 class CambioEstadoAdmin(admin.ModelAdmin):
     pass
@@ -83,6 +84,7 @@ class InstalacionAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
+
 
 @admin.register(Comentario)
 class ComentarioAdmin(admin.ModelAdmin):

@@ -10,7 +10,12 @@ from inquilinos.forms import CrearHuespedForm, RegResForm, ComentarioCreateForm
 from inquilinos.models import Cab, Huesped, Reserva, Comentario
 from inquilinos.utils import CustomParser
 
-from .restricted import HuespedRestrictedListView, UserRestrictedCreateView, HuespedRestrictedUpdateView, HuespedRestrictedCreateView
+from .restricted import (
+    HuespedRestrictedListView,
+    UserRestrictedCreateView,
+    HuespedRestrictedUpdateView,
+    HuespedRestrictedCreateView,
+)
 
 
 # Views
@@ -30,7 +35,9 @@ class CabDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(CabDetailView, self).get_context_data(**kwargs)
-        context['comentarios'] = self.get_object().comentarios.all().order_by('-id')[:12]
+        context["comentarios"] = (
+            self.get_object().comentarios.all().order_by("-id")[:12]
+        )
         return context
 
 
@@ -130,14 +137,15 @@ class PerfilHuespedDetailView(generic.DetailView):
 
     model = Huesped
 
+
 class EditarPerfilHuespedView(LoginRequiredMixin, generic.UpdateView):
     """UpdateView para el perfil del huesped"""
+
     model = Huesped
     form_class = CrearHuespedForm
 
     def get_object(self, *args, **kwargs):
         return self.request.user.huesped
-
 
 
 class ReservaDetailAndCancelView(PermissionRequiredMixin, View):
@@ -165,7 +173,9 @@ class ReservaDetailAndCancelView(PermissionRequiredMixin, View):
         if reserva.get_estado().nombre == "Pte Confirmacion":
             reserva.cancelar_reserva()
         else:
-            raise PermissionDenied(f'No se puede cancelar una reserva {self.get_estado()}')
+            raise PermissionDenied(
+                f"No se puede cancelar una reserva {self.get_estado()}"
+            )
         return render(request, "inquilinos/reserva_cancelada.html")
 
 
@@ -175,6 +185,7 @@ class ReservasDeHuespedListView(HuespedRestrictedListView):
     model = Reserva
     template_name = "inquilinos/reserva_h_list.html"
 
+
 class ComentarioCreateView(HuespedRestrictedCreateView):
     """CreateView de comentario"""
 
@@ -183,7 +194,7 @@ class ComentarioCreateView(HuespedRestrictedCreateView):
     form_class = ComentarioCreateForm
 
     def form_valid(self, form):
-        reserva = Reserva.objects.get(id = self.kwargs['pk'])
+        reserva = Reserva.objects.get(id=self.kwargs["pk"])
         object = form.save(commit=False)
         object.huesped = self.request.user.huesped
         object.reserva = reserva
@@ -193,9 +204,9 @@ class ComentarioCreateView(HuespedRestrictedCreateView):
 
     def get_context_data(self, **kwargs):
         context = super(ComentarioCreateView, self).get_context_data(**kwargs)
-        reserva = Reserva.objects.get(id = self.kwargs['pk'])
+        reserva = Reserva.objects.get(id=self.kwargs["pk"])
         if reserva.tiene_comentario:
-            context['comentario_existente'] = Comentario.objects.get(reserva = reserva)
+            context["comentario_existente"] = Comentario.objects.get(reserva=reserva)
         return context
 
 
