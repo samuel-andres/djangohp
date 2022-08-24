@@ -28,11 +28,11 @@ class CabDetailView(generic.DetailView):
     model = Cab
     template_name = "inquilinos/cab_detail.html"
 
-    def get_context_data(self, **kwargs):
-        context = super(CabDetailView, self).get_context_data(**kwargs)
-        context['comentarios'] = self.get_object().comentario_set.all().order_by('-id')[:12]
-        print(context['comentarios'])
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super(CabDetailView, self).get_context_data(**kwargs)
+    #     context['comentarios'] = self.get_object().comentario_set.all().order_by('-id')[:12]
+    #     print(context['comentarios'])
+    #     return context
 
 
 class RegistroReservaView(PermissionRequiredMixin, View):
@@ -187,7 +187,7 @@ class ComentarioCreateView(HuespedRestrictedCreateView):
         reserva = Reserva.objects.get(id = self.kwargs['pk'])
         object = form.save(commit=False)
         object.huesped = self.request.user.huesped
-        object.cab = reserva.cab
+        object.reserva = reserva
         object.save()
         return super(ComentarioCreateView, self).form_valid(form)
 

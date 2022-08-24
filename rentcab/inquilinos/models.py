@@ -1,4 +1,5 @@
 import datetime
+import numpy as np
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -67,7 +68,9 @@ class Cab(models.Model):
 
     @property
     def calificacion_promedio(self):
-        return self.comentario_set.aggregate(cal_prom = Avg('calificacion'))['cal_prom']
+        # return self.comentarios.aggregate(cal_prom = Avg('calificacion'))['cal_prom']
+        return np.average([comentario.calificacion for comentario in self.comentarios ])
+
 
     # métodos
     # cal_prom = models.FloatField(null=True, blank=True)
@@ -128,6 +131,11 @@ class Cab(models.Model):
         nueva_reserva.set_estado("Pte Confirmacion")
         # nueva_reserva.send_mail_enc_res()
         return nueva_reserva
+
+    @property
+    def comentarios(self):
+        comentarios = [reserva.comentario for reserva in self.reserva_set.exclude(comentario__isnull=True)]
+        return comentarios
 
     def __str__(self) -> str:
         return self.nombre
@@ -232,8 +240,15 @@ class Reserva(models.Model):
         return f"$ {self.precioFinal}"
 
     def se_puede_calificar(self) -> bool:
+        """Retorna true si la reserva esta finalizada o confirmada al mismo tiempo}
+        que el usuario no registro ya algún comentario sobre la reserva"""
         estado = self.get_estado()
-        return estado.nombre == "Finalizada" or estado.nombre == "Confirmada"
+        return (estado.nombre == "Finalizada" or estado.nombre == "Confirmada") and not self.tiene_comentario
+
+
+    @property
+    def tiene_comentario(self):
+        return Comentario.objects.filter(reserva=self).exists()
 
     class Meta:
         verbose_name_plural = "Reservas"
@@ -300,10 +315,15 @@ class Comentario(models.Model):
         null=True,
         blank=False
     )
-    cab = models.ForeignKey(
-        Cab,
+
+    reserva = models.OneToOneField(
+        Reserva,
+        null=True,
+        related_name='comentario',
         on_delete=models.CASCADE,
     )
+
+
     comentario = models.TextField()
     CALIFICACION_CHOICES = (
         (1, 1),

@@ -50,8 +50,29 @@
                     </li>
                     {% elif reserva.se_puede_calificar %}
                     <li>
-                        <button class="btn btn-success">Dejar un comentario</button>
+                        <button
+                            class="btn btn-success"
+                            type="button"
+                            onclick="location.href='{% url 'inquilinos:crear-comentario' reserva.pk %}'"
+                            >Dejar un comentario</button>
                     </li>
+                    {% elif reserva.tiene_comentario %}
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            {% comment %} <img src="{{ cab.foto_set.first.foto.url }}" alt=""/> {% endcomment %}
+                            <div class="card-body">
+                                <p class="card-text">
+                                    {{ reserva.comentario.comentario}}
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">{{ reserva.comentario.huesped }}</small>
+                                    <small class="text-muted star-place-holder">
+                                        {{ reserva.comentario.calificacion }}/5
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     {% else %}
                     <li>
                         <strong>Estado: </strong>{{ estadoreserva}}

@@ -1,4 +1,6 @@
-let avgStars = JSON.parse(document.getElementById('calificacionPromedio').textContent);
+if (!isNaN(parseFloat(document.getElementById('calificacionPromedio').textContent))) {
+  let avgStars = JSON.parse(document.getElementById('calificacionPromedio').textContent);
+console.log(avgStars);
 let stars = '&#9733;';
 for(var i = 0 ;i<(Math.round(avgStars))-1;i++)
 {
@@ -19,4 +21,8 @@ for (let com of coms){
     } else {
       com.innerHTML = '';
     }
+}
+} else {
+  let li = document.getElementById('calificacion_id');
+  li.parentNode.removeChild(li);
 }
