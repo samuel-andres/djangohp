@@ -49,6 +49,9 @@
         </div>
         <div class="col-md-6">
             <ul class="list-group col-md-10 offset-md-1 mb-3 mt-4 text-center">
+                {% if cab.descripcion %}
+                <li class="list-group-item">{{cab.descripcion}}</li>
+                {% endif %}
                 {% for inst in cab.instalacion_set.all  %}
                     <li class="list-group-item">
                         {{ inst.descripcion }}<i class="bi bi-check-all"></i>

@@ -64,6 +64,12 @@ class Cab(models.Model):
     costoPorNoche = models.FloatField(
         null=True,
     )
+
+    descripcion = models.TextField(
+        null=True,
+        blank=True,
+    )
+
     slug = models.SlugField(null=False, blank=False, unique=True)
 
     @property
