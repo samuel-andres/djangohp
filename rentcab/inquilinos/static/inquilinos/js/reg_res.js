@@ -1,9 +1,16 @@
 const allowedDates = JSON.parse(document.getElementById('allowed_dates').textContent);
 const disabledDates = JSON.parse(document.getElementById('disabled_dates').textContent);
 const costoPorNoche = JSON.parse(document.getElementById('costoPorNoche').textContent);
+const costoPorAdulto = JSON.parse(document.getElementById('costoPorAdulto').textContent);
+const costoPorMenor = JSON.parse(document.getElementById('costoPorMenor').textContent);
+const cantMenoresElement = document.getElementById('id_cantMenores');
+const cantAdultosElement = document.getElementById('id_cantAdultos');
 let TODAY = new Date()
 TODAY.setDate(TODAY.getDate() - 1);
-
+let precioFinal = 0;
+let cantNoches = 0;
+let cantAdultos = 1;
+let cantMenores = 0;
 function getDatesInRange(startDate, endDate) {
 	const date = new Date(startDate.getTime());
 
@@ -69,15 +76,28 @@ const picker = new Litepicker({
 	setup: (picker) => {
 		picker.on('selected', (date1, date2) => {
 			let costo_por_noche = parseFloat(costoPorNoche);
-			let precioFinal = (date2.diff(date1, 'days')) * costo_por_noche;
-			updatePrecio(precioFinal);
+			cantNoches =  (date2.diff(date1, 'days'))
+			console.log(document.getElementById('id_cantAdultos').value);
+			updatePrecio(cantNoches);
 		});
 	},
 });
 
-function updatePrecio(precioFinal) {
+function updatePrecio() {
+	precioFinal = cantNoches * ((cantAdultos * costoPorAdulto) + (cantMenores * costoPorMenor))
+	console.log('noches', cantNoches, 'adultos', cantAdultos, 'menores', cantMenores, 'costoAdulto', costoPorAdulto, 'costoPorMenor', costoPorMenor)
 	var ptag = document.getElementById('ptag');
 	ptag.innerHTML = ''
 	var text = document.createTextNode("Precio final: $" + precioFinal);
 	ptag.appendChild(text);
 };
+
+cantAdultosElement.addEventListener('change', () => {
+	cantAdultos = cantAdultosElement.value;
+	updatePrecio()
+});
+cantMenoresElement.addEventListener('change', () => {
+	cantMenores = cantMenoresElement.value;
+	console.log(cantMenoresElement.value)
+	updatePrecio();
+});

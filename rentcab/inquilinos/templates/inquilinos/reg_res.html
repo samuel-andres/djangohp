@@ -18,6 +18,8 @@
         {{ allowed_dates|json_script:"allowed_dates" }}
         {{ disabled_dates|json_script:"disabled_dates" }}
         {{ costoPorNoche|json_script:"costoPorNoche" }}
+        {{ costoPorAdulto|json_script:"costoPorAdulto" }}
+        {{ costoPorMenor|json_script:"costoPorMenor" }}
         <script src="{% static 'inquilinos/js/reg_res.js' %}"></script>
     {% endif %}
 {% endblock content %}

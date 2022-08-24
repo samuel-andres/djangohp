@@ -65,6 +65,9 @@ class Cab(models.Model):
         null=True,
     )
 
+    costoPorAdulto = models.FloatField(null=True)
+    costoPorMenor = models.FloatField(null=True)
+
     descripcion = models.TextField(
         null=True,
         blank=True,
