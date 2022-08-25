@@ -2,9 +2,12 @@
 {% block content %}
     {% load static %}
     <br>
-    <div class="row">
+    <div class="row mb-3">
         <center>
             <h1>{{ cab.nombre }}</h1>
+            {% if cab.descripcion %}
+            <h7 class="fst-italic">{{cab.descripcion}}</h7>
+            {% endif %}
         </center>
     </div>
     <div class="row">
@@ -48,14 +51,16 @@
             </div>
         </div>
         <div class="col-md-6">
-            <ul class="list-group col-md-10 offset-md-1 mb-3 mt-4 text-center">
-                {% if cab.descripcion %}
-                <li class="list-group-item">{{cab.descripcion}}</li>
-                {% endif %}
+            <ul class="list-group col-md-10 offset-md-1 mb-3 mt-2 text-center">
                 {% for inst in cab.instalacion_set.all  %}
                     <li class="list-group-item">
                         {{ inst.descripcion }}<i class="bi bi-check-all"></i>
                     </li>
+                {% endfor %}
+                {% for serv in cab.servicio_set.all  %}
+                <li class="list-group-item">
+                    {{ serv.descripcion }}<i class="bi bi-check-all"></i>
+                </li>
                 {% endfor %}
                 <div class="clearfix split-items">
                 <li class="list-group-item left-side">

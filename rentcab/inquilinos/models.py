@@ -293,18 +293,26 @@ class Rango(models.Model):
         return f"{self.fechaDesde}=>{self.fechaHasta}"
 
 
-class Instalacion(models.Model):
-    # attrs
-    nombre = models.CharField(max_length=200)
+class CaracteristicaCabaña(models.Model):
+    nombre = models.CharField(max_length=255)
     descripcion = models.CharField(max_length=500)
-    # punteros
     cab = models.ManyToManyField(Cab)
     # métodos
     def __str__(self) -> str:
         return f"{self.descripcion}"
+    class Meta:
+        abstract = True
 
+
+class Instalacion(CaracteristicaCabaña):
     class Meta:
         verbose_name_plural = "Instalaciones"
+
+class Servicio(CaracteristicaCabaña):
+    class Meta:
+        verbose_name_plural = "Servicios"
+
+
 
 
 class CambioEstado(models.Model):

@@ -112,3 +112,9 @@ ul {
   border-bottom-right-radius:0px;
   border-left: 0;
 }
+
+
+.formalize-height {
+  max-height: 10px;
+  display: inline-block;
+}
