@@ -1,4 +1,5 @@
 import datetime
+from email.policy import default
 
 from crispy_forms.bootstrap import AppendedText, FormActions, PrependedText
 from crispy_forms.helper import FormHelper
@@ -14,32 +15,48 @@ from .utils import CustomParser
 class RegResForm(forms.Form):
     foo_slug = forms.SlugField()
     # cantidades predefinidas para los campos adultos y menores
-    cant_choices = [
-        (0, "0"),
-        (1, "1"),
-        (2, "2"),
-        (3, "3"),
-        (4, "4"),
-        (5, "5"),
-    ]
     # textinput con el id que usa el datepicker
     fechaDesdeHasta = forms.CharField(
         widget=forms.TextInput(
             attrs={
                 "id": "litepicker",
                 "placeholder": "Ingreso - Salida",
+                "class":"mb-3 form-control textinput textInput text-center",
+                "readonly":"true",
             }
         ),
         label="Rango de reserva",
     )
     # el [1:] es pq no puede haber 0 adultos
-    cantAdultos = forms.ChoiceField(
-        choices=cant_choices[1:], label="Cantidad de adultos"
+    # cantAdultos = forms.ChoiceField(
+    #     choices=cant_choices[1:], label="Cantidad de adultos"
+    # )
+    cantAdultos = forms.IntegerField(
+        max_value=5,
+        min_value=1,
+        # initial=1,
+        widget=forms.TextInput(
+            attrs={
+                "class":"form-control text-center numberinput",
+                'required':'true',
+                "style":"border: 1px solid;",
+                "readonly":"true",
+            }
+        ),
     )
 
-    cantMenores = forms.ChoiceField(
-        choices=cant_choices,
-        label="Cantidad de niños",
+    cantMenores = forms.IntegerField(
+        max_value=5,
+        min_value=1,
+        # initial=1,
+        widget=forms.TextInput(
+            attrs={
+                "class":"form-control text-center numberinput",
+                'required':'true',
+                "style":"border: 1px solid;",
+                "readonly":"true",
+            }
+        ),
     )
 
     def clean_fechaDesdeHasta(self):
@@ -114,29 +131,59 @@ class RegResForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Fieldset(
-                "Reservar cabaña",
-                Field("fechaDesdeHasta", css_class="mb-3 form-control"),
-                Field("cantAdultos", css_class="mb-3 form-control text-center"),
-                Field("cantMenores", css_class="mb-3 form-control text-center"),
-                Div(
-                    HTML(
-                        """
-                        <p id="ptag"></p>
-                        """
-                    ),
-                    css_id="after_reserva",
-                ),
-                "foo_slug",
-            ),
-            Submit("submit", "Confirmar", css_class="btn btn-primary cuac"),
-            HTML('<a class="btn btn-secondary" href="/">Cancelar</a>'),
-        )
-        self.helper.form_method = "POST"
-        self.helper.form_style = "inline"
+    #     self.helper = FormHelper()
+    #     self.helper.layout = Layout(
+    #         Fieldset(
+    #             "Reservar cabaña",
+    #             Field("fechaDesdeHasta", css_class="mb-3 form-control"),
+    #             Div(
+    #                 Div(
+    #                     Div(
+    #                         Div(
+    #                             HTML("""
+    #                                 <button class="btn btn-outline-secondary" type="button" id="button-addon1">+</button>
+    #                             """),
+    #                             Field("cantAdultos", css_class="mb-3 form-control text-center"),
+    #                             HTML("""
+    #                                 <button class="btn btn-outline-secondary" type="button" id="button-addon1">+</button>
+    #                             """),
+    #                             css_class = "input-group mb-3 mt-1"
+    #                         ),
+    #                         css_class = "col-md-6"
+    #                     ),
+    #                     css_class = "row"
+    #                 ),
+    #             #     HTML(
+    #             #         """
+    #             #         <div class="input-group mb-3">
+    #             #             <button class="btn btn-outline-secondary" type="button" id="button-addon1">+</button>
+    #             #         </div>
+    #             #         """
+    #             #     ),
+    #             #     Field("cantAdultos", css_class="mb-3 form-control text-center"),
+    #             #     css_id="div_cantAdultos",
+    #             #     css_class = "row",
+    #             # ),
+    #             Field("cantMenores", css_class="mb-3 form-control text-center"),
+    #             Div(
+    #                 HTML(
+    #                     """
+    #                     <p id="ptag"></p>
+    #                     """
+    #                 ),
+    #                 css_id="after_reserva",
+    #             ),
+    #             "foo_slug",
+    #         ),
+    #         Submit("submit", "Confirmar", css_class="btn btn-primary cuac"),
+    #         HTML('<a class="btn btn-secondary" href="/">Cancelar</a>'),
+    #         ),
+    #     )
+    #     self.helper.form_method = "POST"
+    #     self.helper.form_style = "inline"
         self.fields["foo_slug"].widget = forms.HiddenInput()
+    #     self.fields['cantAdultos'].widget.attrs['readonly'] = True
+    #     self.fields['cantAdultos'].label = False
 
 
 class CrearHuespedForm(forms.ModelForm):

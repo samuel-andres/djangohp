@@ -106,12 +106,16 @@ class RegistroReservaView(PermissionRequiredMixin, View):
             )
         # si el formulario no fue válido se devuelve el formulario con los datos incorrectos
         cab = get_object_or_404(Cab, slug=slug)
+        costoPorAdulto = cab.costoPorAdulto
+        costoPorMenor = cab.costoPorMenor
         # se obtienen las fechas en que la cabaña está habilitada y deshabilitada
         fechas_habilitadas, fechas_deshabilitadas = cab.get_fechas_hab_y_des()
         context = {
             "form": form,
             "allowed_dates": fechas_habilitadas,
             "disabled_dates": fechas_deshabilitadas,
+            "costoPorAdulto" : costoPorAdulto,
+            "costoPorMenor" : costoPorMenor,
         }
         return render(request, self.template_name, context)
 

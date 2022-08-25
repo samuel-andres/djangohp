@@ -52,6 +52,27 @@
         </div>
         <div class="col-md-6">
             <ul class="list-group col-md-10 offset-md-1 mb-3 mt-2 text-center">
+                {% if cab.calificacion_promedio %}
+                <li class="list-group-item" id="calificacion_id">
+                    Calificación promedio: <span id="estrellas" style="color:goldenrod;"></span>
+                </li>
+                {% endif %}
+                <li class="list-group-item">
+                    {{ cab.cantHabitaciones }}
+                    {% if cab.cantHabitaciones > 1 %}
+                        habitaciones.
+                    {% else %}
+                        habitación.
+                    {% endif %}
+                </li>
+                <div class="clearfix split-items">
+                    <li class="list-group-item left-side">
+                        Adulto x Noche ${{ cab.costoPorAdulto }}
+                    </li>
+                    <li class="list-group-item right-side">
+                        Menor x Noche ${{ cab.costoPorMenor}}
+                    </li>
+                    </div>
                 {% for inst in cab.instalacion_set.all  %}
                     <li class="list-group-item">
                         {{ inst.descripcion }}<i class="bi bi-check-all"></i>
@@ -62,27 +83,6 @@
                     {{ serv.descripcion }}<i class="bi bi-check-all"></i>
                 </li>
                 {% endfor %}
-                <div class="clearfix split-items">
-                <li class="list-group-item left-side">
-                    Adulto x Noche ${{ cab.costoPorAdulto }}
-                </li>
-                <li class="list-group-item right-side">
-                    Menor x Noche ${{ cab.costoPorMenor}}
-                </li>
-                </div>
-                <li class="list-group-item">
-                    {{ cab.cantHabitaciones }}
-                    {% if cab.cantHabitaciones > 1 %}
-                        habitaciones.
-                    {% else %}
-                        habitación.
-                    {% endif %}
-                </li>
-                {% if cab.calificacion_promedio %}
-                    <li class="list-group-item" id="calificacion_id">
-                        Calificación promedio: <span id="estrellas" style="color:goldenrod;"></span>
-                    </li>
-                {% endif %}
             </ul>
             <button type="button"
                     onclick="location.href='{% url 'inquilinos:reg-res' cab.slug %}'"

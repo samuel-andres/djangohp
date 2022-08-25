@@ -4,7 +4,63 @@ const costoPorAdulto = JSON.parse(document.getElementById('costoPorAdulto').text
 const costoPorMenor = JSON.parse(document.getElementById('costoPorMenor').textContent);
 const cantMenoresElement = document.getElementById('id_cantMenores');
 const cantAdultosElement = document.getElementById('id_cantAdultos');
+const masAdultosBtn = document.getElementById('btn-mas-ad');
+const menAdultosBtn = document.getElementById('btn-men-ad');
+const masMenoresBtn = document.getElementById('btn-mas-men');
+const menMenoresBtn = document.getElementById('btn-men-men');
+const MIN_CANT_MENORES = 0;
+const MIN_CANT_ADULTOS = 0;
+const MAX_CANT_PERSONAS = 5;
+
+if(!cantAdultosElement.value){
+	cantAdultosElement.value = 1;
+}
+
+if (!cantMenoresElement.value){
+	cantMenoresElement.value = 1;
+}
+
+masAdultosBtn.addEventListener('click', () => {
+	let actual = Number(cantAdultosElement.value);
+	if (actual + Number(cantMenoresElement.value) < MAX_CANT_PERSONAS) {
+		cantAdultosElement.value = actual + 1;
+		cantAdultos = cantAdultosElement.value;
+		updatePrecio();
+	};
+});
+
+menAdultosBtn.addEventListener('click', () => {
+	let actual = Number(cantAdultosElement.value);
+	if (actual > 1) {
+		cantAdultosElement.value = actual - 1;
+		cantAdultos = cantAdultosElement.value;
+		updatePrecio();
+	};
+});
+
+masMenoresBtn.addEventListener('click', () => {
+	let actual = Number(cantMenoresElement.value);
+	if (actual + Number(cantAdultosElement.value) < MAX_CANT_PERSONAS) {
+		cantMenoresElement.value = actual + 1;
+		cantMenores = cantMenoresElement.value;
+		updatePrecio();
+	};
+});
+
+menMenoresBtn.addEventListener('click', () => {
+	let actual = Number(cantMenoresElement.value);
+	if (actual > 0) {
+		cantMenoresElement.value = actual - 1;
+		cantMenores = cantMenoresElement.value;
+		updatePrecio();
+	};
+});
+
+
 let TODAY = new Date()
+
+
+
 TODAY.setDate(TODAY.getDate() - 1);
 let precioFinal = 0;
 let cantNoches = 0;
@@ -75,7 +131,6 @@ const picker = new Litepicker({
 	setup: (picker) => {
 		picker.on('selected', (date1, date2) => {
 			cantNoches =  (date2.diff(date1, 'days'))
-			console.log(document.getElementById('id_cantAdultos').value);
 			updatePrecio(cantNoches);
 		});
 	},
@@ -83,7 +138,7 @@ const picker = new Litepicker({
 
 function updatePrecio() {
 	precioFinal = cantNoches * ((cantAdultos * costoPorAdulto) + (cantMenores * costoPorMenor))
-	console.log('noches', cantNoches, 'adultos', cantAdultos, 'menores', cantMenores, 'costoAdulto', costoPorAdulto, 'costoPorMenor', costoPorMenor)
+	// console.log('noches', cantNoches, 'adultos', cantAdultos, 'menores', cantMenores, 'costoAdulto', costoPorAdulto, 'costoPorMenor', costoPorMenor)
 	var ptag = document.getElementById('ptag');
 	ptag.innerHTML = ''
 	var text = document.createTextNode("Precio final: $" + precioFinal);
@@ -96,6 +151,5 @@ cantAdultosElement.addEventListener('change', () => {
 });
 cantMenoresElement.addEventListener('change', () => {
 	cantMenores = cantMenoresElement.value;
-	console.log(cantMenoresElement.value)
 	updatePrecio();
 });
