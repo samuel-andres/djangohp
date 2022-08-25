@@ -8,9 +8,9 @@ const masAdultosBtn = document.getElementById('btn-mas-ad');
 const menAdultosBtn = document.getElementById('btn-men-ad');
 const masMenoresBtn = document.getElementById('btn-mas-men');
 const menMenoresBtn = document.getElementById('btn-men-men');
+const MAX_CANT_PERSONAS = JSON.parse(document.getElementById('cantMaxPersonas').textContent);
 const MIN_CANT_MENORES = 0;
-const MIN_CANT_ADULTOS = 0;
-const MAX_CANT_PERSONAS = 5;
+const MIN_CANT_ADULTOS = 1;
 
 if(!cantAdultosElement.value){
 	cantAdultosElement.value = 1;

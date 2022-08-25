@@ -32,9 +32,7 @@ class RegResForm(forms.Form):
     #     choices=cant_choices[1:], label="Cantidad de adultos"
     # )
     cantAdultos = forms.IntegerField(
-        max_value=5,
         min_value=1,
-        # initial=1,
         widget=forms.TextInput(
             attrs={
                 "class":"form-control text-center numberinput",
@@ -46,9 +44,7 @@ class RegResForm(forms.Form):
     )
 
     cantMenores = forms.IntegerField(
-        max_value=5,
-        min_value=1,
-        # initial=1,
+        min_value=0,
         widget=forms.TextInput(
             attrs={
                 "class":"form-control text-center numberinput",
@@ -121,69 +117,18 @@ class RegResForm(forms.Form):
         cleaned_data = super().clean()
         cantMenores = cleaned_data.get("cantMenores")
         cantAdultos = cleaned_data.get("cantAdultos")
-        # si la cantidad de menores seleccionada es mayor a 0
         # (el if verifica que solo se realice la validación si los
         # dos campos que dependen de sí pasaron sus propias validaciones)
         if cantMenores and cantAdultos:
-            # se valida que la suma de menores y mayores sea menor a 5
-            if (int(cantAdultos) + int(cantMenores)) > 5:
-                raise forms.ValidationError("Máxima cantidad de personas = 5")
+            cab = Cab.objects.get(slug=self.cleaned_data["foo_slug"])
+            cantMaxPersonas = cab.cantMaxPersonas
+            # se valida que la suma de menores y mayores sea menor a la maxima cantidad de personas definida en la cabaña
+            if (int(cantAdultos) + int(cantMenores)) > cantMaxPersonas:
+                raise forms.ValidationError(f"Máxima cantidad de personas = {cantMaxPersonas}")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-    #     self.helper = FormHelper()
-    #     self.helper.layout = Layout(
-    #         Fieldset(
-    #             "Reservar cabaña",
-    #             Field("fechaDesdeHasta", css_class="mb-3 form-control"),
-    #             Div(
-    #                 Div(
-    #                     Div(
-    #                         Div(
-    #                             HTML("""
-    #                                 <button class="btn btn-outline-secondary" type="button" id="button-addon1">+</button>
-    #                             """),
-    #                             Field("cantAdultos", css_class="mb-3 form-control text-center"),
-    #                             HTML("""
-    #                                 <button class="btn btn-outline-secondary" type="button" id="button-addon1">+</button>
-    #                             """),
-    #                             css_class = "input-group mb-3 mt-1"
-    #                         ),
-    #                         css_class = "col-md-6"
-    #                     ),
-    #                     css_class = "row"
-    #                 ),
-    #             #     HTML(
-    #             #         """
-    #             #         <div class="input-group mb-3">
-    #             #             <button class="btn btn-outline-secondary" type="button" id="button-addon1">+</button>
-    #             #         </div>
-    #             #         """
-    #             #     ),
-    #             #     Field("cantAdultos", css_class="mb-3 form-control text-center"),
-    #             #     css_id="div_cantAdultos",
-    #             #     css_class = "row",
-    #             # ),
-    #             Field("cantMenores", css_class="mb-3 form-control text-center"),
-    #             Div(
-    #                 HTML(
-    #                     """
-    #                     <p id="ptag"></p>
-    #                     """
-    #                 ),
-    #                 css_id="after_reserva",
-    #             ),
-    #             "foo_slug",
-    #         ),
-    #         Submit("submit", "Confirmar", css_class="btn btn-primary cuac"),
-    #         HTML('<a class="btn btn-secondary" href="/">Cancelar</a>'),
-    #         ),
-    #     )
-    #     self.helper.form_method = "POST"
-    #     self.helper.form_style = "inline"
         self.fields["foo_slug"].widget = forms.HiddenInput()
-    #     self.fields['cantAdultos'].widget.attrs['readonly'] = True
-    #     self.fields['cantAdultos'].label = False
 
 
 class CrearHuespedForm(forms.ModelForm):

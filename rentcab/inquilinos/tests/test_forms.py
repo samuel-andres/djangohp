@@ -13,7 +13,8 @@ def get_a_cab():
         nombre="foo_slug",
         cantHabitaciones=2,
         costoPorAdulto=500.0,
-        costoPorMenor=200.0
+        costoPorMenor=200.0,
+        cantMaxPersonas=6,
     )
     cab.save()
     return cab
@@ -61,7 +62,8 @@ class RegistrarReservaFormTest(TestCase):
             nombre="cab_test",
             cantHabitaciones=2,
             costoPorAdulto=500.0,
-            costoPorMenor=200.0
+            costoPorMenor=200.0,
+            cantMaxPersonas=6,
         )
         test_cab.save()
 
@@ -214,7 +216,7 @@ class RegistrarReservaFormTest(TestCase):
     def test_fecha_hasta_antes_de_hoy(self):
         """Testea que no sea exitosa la carga de una reserva con la fecha hasta menor
         a la fecha actual."""
-        cab = Cab(nombre="foo_slug", cantHabitaciones=2)
+        cab = get_a_cab()
         rango = Rango(
             fechaDesde=datetime.date.today(),
             fechaHasta=datetime.date.today() + datetime.timedelta(weeks=6),
@@ -241,7 +243,7 @@ class RegistrarReservaFormTest(TestCase):
     def test_fecha_hasta_igual_a_hoy(self):
         """Testea que la carga de una reserva con la fecha hasta igual al día de la fecha
         no sea exitosa, debido al hecho de que la cantidad mínima de noches es = 1 (2 días)"""
-        cab = Cab(nombre="foo_slug", cantHabitaciones=2)
+        cab = get_a_cab()
         rango = Rango(
             fechaDesde=datetime.date.today(),
             fechaHasta=datetime.date.today() + datetime.timedelta(weeks=6),
@@ -268,7 +270,7 @@ class RegistrarReservaFormTest(TestCase):
     def test_fecha_hasta_fuera_de_rango_de_disponibilidad(self):
         """Testea que no sea exitosa la carga de una reserva con la fecha hasta fuera
         de rango de disponibilidad."""
-        cab = Cab(nombre="foo_slug", cantHabitaciones=2)
+        cab = get_a_cab()
         rango = Rango(
             fechaDesde=datetime.date.today(),
             fechaHasta=datetime.date.today() + datetime.timedelta(weeks=6),
@@ -331,7 +333,7 @@ class RegistrarReservaFormTest(TestCase):
     def test_fecha_en_rango_ingresado_fuera_de_rango_de_disponibilidad(self):
         """Testea que no sea exitosa la carga de una reserva la cual tiene alguna fecha
         dentro de su rango fuera de algún rango de disponibilidad."""
-        cab = Cab(nombre="foo_slug", cantHabitaciones=2)
+        cab = get_a_cab()
         rango1 = Rango(
             fechaDesde=datetime.date.today(),
             fechaHasta=datetime.date.today() + datetime.timedelta(weeks=4),

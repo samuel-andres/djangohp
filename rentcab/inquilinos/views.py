@@ -63,6 +63,7 @@ class RegistroReservaView(PermissionRequiredMixin, View):
         cab = get_object_or_404(Cab, slug=slug)
         costoPorAdulto = cab.costoPorAdulto
         costoPorMenor = cab.costoPorMenor
+        cantMaxPersonas = cab.cantMaxPersonas
         # se obtienen las fechas en que la cabaña está habilitada y deshabilitada
         fechas_habilitadas, fechas_deshabilitadas = cab.get_fechas_hab_y_des()
         # se pasa como contexto el formulario vacío, el día de hoy y las fechas habilitadas y deshabilitadas
@@ -72,6 +73,7 @@ class RegistroReservaView(PermissionRequiredMixin, View):
             "disabled_dates": fechas_deshabilitadas,
             "costoPorAdulto" : costoPorAdulto,
             "costoPorMenor" : costoPorMenor,
+            "cantMaxPersonas" : cantMaxPersonas,
         }
 
         return render(request, self.template_name, context)
@@ -108,6 +110,7 @@ class RegistroReservaView(PermissionRequiredMixin, View):
         cab = get_object_or_404(Cab, slug=slug)
         costoPorAdulto = cab.costoPorAdulto
         costoPorMenor = cab.costoPorMenor
+        cantMaxPersonas = cab.cantMaxPersonas
         # se obtienen las fechas en que la cabaña está habilitada y deshabilitada
         fechas_habilitadas, fechas_deshabilitadas = cab.get_fechas_hab_y_des()
         context = {
@@ -116,6 +119,7 @@ class RegistroReservaView(PermissionRequiredMixin, View):
             "disabled_dates": fechas_deshabilitadas,
             "costoPorAdulto" : costoPorAdulto,
             "costoPorMenor" : costoPorMenor,
+            "cantMaxPersonas" : cantMaxPersonas,
         }
         return render(request, self.template_name, context)
 

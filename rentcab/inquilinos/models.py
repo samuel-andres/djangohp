@@ -61,12 +61,10 @@ class Cab(models.Model):
         max_length=200,
     )
     cantHabitaciones = models.IntegerField()
-    # costoPorNoche = models.FloatField(
-    #     null=True,
-    # )
 
     costoPorAdulto = models.FloatField(null=True)
     costoPorMenor = models.FloatField(null=True)
+    cantMaxPersonas = models.IntegerField(null=True)
 
     descripcion = models.TextField(
         null=True,
@@ -174,14 +172,12 @@ class Reserva(models.Model):
         help_text="Cantidad de adultos",
         validators=[
             MinValueValidator(1),
-            MaxValueValidator(5),
         ],
     )
     cantMenores = models.PositiveSmallIntegerField(
         help_text="Cantidad de niños",
         validators=[
             MinValueValidator(0),
-            MaxValueValidator(5),
         ],
         null=True,
     )
