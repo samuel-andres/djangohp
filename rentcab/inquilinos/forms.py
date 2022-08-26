@@ -7,7 +7,7 @@ from crispy_forms.layout import HTML, Div, Field, Fieldset, Layout, Submit
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from inquilinos.models import Cab, Huesped, Rango, Comentario
+from inquilinos.models import Cab, Huesped, Rango, Comentario, Reserva
 
 from .utils import CustomParser
 
@@ -37,7 +37,7 @@ class RegResForm(forms.Form):
             attrs={
                 "class":"form-control text-center numberinput",
                 'required':'true',
-                "style":"border: 1px solid;",
+                "style":"border: 1px solid #D3D3D3;",
                 "readonly":"true",
             }
         ),
@@ -49,7 +49,7 @@ class RegResForm(forms.Form):
             attrs={
                 "class":"form-control text-center numberinput",
                 'required':'true',
-                "style":"border: 1px solid;",
+                "style":"border: 1px solid #D3D3D3;",
                 "readonly":"true",
             }
         ),
@@ -179,3 +179,13 @@ class ComentarioCreateForm(forms.ModelForm):
         )
         self.helper.form_method = "POST"
         self.helper.form_style = "inline"
+
+class CancelarReservaForm(forms.ModelForm):
+    class Meta:
+        model = Reserva
+        fields = ['motivoCancelacion']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["motivoCancelacion"].widget = forms.Textarea(attrs={'class': 'form-control'})
+        self.fields["motivoCancelacion"].required = True

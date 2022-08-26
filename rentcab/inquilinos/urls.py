@@ -13,7 +13,7 @@ urlpatterns = [
     path("cab/<slug:slug>", views.CabDetailView.as_view(), name="cab-det"),
     path("huesped/<int:pk>", views.PerfilHuespedDetailView.as_view(), name="hue-det"),
     path(
-        "reservas/<int:pk>", views.ReservaDetailAndCancelView.as_view(), name="res-det"
+        "reservas/<int:pk>", views.ReservaDetailView.as_view(), name="res-det"
     ),
     # CreateViews
     path(
@@ -35,5 +35,7 @@ urlpatterns = [
     path(
         "cab/<slug:slug>/reservar", views.RegistroReservaView.as_view(), name="reg-res"
     ),
+    # UpdateViews
+    path("reservas/<int:pk>/cancelar", views.CancelarReservaView.as_view(), name="cancelar-res"),
     path("test/", views.test_view),
 ]

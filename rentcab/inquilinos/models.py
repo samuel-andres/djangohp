@@ -3,7 +3,7 @@ import numpy as np
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator, MinLengthValidator
 from django.db import models
 from django.db.models import Q, Avg
 from django.urls import reverse
@@ -181,6 +181,21 @@ class Reserva(models.Model):
         ],
         null=True,
     )
+
+    motivoCancelacion = models.TextField(
+        null=True,
+        blank=True,
+        validators = [
+            MinLengthValidator(15),
+        ]
+    )
+
+    def set_motivo_cancelacion(self, value):
+        self.motivoCancelacion = value
+        self.save()
+        self.cancelar_reserva()
+
+
 
     # punteros
     huesped = models.ForeignKey(

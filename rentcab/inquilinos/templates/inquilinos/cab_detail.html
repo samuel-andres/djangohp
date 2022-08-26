@@ -6,7 +6,9 @@
         <center>
             <h1>{{ cab.nombre }}</h1>
             {% if cab.descripcion %}
-            <h7 class="fst-italic">{{cab.descripcion}}</h7>
+                <h7 class="fst-italic fw-light">
+                {{ cab.descripcion }}
+                </h7>
             {% endif %}
         </center>
     </div>
@@ -53,9 +55,9 @@
         <div class="col-md-6">
             <ul class="list-group col-md-10 offset-md-1 mb-3 mt-2 text-center">
                 {% if cab.calificacion_promedio %}
-                <li class="list-group-item" id="calificacion_id">
-                    Calificación promedio: <span id="estrellas" style="color:goldenrod;"></span>
-                </li>
+                    <li class="list-group-item" id="calificacion_id">
+                        Calificación promedio: <span id="estrellas" style="color:goldenrod;"></span>
+                    </li>
                 {% endif %}
                 <li class="list-group-item">
                     {{ cab.cantHabitaciones }}
@@ -66,22 +68,18 @@
                     {% endif %}
                 </li>
                 <div class="clearfix split-items">
-                    <li class="list-group-item left-side">
-                        Adulto x Noche ${{ cab.costoPorAdulto }}
-                    </li>
-                    <li class="list-group-item right-side">
-                        Menor x Noche ${{ cab.costoPorMenor}}
-                    </li>
-                    </div>
+                    <li class="list-group-item left-side">Adulto x Noche ${{ cab.costoPorAdulto }}</li>
+                    <li class="list-group-item right-side">Menor x Noche ${{ cab.costoPorMenor }}</li>
+                </div>
                 {% for inst in cab.instalacion_set.all  %}
                     <li class="list-group-item">
                         {{ inst.descripcion }}<i class="bi bi-check-all"></i>
                     </li>
                 {% endfor %}
                 {% for serv in cab.servicio_set.all  %}
-                <li class="list-group-item">
-                    {{ serv.descripcion }}<i class="bi bi-check-all"></i>
-                </li>
+                    <li class="list-group-item">
+                        {{ serv.descripcion }}<i class="bi bi-check-all"></i>
+                    </li>
                 {% endfor %}
             </ul>
             <button type="button"

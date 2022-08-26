@@ -1,80 +1,97 @@
 {% extends 'inquilinos/base.html' %}
 {% block content %}
-    {% load static %}
-    {% load crispy_forms_tags %}
-    <br/>
-    <div class="col-md-4 offset-md-4 p-5 d-flex justify-content-center border rounded bg-white"
-         id="divreserva">
-        <div class="container">
-            <div class="row">
-                <h1>Reserva #{{ reserva.pk }}</h1>
-            </div>
-            <div class="row">
-                <h2>{{ reserva.cab }}</h2>
-            </div>
-            <div class="row">
-                <ul>
-                    <li>
-                        <strong>Fecha de ingreso:</strong> {{ reserva.fechaDesde }}
-                    </li>
-                    <li>
-                        <strong>Fecha de salida:</strong> {{ reserva.fechaHasta }}
-                    </li>
-                    <li>
-                        <strong>Cantidad de adultos:</strong> {{ reserva.cantAdultos }}
-                    </li>
-                    {% if reserva.cantMenores > 0 %}
-                        <li>
-                            <strong>Cantidad de menores:</strong> {{ reserva.cantMenores }}
-                        </li>
-                    {% endif %}
-                    <li>
-                        <strong>Precio final:</strong> {{ reserva.get_precio_final }}
-                    </li>
-                    <li>
-                        <strong>Reserva realizada por:</strong>
-                        <br/>
-                        {{ reserva.huesped }} el {{ reserva.fechaReserva }}
-                    </li>
-                    <br/>
-                    {% if estadoreserva == "Pte Confirmacion"  %}
-                        <li>
-                            <mark><strong>La reserva quedara pendiente hasta que sea confirmada o rechazada.</strong></mark>
-                        </li>
-                        <hr/>
-                        <li>
-                            <form action="" method="post">
-                                {% csrf_token %}
-                                <input class="btn btn-secondary" type="submit" value="Cancelar reserva"/>
-                            </form>
-                        </li>
-                    {% elif reserva.se_puede_calificar %}
-                        <li>
-                            <button class="btn btn-success"
-                                    type="button"
-                                    onclick="location.href='{% url 'inquilinos:crear-comentario' reserva.pk %}'">
-                                Dejar un comentario
-                            </button>
-                        </li>
-                    {% elif reserva.tiene_comentario %}
-                        <div class="col">
-                            <div class="card shadow-sm">
-                                <div class="card-body">
-                                    <p class="card-text">{{ reserva.comentario.comentario }}</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">{{ reserva.comentario.huesped }}</small>
-                                        <small class="text-muted star-place-holder">{{ reserva.comentario.calificacion }}/5</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% else %}
-                        <li>
-                            <strong>Estado:</strong>{{ estadoreserva }}
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
+{% load static %}
+{% load crispy_forms_tags %}
+<br />
+<div class="col-md-4 offset-md-4 p-4 d-flex justify-content-center border rounded bg-white" id="divreserva">
+  <div class="container">
+    <div class="row text-center">
+      <h1>Reserva #{{ reserva.pk }}</h1>
     </div>
+    <div class="row text-center">
+      <h2 class="fw-lighter">{{ reserva.cab }}</h2>
+    </div>
+    <div class="row">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          <strong>Estado:</strong>
+          <span class="float-end">{{ estadoreserva }}</span>
+        </li>
+        <li class="list-group-item">
+          <strong>Fecha de ingreso:</strong>
+          <span class="float-end">{{ reserva.fechaDesde }}</span>
+        </li>
+        <li class="list-group-item">
+          <strong>Fecha de salida:</strong>
+          <span class="float-end">
+            {{ reserva.fechaHasta }}
+          </span>
+        </li>
+        <li class="list-group-item">
+          <strong>Cantidad de adultos:</strong>
+          <span class="float-end">{{ reserva.cantAdultos }}</span>
+        </li>
+        {% if reserva.cantMenores > 0 %}
+        <li class="list-group-item">
+          <strong>Cantidad de menores:</strong>
+          <span class="float-end">{{ reserva.cantMenores }}</span>
+        </li>
+        {% endif %}
+        <li class="list-group-item">
+          <strong>Precio final:</strong>
+          <span class="float-end">{{ reserva.get_precio_final }}</span>
+        </li>
+        <li class="list-group-item">
+          <strong>Reserva realizada por:</strong>
+          <span class="float-end">{{ reserva.huesped }}</span>
+        </li>
+        <li class="list-group-item">
+          <strong>Fecha de reserva:</strong>
+          <span class="float-end">{{ reserva.fechaReserva }}</span>
+        </li>
+
+        {% if estadoreserva == "Pte Confirmacion"  %}
+        <li class="list-group-item">
+          <p class="fw-bold">
+            <span style="background-color:#FFFF00;">La reserva quedara pendiente hasta que sea confirmada o
+            rechazada.</span>
+          </p>
+        </li>
+        </ul>
+        <button class="w-100 mt-2 btn btn-secondary"
+          onclick="location.href='{% url 'inquilinos:cancelar-res' reserva.pk %}'">
+          Cancelar reserva
+        </button>
+      {% elif reserva.se_puede_calificar %}
+      </ul>
+      <button class="w-100 mt-2 btn btn-success" type="button"
+        onclick="location.href='{% url 'inquilinos:crear-comentario' reserva.pk %}'">
+        Dejar un comentario
+      </button>
+      {% elif reserva.tiene_comentario %}
+      </ul>
+      </div>
+      <div class="container mt-2">
+      <div class="row">
+        <div class="col">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <p class="card-text">{{ reserva.comentario.comentario }}</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">{{ reserva.comentario.huesped }}</small>
+                <small class="text-muted star-place-holder">{{ reserva.comentario.calificacion }}/5</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+      {% elif estadoreserva == "Cancelada" %}
+      <li class="list-group-item">
+        <span class="fw-bold">Motivo de cancelación:</span> <br>
+        <span class="fw-lighter text-justify" style="text-align: justify;">{{ reserva.motivoCancelacion }}</span>
+      </li>
+      {% endif %}
+    </div>
+  </div>
 {% endblock %}

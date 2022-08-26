@@ -20,41 +20,65 @@ if (!cantMenoresElement.value){
 	cantMenoresElement.value = 1;
 }
 
-masAdultosBtn.addEventListener('click', () => {
+// const sumarAdulto = () => {
+// 	let actual = Number(cantAdultosElement.value);
+// 	if (actual + Number(cantMenoresElement.value) < MAX_CANT_PERSONAS) {
+// 		cantAdultosElement.value = actual + 1;
+// 		cantAdultos = cantAdultosElement.value;
+// 		updatePrecio();
+// 	} else {};
+// };
+
+const sumarAdulto = () => {
 	let actual = Number(cantAdultosElement.value);
+	if (actual + Number(cantMenoresElement.value) == MAX_CANT_PERSONAS) {
+		restarMenor();
+	}
 	if (actual + Number(cantMenoresElement.value) < MAX_CANT_PERSONAS) {
 		cantAdultosElement.value = actual + 1;
 		cantAdultos = cantAdultosElement.value;
 		updatePrecio();
-	};
-});
+	}
+};
 
-menAdultosBtn.addEventListener('click', () => {
+const restarAdulto = () => {
 	let actual = Number(cantAdultosElement.value);
 	if (actual > 1) {
 		cantAdultosElement.value = actual - 1;
 		cantAdultos = cantAdultosElement.value;
 		updatePrecio();
-	};
-});
+	}
+};
 
-masMenoresBtn.addEventListener('click', () => {
+
+const sumarMenor = () => {
 	let actual = Number(cantMenoresElement.value);
+	if (actual + Number(cantAdultosElement.value) == MAX_CANT_PERSONAS) {
+		restarAdulto();
+	}
 	if (actual + Number(cantAdultosElement.value) < MAX_CANT_PERSONAS) {
 		cantMenoresElement.value = actual + 1;
 		cantMenores = cantMenoresElement.value;
 		updatePrecio();
 	};
-});
+};
 
-menMenoresBtn.addEventListener('click', () => {
+const restarMenor = () => {
 	let actual = Number(cantMenoresElement.value);
 	if (actual > 0) {
 		cantMenoresElement.value = actual - 1;
 		cantMenores = cantMenoresElement.value;
 		updatePrecio();
 	};
-});
+};
+
+masAdultosBtn.addEventListener('click', sumarAdulto);
+
+menAdultosBtn.addEventListener('click', restarAdulto);
+
+masMenoresBtn.addEventListener('click', sumarMenor);
+
+menMenoresBtn.addEventListener('click', restarMenor);
 
 
 let TODAY = new Date()
@@ -141,8 +165,8 @@ function updatePrecio() {
 	// console.log('noches', cantNoches, 'adultos', cantAdultos, 'menores', cantMenores, 'costoAdulto', costoPorAdulto, 'costoPorMenor', costoPorMenor)
 	var ptag = document.getElementById('ptag');
 	ptag.innerHTML = ''
-	var text = document.createTextNode("Precio final: $" + precioFinal);
-	ptag.appendChild(text);
+	if (!!precioFinal){var text = document.createTextNode("Precio final: $" + precioFinal);
+	ptag.appendChild(text);}
 };
 
 cantAdultosElement.addEventListener('change', () => {

@@ -3,10 +3,10 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import View, generic
 
-from inquilinos.forms import CrearHuespedForm, RegResForm, ComentarioCreateForm
+from inquilinos.forms import CrearHuespedForm, RegResForm, ComentarioCreateForm, CancelarReservaForm
 from inquilinos.models import Cab, Huesped, Reserva, Comentario
 from inquilinos.utils import CustomParser
 
@@ -156,7 +156,7 @@ class EditarPerfilHuespedView(LoginRequiredMixin, generic.UpdateView):
         return self.request.user.huesped
 
 
-class ReservaDetailAndCancelView(PermissionRequiredMixin, View):
+class ReservaDetailView(PermissionRequiredMixin, View):
     """Vista de reserva con opción de cancelar. Un huesped solo tiene acceso a las reservas que
     registró."""
 
@@ -173,18 +173,6 @@ class ReservaDetailAndCancelView(PermissionRequiredMixin, View):
             "estadoreserva": reserva.get_estado().nombre,
         }
         return render(request, "inquilinos/reserva_detail.html", context)
-
-    def post(self, request, pk):
-        reserva = get_object_or_404(Reserva, pk=pk)
-        if reserva.huesped != request.user.huesped:
-            raise PermissionDenied(self.permission_denied_message)
-        if reserva.get_estado().nombre == "Pte Confirmacion":
-            reserva.cancelar_reserva()
-        else:
-            raise PermissionDenied(
-                f"No se puede cancelar una reserva {self.get_estado()}"
-            )
-        return render(request, "inquilinos/reserva_cancelada.html")
 
 
 class ReservasDeHuespedListView(HuespedRestrictedListView):
@@ -216,6 +204,48 @@ class ComentarioCreateView(HuespedRestrictedCreateView):
         if reserva.tiene_comentario:
             context["comentario_existente"] = Comentario.objects.get(reserva=reserva)
         return context
+
+class CancelarReservaView(PermissionRequiredMixin, View):
+    """View para cancelar reservas con formulario que permite
+    cargar un motivo de cancelacion asociado a la reserva"""
+    model = Reserva
+    form_class = CancelarReservaForm
+    template_name = "inquilinos/cancelar_reserva.html"
+    permission_required = ("inquilinos.puede_registrar_reserva",)
+
+    def get(self, request, pk):
+        reserva = get_object_or_404(self.get_queryset(), pk=pk)
+        form = self.form_class()
+        context = {
+            'form':form
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, pk):
+        reserva = get_object_or_404(self.get_queryset(), pk=pk)
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            reserva.set_motivo_cancelacion(form.cleaned_data.get('motivoCancelacion'))
+            return HttpResponseRedirect(
+                reverse(
+                    "inquilinos:res-det",
+                    kwargs={
+                        "pk": reserva.pk,
+                    },
+                )
+            )
+        context = {
+            'form':form,
+        }
+        return render(request, self.template_name, context)
+
+    def get_queryset(self):
+        return self.model.objects.filter(
+            huesped=self.request.user.huesped,
+            cambioestado__fechaFin__isnull=True,
+            cambioestado__estado__nombre="Pte Confirmacion"
+        )
+
 
 
 def test_view(request):
