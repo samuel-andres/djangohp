@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.3
--- Dumped by pg_dump version 14.3
+-- Dumped from database version 14.5
+-- Dumped by pg_dump version 14.5
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -30,9 +30,9 @@ CREATE TABLE public.accounts_user (
     last_login timestamp with time zone,
     is_superuser boolean NOT NULL,
     username character varying(255) NOT NULL,
+    email character varying(255) NOT NULL,
     is_active boolean NOT NULL,
     is_admin boolean NOT NULL,
-    email character varying(255) NOT NULL,
     is_staff boolean NOT NULL
 );
 
@@ -364,8 +364,11 @@ CREATE TABLE public.inquilinos_cab (
     id bigint NOT NULL,
     nombre character varying(200) NOT NULL,
     "cantHabitaciones" integer NOT NULL,
-    "costoPorNoche" double precision,
-    slug character varying(50) NOT NULL
+    slug character varying(50) NOT NULL,
+    descripcion text,
+    "costoPorAdulto" double precision,
+    "costoPorMenor" double precision,
+    "cantMaxPersonas" integer
 );
 
 
@@ -429,13 +432,50 @@ ALTER SEQUENCE public.inquilinos_cambioestado_id_seq OWNED BY public.inquilinos_
 
 
 --
+-- Name: inquilinos_comentario; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inquilinos_comentario (
+    id bigint NOT NULL,
+    comentario text NOT NULL,
+    calificacion integer,
+    "fechaPublicacion" date NOT NULL,
+    huesped_id bigint,
+    reserva_id bigint,
+    cab_id bigint NOT NULL
+);
+
+
+ALTER TABLE public.inquilinos_comentario OWNER TO postgres;
+
+--
+-- Name: inquilinos_comentario_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.inquilinos_comentario_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.inquilinos_comentario_id_seq OWNER TO postgres;
+
+--
+-- Name: inquilinos_comentario_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.inquilinos_comentario_id_seq OWNED BY public.inquilinos_comentario.id;
+
+
+--
 -- Name: inquilinos_estado; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.inquilinos_estado (
     id bigint NOT NULL,
-    nombre character varying(200) NOT NULL,
-    ambito character varying(200) NOT NULL
+    nombre character varying(200) NOT NULL
 );
 
 
@@ -539,7 +579,7 @@ ALTER SEQUENCE public.inquilinos_huesped_id_seq OWNED BY public.inquilinos_huesp
 
 CREATE TABLE public.inquilinos_instalacion (
     id bigint NOT NULL,
-    nombre character varying(200) NOT NULL,
+    nombre character varying(255) NOT NULL,
     descripcion character varying(500) NOT NULL
 );
 
@@ -650,6 +690,7 @@ CREATE TABLE public.inquilinos_reserva (
     "cantMenores" smallint,
     cab_id bigint,
     huesped_id bigint,
+    "motivoCancelacion" text,
     CONSTRAINT "inquilinos_reserva_cantAdultos_check" CHECK (("cantAdultos" >= 0)),
     CONSTRAINT "inquilinos_reserva_cantMenores_check" CHECK (("cantMenores" >= 0))
 );
@@ -676,6 +717,74 @@ ALTER TABLE public.inquilinos_reserva_id_seq OWNER TO postgres;
 --
 
 ALTER SEQUENCE public.inquilinos_reserva_id_seq OWNED BY public.inquilinos_reserva.id;
+
+
+--
+-- Name: inquilinos_servicio; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inquilinos_servicio (
+    id bigint NOT NULL,
+    nombre character varying(255) NOT NULL,
+    descripcion character varying(500) NOT NULL
+);
+
+
+ALTER TABLE public.inquilinos_servicio OWNER TO postgres;
+
+--
+-- Name: inquilinos_servicio_cab; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inquilinos_servicio_cab (
+    id bigint NOT NULL,
+    servicio_id bigint NOT NULL,
+    cab_id bigint NOT NULL
+);
+
+
+ALTER TABLE public.inquilinos_servicio_cab OWNER TO postgres;
+
+--
+-- Name: inquilinos_servicio_cab_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.inquilinos_servicio_cab_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.inquilinos_servicio_cab_id_seq OWNER TO postgres;
+
+--
+-- Name: inquilinos_servicio_cab_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.inquilinos_servicio_cab_id_seq OWNED BY public.inquilinos_servicio_cab.id;
+
+
+--
+-- Name: inquilinos_servicio_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.inquilinos_servicio_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.inquilinos_servicio_id_seq OWNER TO postgres;
+
+--
+-- Name: inquilinos_servicio_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.inquilinos_servicio_id_seq OWNED BY public.inquilinos_servicio.id;
 
 
 --
@@ -756,6 +865,13 @@ ALTER TABLE ONLY public.inquilinos_cambioestado ALTER COLUMN id SET DEFAULT next
 
 
 --
+-- Name: inquilinos_comentario id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inquilinos_comentario ALTER COLUMN id SET DEFAULT nextval('public.inquilinos_comentario_id_seq'::regclass);
+
+
+--
 -- Name: inquilinos_estado id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -805,15 +921,34 @@ ALTER TABLE ONLY public.inquilinos_reserva ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
+-- Name: inquilinos_servicio id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inquilinos_servicio ALTER COLUMN id SET DEFAULT nextval('public.inquilinos_servicio_id_seq'::regclass);
+
+
+--
+-- Name: inquilinos_servicio_cab id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inquilinos_servicio_cab ALTER COLUMN id SET DEFAULT nextval('public.inquilinos_servicio_cab_id_seq'::regclass);
+
+
+--
 -- Data for Name: accounts_user; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.accounts_user (id, password, last_login, is_superuser, username, is_active, is_admin, email, is_staff) FROM stdin;
-10	pbkdf2_sha256$320000$iwOInJ1c0jn6IW3X8AVjZs$X6nNUKbcKsRSXVYfJa3m/Wkq7YyqUVA4hLI6D3HCzGY=	2022-08-17 14:16:33.779924-03	f	samuca	t	f	samuel5848@gmail.com	f
-11	pbkdf2_sha256$320000$PDIT4ZcpWlE0yTKkJl0wrL$IVe+qOLPY48os5aDRCU5ukQ3dhvuOyp5l9wRiceHZ5g=	2022-08-17 16:52:30.74877-03	f	usuario5	t	f	usuarioprueba@gmail.com	f
-5	pbkdf2_sha256$320000$IGPAtsETUUKMBKCAIYtCbV$1md76kfxAx101ifZwqJLmdoDnQRAiqFQeNLfJ5eBGBQ=	2022-08-19 11:29:04.664511-03	t	admin	t	t	admin@example.com	t
-12	pbkdf2_sha256$320000$caktCGDdpyiCNTFTpGuZsr$VfdritVa1yfRuUPo5+nRNH63V4h4Hxm/53nNaEFIsII=	2022-08-19 11:31:01.004266-03	f	tswift	t	f	tswift@gmail.com	f
-13	pbkdf2_sha256$320000$w80heR1jyx9Pmw0sYp67kq$GyxrXnSbUTkphyTHvsA+QS0feAnsJWeqkPta4lvgbZU=	2022-08-19 12:36:22.278728-03	f	rihanna	t	f	rihanna@yahoo.com	f
+COPY public.accounts_user (id, password, last_login, is_superuser, username, email, is_active, is_admin, is_staff) FROM stdin;
+11	pbkdf2_sha256$320000$J2kgcOu5WgIKgiG61Zgth4$AvrMsD9xOqrVkjfpeQjelGwnHQAaAPeeHEeNs/hc9nQ=	2022-08-25 20:32:50.156248-03	f	mati	matiasarias384@gmail.com	t	f	f
+2	pbkdf2_sha256$320000$2STfTq2Fqror5fOQrCtfxm$jx93J7POqWsekMySqdesR/hXQtoOwxJNCKurLj1hz9g=	2022-08-26 17:11:09.255039-03	f	taylor	taylor@mail.com	t	f	f
+1	pbkdf2_sha256$320000$KfcNh5zSAdP3plRgzT04v6$kTGFG273idWbAku6+lFmz/ut15xM+99tAztdI2LiIBM=	2022-08-26 21:58:09.917482-03	t	admin	admin@example.com	t	t	t
+12	pbkdf2_sha256$320000$pauiQ11zwGpO5RpcRjayNM$+2snZooPgUOXbIYiexha1u8rvkdXvr4LpPIcB9gwUko=	2022-08-27 00:13:34.631716-03	f	samucad3	samuel.andres@d3sistemas.com.ar	t	f	f
+5	pbkdf2_sha256$320000$3Metc3oWptxyOKqySuGsN2$4Ir/33TWq+qhM6LLWJN2Kwwm6lR/LCS6Sdyzur2E4c0=	2022-08-24 09:25:43.632117-03	f	joaquin	joaquin@gmail.com	t	f	f
+7	pbkdf2_sha256$320000$HxC8FyMu70U3QAI5ayVMF5$UfG3e6ulVFTV+WoYd1k6t0hQkeIpH3N+6xAmdqiVF4M=	2022-08-24 09:31:56.912357-03	f	eder	eder@gmail.com	t	f	f
+8	pbkdf2_sha256$320000$rHW4guBG2rYr1TqgMmUULt$ORR3xGIOUkVyOfTcBo058iu6Y9FT+aE+tZEzOx6XQU4=	2022-08-24 09:33:49.490594-03	f	valeria	vale@gmail.com	t	f	f
+9	pbkdf2_sha256$320000$02E2IJtiMAnuKaq8F6MOye$FkJJ71bW0EcCXJ3E1iFUBKIMddVw4/p9EeQYSKu7Cvk=	2022-08-24 09:35:53.354637-03	f	franca	franca@gmail.com	t	f	f
+6	pbkdf2_sha256$320000$oiDkJAuEhahodkUQ1fD8xo$L9Tfv/0JeUaDdIj1ytsd0mCkvigQ8b/BwURFHSiCilQ=	2022-08-24 17:42:50.040097-03	f	samuca	samuel5848@gmail.com	t	f	f
+10	pbkdf2_sha256$320000$Fyea0BRiana5Bb9bIZ9sZt$T/zKG1p0eLSsbZvr4RH66Z7Jd45bCsP4SnRltaDkGZw=	2022-08-25 17:30:18.284931-03	f	anibal	anibal@gmail.com	t	f	f
 \.
 
 
@@ -822,10 +957,15 @@ COPY public.accounts_user (id, password, last_login, is_superuser, username, is_
 --
 
 COPY public.accounts_user_groups (id, user_id, group_id) FROM stdin;
-7	10	1
-9	11	1
-11	12	1
-13	13	1
+1	2	1
+11	5	1
+13	6	1
+15	7	1
+17	8	1
+19	9	1
+21	10	1
+23	11	1
+25	12	1
 \.
 
 
@@ -909,14 +1049,22 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 47	Can change foto	12	change_foto
 48	Can delete foto	12	delete_foto
 49	Can view foto	12	view_foto
-50	Can add cambio estado	13	add_cambioestado
-51	Can change cambio estado	13	change_cambioestado
-52	Can delete cambio estado	13	delete_cambioestado
-53	Can view cambio estado	13	view_cambioestado
-54	Can add user	14	add_user
-55	Can change user	14	change_user
-56	Can delete user	14	delete_user
-57	Can view user	14	view_user
+50	Can add comentario	13	add_comentario
+51	Can change comentario	13	change_comentario
+52	Can delete comentario	13	delete_comentario
+53	Can view comentario	13	view_comentario
+54	Can add cambio estado	14	add_cambioestado
+55	Can change cambio estado	14	change_cambioestado
+56	Can delete cambio estado	14	delete_cambioestado
+57	Can view cambio estado	14	view_cambioestado
+58	Can add user	15	add_user
+59	Can change user	15	change_user
+60	Can delete user	15	delete_user
+61	Can view user	15	view_user
+62	Can add servicio	16	add_servicio
+63	Can change servicio	16	change_servicio
+64	Can delete servicio	16	delete_servicio
+65	Can view servicio	16	view_servicio
 \.
 
 
@@ -925,53 +1073,112 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
-1	2022-08-16 23:49:48.764469-03	1	huesped	1	[{"added": {}}]	3	5
-2	2022-08-16 23:53:48.310048-03	1	Cabaña Principal	1	[{"added": {}}, {"added": {"name": "foto", "object": "Descripcion de la foto de la caba\\u00f1a"}}]	6	5
-3	2022-08-16 23:54:02.949301-03	1	Asador para hacer asados	1	[{"added": {}}]	11	5
-4	2022-08-16 23:54:24.844581-03	2	Cabaña Mediana	1	[{"added": {}}, {"added": {"name": "foto", "object": "Descripcion de la foto de la caba\\u00f1a"}}]	6	5
-5	2022-08-16 23:54:45.149339-03	3	Cabaña Chica	1	[{"added": {}}, {"added": {"name": "foto", "object": "Descripcion de la foto de la caba\\u00f1a"}}]	6	5
-6	2022-08-16 23:56:15.61827-03	1	Cabaña Principal	2	[{"added": {"name": "rango", "object": "2022-08-09=>2022-09-15"}}]	6	5
-7	2022-08-16 23:57:20.597175-03	1	Cabaña Disponible	1	[{"added": {}}]	7	5
-8	2022-08-16 23:57:27.51751-03	2	Cabaña Ocupada	1	[{"added": {}}]	7	5
-9	2022-08-16 23:57:36.949133-03	3	Reserva Pte confirmacion	1	[{"added": {}}]	7	5
-10	2022-08-16 23:57:45.597291-03	4	Reserva Rechazada	1	[{"added": {}}]	7	5
-11	2022-08-16 23:57:53.259069-03	5	Reserva Confirmada	1	[{"added": {}}]	7	5
-12	2022-08-16 23:58:00.447185-03	6	Reserva Cancelada	1	[{"added": {}}]	7	5
-13	2022-08-16 23:58:06.686781-03	7	Reserva Finalizada	1	[{"added": {}}]	7	5
-14	2022-08-17 07:40:51.886011-03	3	Cabaña Chica	2	[{"changed": {"name": "foto", "object": "Descripcion de la foto de la caba\\u00f1a", "fields": ["Foto"]}}]	6	5
-15	2022-08-17 07:41:57.41464-03	1	Asador con parrilla	2	[{"changed": {"fields": ["Descripcion"]}}]	11	5
-16	2022-08-17 07:42:14.538432-03	2	Cochera techada	1	[{"added": {}}]	11	5
-17	2022-08-17 07:42:36.343138-03	3	Pileta	1	[{"added": {}}]	11	5
-18	2022-08-17 07:45:04.008711-03	1	Cabaña Principal	2	[{"added": {"name": "foto", "object": "Descripcion de otra foto de la caba\\u00f1a"}}]	6	5
-19	2022-08-17 07:45:38.409342-03	2	Cabaña Mediana	2	[{"added": {"name": "foto", "object": "Descripcion de otra foto etc etc"}}]	6	5
-20	2022-08-17 07:45:53.545212-03	3	Cabaña Chica	2	[{"added": {"name": "foto", "object": "Descripcion de otra foto etc etc"}}]	6	5
-21	2022-08-17 08:29:49.226819-03	1	huesped	2	[{"changed": {"fields": ["Permissions"]}}]	3	5
-22	2022-08-17 14:15:46.667781-03	2	admin	3		14	5
-23	2022-08-17 14:15:46.682968-03	3	admin2	3		14	5
-24	2022-08-17 14:15:46.682968-03	4	admin3	3		14	5
-25	2022-08-17 14:15:46.687988-03	1	taylor	3		14	5
-26	2022-08-17 14:15:46.687988-03	9	unisoft	3		14	5
-27	2022-08-17 14:15:46.691049-03	8	usuario	3		14	5
-28	2022-08-17 14:15:56.157952-03	5	admin	2	[{"changed": {"fields": ["Username", "Email"]}}]	14	5
-29	2022-08-17 16:20:43.208371-03	1	Cabaña Principal	2	[{"added": {"name": "rango", "object": "2022-08-23=>2022-08-30"}}]	6	5
-30	2022-08-17 16:21:49.629745-03	1	Cabaña Principal	2	[{"changed": {"name": "rango", "object": "2022-09-23=>2022-09-30", "fields": ["FechaDesde", "FechaHasta"]}}]	6	5
-31	2022-08-18 09:54:26.916471-03	2	Cabaña Mediana	2	[{"added": {"name": "rango", "object": "2022-08-18=>2022-08-24"}}]	6	5
-32	2022-08-18 10:00:57.313092-03	2	Cabaña Mediana	2	[{"added": {"name": "rango", "object": "2022-09-12=>2022-09-21"}}]	6	5
-33	2022-08-18 11:40:26.019498-03	2	Cabaña Mediana	2	[{"added": {"name": "rango", "object": "2023-03-05=>2027-03-05"}}]	6	5
-34	2022-08-18 11:41:02.654153-03	5	2023-03-05=>2256-03-05	2	[{"changed": {"fields": ["FechaHasta"]}}]	10	5
-35	2022-08-18 11:52:20.202401-03	5	2023-03-05=>2024-03-05	2	[{"changed": {"fields": ["FechaHasta"]}}]	10	5
-36	2022-08-18 16:19:49.977629-03	3	Cabaña Chica	2	[{"added": {"name": "rango", "object": "2022-08-03=>2022-09-16"}}]	6	5
-37	2022-08-18 16:23:08.955396-03	3	Cabaña Chica	2	[{"added": {"name": "rango", "object": "2022-09-23=>2022-09-30"}}]	6	5
-38	2022-08-18 17:01:47.026001-03	9	2022-08-18->2022-08-21-Cabaña Mediana	3		9	5
-39	2022-08-18 17:01:47.032007-03	8	2022-08-18->2022-08-21-Cabaña Chica	3		9	5
-40	2022-08-18 17:01:47.034004-03	7	2022-09-15->2022-09-17-Cabaña Mediana	3		9	5
-41	2022-08-18 17:01:47.037005-03	6	2022-09-12->2022-09-15-Cabaña Principal	3		9	5
-42	2022-08-18 17:01:47.039004-03	5	2022-08-18->2022-08-19-Cabaña Principal	3		9	5
-43	2022-08-19 11:37:15.098005-03	14	2022-09-27->2022-09-29-Cabaña Principal	3		9	5
-44	2022-08-19 11:37:15.113002-03	13	2022-09-08->2022-09-11-Cabaña Principal	3		9	5
-45	2022-08-19 11:37:15.114002-03	12	2022-09-15->2022-09-17-Cabaña Mediana	3		9	5
-46	2022-08-19 11:37:15.116002-03	11	2022-08-18->2022-08-24-Cabaña Mediana	3		9	5
-47	2022-08-19 11:37:15.118005-03	10	2022-08-18->2022-08-19-Cabaña Principal	3		9	5
+1	2022-08-23 11:10:53.690717-03	1	Cabaña Principal	1	[{"added": {}}, {"added": {"name": "foto", "object": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec in quam cursus, lobortis turpis id, scelerisque orci. Sed quis libero sem. Ut eu eros dolor."}}]	6	1
+2	2022-08-23 11:11:24.128388-03	2	Cabaña Mediana	1	[{"added": {}}, {"added": {"name": "foto", "object": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec in quam cursus, lobortis turpis id, scelerisque orci. Sed quis libero sem. Ut eu eros dolor."}}]	6	1
+3	2022-08-23 11:12:02.282435-03	3	Cabaña Chica	1	[{"added": {}}, {"added": {"name": "foto", "object": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec in quam cursus, lobortis turpis id, scelerisque orci. Sed quis libero sem. Ut eu eros dolor."}}]	6	1
+4	2022-08-23 11:12:56.314601-03	3	Lorem ipsum dolor sit amet.	2	[{"changed": {"fields": ["Descripcion"]}}]	12	1
+5	2022-08-23 11:13:02.908463-03	2	Lorem ipsum dolor sit amet.	2	[{"changed": {"fields": ["Descripcion"]}}]	12	1
+6	2022-08-23 11:13:09.594396-03	1	Lorem ipsum dolor sit amet.	2	[{"changed": {"fields": ["Descripcion"]}}]	12	1
+7	2022-08-23 11:13:40.571523-03	1	Cabaña Principal	2	[{"added": {"name": "foto", "object": "Lorem ipsum dolor sit amet."}}]	6	1
+8	2022-08-23 11:13:51.298762-03	2	Cabaña Mediana	2	[{"added": {"name": "foto", "object": "Lorem ipsum dolor sit amet."}}]	6	1
+9	2022-08-23 11:14:57.565006-03	1	Asador con parrilla	1	[{"added": {}}]	11	1
+10	2022-08-23 11:15:14.924702-03	2	Cochera techada	1	[{"added": {}}]	11	1
+11	2022-08-23 11:15:34.951243-03	3	Pileta grande	1	[{"added": {}}]	11	1
+12	2022-08-23 11:19:55.614606-03	1	Pte Confirmacion	1	[{"added": {}}]	7	1
+13	2022-08-23 11:20:01.584276-03	2	Rechazada	1	[{"added": {}}]	7	1
+14	2022-08-23 11:20:08.904544-03	3	Confirmada	1	[{"added": {}}]	7	1
+15	2022-08-23 11:20:16.544406-03	4	Cancelada	1	[{"added": {}}]	7	1
+16	2022-08-23 11:20:24.534212-03	5	Finalizada	1	[{"added": {}}]	7	1
+17	2022-08-23 11:24:02.2054-03	1	huesped	1	[{"added": {}}]	3	1
+18	2022-08-23 11:24:22.874723-03	1	huesped	2	[{"changed": {"fields": ["Permissions"]}}]	3	1
+19	2022-08-23 11:25:10.774346-03	1	2022-08-09=>2022-08-26	1	[{"added": {}}]	10	1
+20	2022-08-23 11:25:21.814259-03	2	2022-08-28=>2022-09-15	1	[{"added": {}}]	10	1
+21	2022-08-23 11:37:57.225148-03	1	Comentario object (1)	1	[{"added": {}}]	13	1
+22	2022-08-23 11:54:32.14378-03	2	3/5	1	[{"added": {}}]	13	1
+23	2022-08-23 11:54:38.815759-03	3	2/5	1	[{"added": {}}]	13	1
+24	2022-08-23 11:54:47.443875-03	4	5/5	1	[{"added": {}}]	13	1
+25	2022-08-23 11:54:53.994555-03	5	4/5	1	[{"added": {}}]	13	1
+26	2022-08-23 15:15:04.815451-03	1	Hernandez, Javier	2	[{"changed": {"fields": ["Nombre", "Apellido"]}}]	8	1
+27	2022-08-23 15:15:41.787636-03	6	5/5	1	[{"added": {}}]	13	1
+28	2022-08-23 15:48:04.304474-03	3	2/5	2	[{"changed": {"fields": ["Comentario"]}}]	13	1
+29	2022-08-23 15:48:22.609147-03	3	2/5	2	[{"changed": {"fields": ["Comentario"]}}]	13	1
+30	2022-08-23 15:48:33.874114-03	3	2/5	2	[{"changed": {"fields": ["Comentario"]}}]	13	1
+31	2022-08-23 15:48:46.26436-03	3	2/5	2	[{"changed": {"fields": ["Comentario"]}}]	13	1
+32	2022-08-23 15:49:01.115089-03	3	2/5	2	[{"changed": {"fields": ["Comentario"]}}]	13	1
+33	2022-08-23 17:50:31.143978-03	1	CambioEstado object (1)	2	[{"changed": {"fields": ["Estado"]}}]	14	1
+34	2022-08-23 17:50:59.100947-03	3	CambioEstado object (3)	2	[{"changed": {"fields": ["Estado", "FechaFin"]}}]	14	1
+35	2022-08-23 17:51:25.595339-03	3	CambioEstado object (3)	3		14	1
+36	2022-08-23 17:51:25.597355-03	2	CambioEstado object (2)	3		14	1
+37	2022-08-23 17:51:25.598338-03	1	CambioEstado object (1)	3		14	1
+38	2022-08-23 17:54:03.43831-03	2	2022-08-23->2022-08-25-Cabaña Principal	3		9	1
+39	2022-08-23 17:54:03.440325-03	1	2022-08-23->2022-08-25-Cabaña Principal	3		9	1
+40	2022-08-23 17:54:48.814653-03	4	CambioEstado object (4)	2	[{"changed": {"fields": ["FechaFin"]}}]	14	1
+41	2022-08-23 17:55:44.408063-03	5	CambioEstado object (5)	1	[{"added": {}}]	14	1
+42	2022-08-23 18:05:47.418901-03	2	None/5	2	[{"changed": {"fields": ["Calificacion"]}}]	13	1
+43	2022-08-23 18:06:17.420001-03	2	None/5	2	[{"changed": {"fields": ["Comentario"]}}]	13	1
+44	2022-08-23 18:59:25.654837-03	11	4/5	3		13	1
+45	2022-08-23 18:59:25.657875-03	10	4/5	3		13	1
+46	2022-08-23 18:59:25.658837-03	9	3/5	3		13	1
+47	2022-08-23 18:59:25.659836-03	8	4/5	3		13	1
+48	2022-08-23 22:38:15.36185-03	12	1/5	3		13	1
+49	2022-08-23 22:38:15.367489-03	6	5/5	3		13	1
+50	2022-08-23 22:38:15.367489-03	5	4/5	3		13	1
+51	2022-08-23 22:38:15.371587-03	4	5/5	3		13	1
+52	2022-08-23 22:38:15.371587-03	3	2/5	3		13	1
+53	2022-08-23 22:38:15.371587-03	2	None/5	3		13	1
+54	2022-08-23 22:38:15.371587-03	1	4/5	3		13	1
+55	2022-08-23 23:13:35.980939-03	13	3/5	1	[{"added": {}}]	13	1
+56	2022-08-23 23:33:33.291632-03	13	3/5	3		13	1
+57	2022-08-23 23:36:42.890338-03	14	4/5	3		13	1
+58	2022-08-23 23:46:42.79022-03	6	CambioEstado object (6)	2	[{"changed": {"fields": ["FechaFin"]}}]	14	1
+59	2022-08-23 23:47:06.094845-03	7	CambioEstado object (7)	1	[{"added": {}}]	14	1
+60	2022-08-24 00:00:34.480343-03	15	5/5	3		13	1
+61	2022-08-24 00:12:17.453745-03	9	CambioEstado object (9)	2	[{"changed": {"fields": ["FechaFin"]}}]	14	1
+62	2022-08-24 00:12:32.900143-03	10	CambioEstado object (10)	1	[{"added": {}}]	14	1
+63	2022-08-24 00:15:08.410129-03	6	2022-09-13->2022-09-14-Cabaña Principal	3		9	1
+64	2022-08-24 00:15:08.431075-03	5	2022-09-02->2022-09-03-Cabaña Principal	3		9	1
+65	2022-08-24 00:15:08.431075-03	4	2022-09-07->2022-09-09-Cabaña Principal	3		9	1
+66	2022-08-24 00:15:08.431075-03	3	2022-09-07->2022-09-10-Cabaña Principal	3		9	1
+67	2022-08-24 00:16:29.720342-03	13	CambioEstado object (13)	2	[{"changed": {"fields": ["FechaFin"]}}]	14	1
+68	2022-08-24 00:16:51.689655-03	14	CambioEstado object (14)	1	[{"added": {}}]	14	1
+69	2022-08-24 00:17:04.839911-03	14	CambioEstado object (14)	3		14	1
+70	2022-08-24 00:17:10.759781-03	15	CambioEstado object (15)	1	[{"added": {}}]	14	1
+71	2022-08-24 00:17:19.599903-03	15	CambioEstado object (15)	3		14	1
+72	2022-08-24 00:17:24.599693-03	16	CambioEstado object (16)	1	[{"added": {}}]	14	1
+73	2022-08-24 00:17:30.120276-03	16	CambioEstado object (16)	3		14	1
+74	2022-08-24 00:17:34.74952-03	17	CambioEstado object (17)	1	[{"added": {}}]	14	1
+75	2022-08-24 00:19:32.050364-03	18	CambioEstado object (18)	2	[{"changed": {"fields": ["FechaFin"]}}]	14	1
+76	2022-08-24 00:19:43.55972-03	19	CambioEstado object (19)	1	[{"added": {}}]	14	1
+77	2022-08-24 08:07:14.870812-03	3	2022-08-25=>2022-10-20	1	[{"added": {}}]	10	1
+78	2022-08-24 08:19:26.633125-03	19	4/5	3		13	1
+79	2022-08-24 08:19:26.635125-03	18	3/5	3		13	1
+80	2022-08-24 09:24:36.178553-03	11	2022-08-24->2022-08-25-Cabaña Principal	3		9	1
+81	2022-08-24 09:24:36.190761-03	10	2022-09-15->2022-09-18-Cabaña Mediana	3		9	1
+82	2022-08-24 09:24:36.191791-03	9	2022-09-13->2022-09-15-Cabaña Principal	3		9	1
+83	2022-08-24 09:24:36.191791-03	8	2022-09-06->2022-09-09-Cabaña Principal	3		9	1
+84	2022-08-24 09:24:36.192785-03	7	2022-09-06->2022-09-09-Cabaña Principal	3		9	1
+85	2022-08-24 09:25:04.090941-03	4	eminem	3		15	1
+86	2022-08-24 09:25:04.092943-03	3	flauta	3		15	1
+87	2022-08-24 09:36:23.885521-03	4	2022-08-24=>2022-09-29	1	[{"added": {}}]	10	1
+88	2022-08-24 17:19:25.342701-03	1	Cabaña Principal	2	[{"changed": {"fields": ["Descripcion"]}}]	6	1
+89	2022-08-24 17:19:34.588124-03	2	Cabaña Mediana	2	[{"changed": {"fields": ["Descripcion"]}}]	6	1
+90	2022-08-24 17:19:43.477918-03	3	Cabaña Chica	2	[{"changed": {"fields": ["Descripcion"]}}]	6	1
+91	2022-08-24 17:27:46.267886-03	1	Cabaña Principal	2	[{"changed": {"fields": ["Descripcion"]}}]	6	1
+92	2022-08-24 17:28:21.127688-03	2	Cabaña Mediana	2	[{"changed": {"fields": ["Descripcion"]}}]	6	1
+93	2022-08-24 17:28:59.197903-03	3	Cabaña Chica	2	[{"changed": {"fields": ["Descripcion"]}}]	6	1
+94	2022-08-24 17:29:21.898166-03	1	Cabaña Principal	2	[{"changed": {"fields": ["Descripcion"]}}]	6	1
+95	2022-08-24 18:05:40.924628-03	1	Cabaña Principal	2	[{"changed": {"fields": ["CostoPorAdulto", "CostoPorMenor"]}}]	6	1
+96	2022-08-24 18:09:27.997002-03	1	Cabaña Principal	2	[{"added": {"name": "rango", "object": "2022-10-13=>2022-11-24"}}]	6	1
+97	2022-08-24 18:51:51.929125-03	1	Cabaña Principal	2	[{"changed": {"fields": ["CostoPorAdulto", "CostoPorMenor"]}}]	6	1
+98	2022-08-24 18:52:01.519484-03	2	Cabaña Mediana	2	[{"changed": {"fields": ["CostoPorAdulto", "CostoPorMenor"]}}]	6	1
+99	2022-08-24 18:52:08.119547-03	3	Cabaña Chica	2	[{"changed": {"fields": ["CostoPorAdulto", "CostoPorMenor"]}}]	6	1
+100	2022-08-25 00:35:29.525368-03	1	WiFi de alta velocidad	1	[{"added": {}}]	16	1
+101	2022-08-25 00:35:44.135793-03	2	Servicio de limpieza	1	[{"added": {}}]	16	1
+102	2022-08-25 00:40:07.150846-03	3	DirecTV con pack de películas	1	[{"added": {}}]	16	1
+103	2022-08-25 12:32:40.166458-03	1	Cabaña Principal	2	[{"changed": {"fields": ["CantMaxPersonas"]}}]	6	1
+104	2022-08-25 12:32:48.576326-03	2	Cabaña Mediana	2	[{"changed": {"fields": ["CantMaxPersonas"]}}]	6	1
+105	2022-08-25 12:32:54.222261-03	2	Cabaña Mediana	2	[{"changed": {"fields": ["CantMaxPersonas"]}}]	6	1
+106	2022-08-25 12:32:59.380732-03	3	Cabaña Chica	2	[{"changed": {"fields": ["CantMaxPersonas"]}}]	6	1
 \.
 
 
@@ -992,8 +1199,10 @@ COPY public.django_content_type (id, app_label, model) FROM stdin;
 10	inquilinos	rango
 11	inquilinos	instalacion
 12	inquilinos	foto
-13	inquilinos	cambioestado
-14	accounts	user
+13	inquilinos	comentario
+14	inquilinos	cambioestado
+15	accounts	user
+16	inquilinos	servicio
 \.
 
 
@@ -1002,29 +1211,36 @@ COPY public.django_content_type (id, app_label, model) FROM stdin;
 --
 
 COPY public.django_migrations (id, app, name, applied) FROM stdin;
-1	contenttypes	0001_initial	2022-08-16 23:16:22.274292-03
-2	contenttypes	0002_remove_content_type_name	2022-08-16 23:16:22.304521-03
-3	auth	0001_initial	2022-08-16 23:16:22.6445-03
-4	auth	0002_alter_permission_name_max_length	2022-08-16 23:16:22.674573-03
-5	auth	0003_alter_user_email_max_length	2022-08-16 23:16:22.704047-03
-6	auth	0004_alter_user_username_opts	2022-08-16 23:16:22.724339-03
-7	auth	0005_alter_user_last_login_null	2022-08-16 23:16:22.739399-03
-8	auth	0006_require_contenttypes_0002	2022-08-16 23:16:22.744558-03
-9	auth	0007_alter_validators_add_error_messages	2022-08-16 23:16:22.764256-03
-10	auth	0008_alter_user_username_max_length	2022-08-16 23:16:22.78435-03
-11	auth	0009_alter_user_last_name_max_length	2022-08-16 23:16:22.794388-03
-12	auth	0010_alter_group_name_max_length	2022-08-16 23:16:22.814243-03
-13	auth	0011_update_proxy_permissions	2022-08-16 23:16:22.832673-03
-14	auth	0012_alter_user_first_name_max_length	2022-08-16 23:16:22.848418-03
-15	auth	0013_remove_user_first_name_remove_user_last_name	2022-08-16 23:16:22.869494-03
-16	accounts	0001_initial	2022-08-16 23:16:23.248689-03
-17	admin	0001_initial	2022-08-16 23:16:23.400577-03
-18	admin	0002_logentry_remove_auto_add	2022-08-16 23:16:23.416705-03
-19	admin	0003_logentry_add_action_flag_choices	2022-08-16 23:16:23.432891-03
-20	inquilinos	0001_initial	2022-08-16 23:16:24.185194-03
-21	sessions	0001_initial	2022-08-16 23:16:24.355018-03
-22	accounts	0002_user_email	2022-08-16 23:31:23.164715-03
-23	accounts	0003_user_is_staff	2022-08-16 23:45:42.79516-03
+1	contenttypes	0001_initial	2022-08-23 11:07:06.479571-03
+2	contenttypes	0002_remove_content_type_name	2022-08-23 11:07:06.504407-03
+3	auth	0001_initial	2022-08-23 11:07:06.624463-03
+4	auth	0002_alter_permission_name_max_length	2022-08-23 11:07:06.634769-03
+5	auth	0003_alter_user_email_max_length	2022-08-23 11:07:06.654729-03
+6	auth	0004_alter_user_username_opts	2022-08-23 11:07:06.666691-03
+7	auth	0005_alter_user_last_login_null	2022-08-23 11:07:06.682157-03
+8	auth	0006_require_contenttypes_0002	2022-08-23 11:07:06.684762-03
+9	auth	0007_alter_validators_add_error_messages	2022-08-23 11:07:06.698071-03
+10	auth	0008_alter_user_username_max_length	2022-08-23 11:07:06.704751-03
+11	auth	0009_alter_user_last_name_max_length	2022-08-23 11:07:06.714406-03
+12	auth	0010_alter_group_name_max_length	2022-08-23 11:07:06.724322-03
+13	auth	0011_update_proxy_permissions	2022-08-23 11:07:06.73492-03
+14	auth	0012_alter_user_first_name_max_length	2022-08-23 11:07:06.744698-03
+15	accounts	0001_initial	2022-08-23 11:07:06.833096-03
+16	admin	0001_initial	2022-08-23 11:07:06.87211-03
+17	admin	0002_logentry_remove_auto_add	2022-08-23 11:07:06.884718-03
+18	admin	0003_logentry_add_action_flag_choices	2022-08-23 11:07:06.899427-03
+19	inquilinos	0001_initial	2022-08-23 11:07:07.142543-03
+20	sessions	0001_initial	2022-08-23 11:07:07.154349-03
+21	inquilinos	0002_remove_estado_ambito	2022-08-23 11:19:08.635067-03
+22	inquilinos	0003_cab_cal_prom	2022-08-23 11:57:07.163605-03
+23	inquilinos	0004_remove_cab_cal_prom	2022-08-23 12:04:34.43399-03
+24	inquilinos	0005_remove_comentario_cab_comentario_reserva_and_more	2022-08-23 22:40:03.772736-03
+25	inquilinos	0006_comentario_cab	2022-08-24 08:21:48.514808-03
+26	inquilinos	0007_cab_descripcion_alter_comentario_cab	2022-08-24 17:18:37.578237-03
+27	inquilinos	0008_cab_costoporadulto_cab_costopormenor	2022-08-24 17:38:42.777491-03
+28	inquilinos	0009_alter_cab_options_remove_cab_costopornoche_and_more	2022-08-25 00:33:06.589593-03
+29	inquilinos	0010_cab_cantmaxpersonas	2022-08-25 12:29:42.909312-03
+30	inquilinos	0011_reserva_motivocancelacion_alter_reserva_cantadultos_and_more	2022-08-26 09:35:56.214057-03
 \.
 
 
@@ -1033,13 +1249,13 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 --
 
 COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
-aidu1uszvri244vwrptqfmg2pj2h6wqu	.eJxVjEEOwiAQRe_C2hAKpYBL956BzMCMVA0kpV0Z765NutDtf-_9l4iwrSVunZY4Z3EWVpx-N4T0oLqDfId6azK1ui4zyl2RB-3y2jI9L4f7d1Cgl2_tVR4YjAI9oE5kR2smQJgACLxBSkoheq2Ddc5xAg6BkBgzah5Zs3h_AAYOOW8:1oOHDH:YobEo3AO57eibjWNUUHpulmtS97xzfUElx8Ey8W6o9Y	2022-08-31 08:27:55.29583-03
-0cjmc6aercefkewvyign6kd4h6e68y4f	.eJxVjMEOwiAQRP-FsyFAC7IevfsNhF0WqRqalPZk_Hdp0oNmTjNvZt4ixG0tYWu8hCmJiwBx-s0w0pPrDtIj1vssaa7rMqHcK_KgTd7mxK_r0f07KLGVvsZsWBkD5MmPA3gEIIXkNGrtfTfJKQKGaMecztlyosGDs1YBU5f4fAHqOjhj:1oOHGE:P_EXIDvkzm0IjL7ut2nXBS2nWswR-sSbucs5dA3nO5Q	2022-08-31 08:30:58.192826-03
-ijpel6oh1fjclscss1ookapiuggeu9df	.eJxVjDEOwjAMRe-SGUUJISZmZO8ZKttxSAG1UtNOiLtDpQ6w_vfef5me1qX2a9O5H7K5GO_M4XdkkoeOG8l3Gm-TlWlc5oHtptidNttNWZ_X3f07qNTqt0bw0UuCmDSRDzmigBbBcJTkICMFBo0lYjqxB2VGV5AD0xkQJTvz_gD6Xzgm:1oOMef:MXHJUIUVG34IWI_5TuQS4ccX6yI1Dbmwwg_0v3katHI	2022-08-31 14:16:33.779924-03
-5gh4xvzsihymjclk0saj0dp0fupkaj8c	.eJxVjDkOwjAUBe_iGlnxGkxJnzNYf7FxANlSnFSIu0OkFNC-mXkvEWFbS9x6WuLM4iKUFqffEYEeqe6E71BvTVKr6zKj3BV50C6nxul5Pdy_gwK9fOuMpIkgsc3oXfLWqHPwls2AAXzgHFxWSlPOyqGBYRwBNVsLrKw3jsT7AzI4OLo:1oOesX:wURxNBPfKrbrAFk0bQtOZ3zcPyb5ZIKgH4x8x0NjQXo	2022-09-01 09:44:05.694696-03
-91owp78iltqz6i6c4e36qtvtqfhc257l	.eJxVjEEOwiAQRe_C2hAKpYBL956BzMCMVA0kpV0Z765NutDtf-_9l4iwrSVunZY4Z3EWVpx-N4T0oLqDfId6azK1ui4zyl2RB-3y2jI9L4f7d1Cgl2_tVR4YjAI9oE5kR2smQJgACLxBSkoheq2Ddc5xAg6BkBgzah5Zs3h_AAYOOW8:1oOl3C:fcXnn0SXRPAHV3Uih7SCZa_S4kP-3J9E2EPTnAwkJ-k	2022-09-01 16:19:30.034566-03
-wpltpngf7ra8xeulaxgolyy3vqs3mhue	.eJxVjDkOwjAUBe_iGlnxGkxJnzNYf7FxANlSnFSIu0OkFNC-mXkvEWFbS9x6WuLM4iKUFqffEYEeqe6E71BvTVKr6zKj3BV50C6nxul5Pdy_gwK9fOuMpIkgsc3oXfLWqHPwls2AAXzgHFxWSlPOyqGBYRwBNVsLrKw3jsT7AzI4OLo:1oP31Z:wFE7R_2MB3IlCIPzTk4oIkXydgtnmX_1Kj8MCBdxCgY	2022-09-02 11:31:01.006019-03
-9cwsqxdk9vat5n6ym8q4laxe0x48m6fc	.eJxVjMEOwiAQRP-FsyEiXaAevfcbyLK7SNXQpLQn47_bJj3ocea9mbeKuC4lrk3mOLK6KmPV6bdMSE-pO-EH1vukaarLPCa9K_qgTQ8Ty-t2uH8HBVvZ1s4JAPVZLuxznzvMACFswREYQkjJkbdnSwkRvEkWhDsA55iNmODV5wsd_Dh3:1oP42o:Q9J4ui4nMVtcqBm7EBsQfEgXq9U1EXEek-fshgTSGds	2022-09-02 12:36:22.278728-03
+by603rlznr1bgnrrpy6opqictvkbwlko	.eJxVjEEOwiAQRe_C2hDowJS6dO8ZyMBMpWpoUtqV8e7apAvd_vfef6lI21ri1mSJE6uz6tTpd0uUH1J3wHeqt1nnua7LlPSu6IM2fZ1ZnpfD_Tso1Mq3ltESgjgnAhm9BR_6DEYwMaXBMfghCAYJRCb31pFHg10aQdg5i6TeH-6SOAE:1oRXRO:-hiNl8J6JXP52uXt62ugbVTKbJkogxfu0w6iLbksLJU	2022-09-09 08:23:58.864689-03
+3j399ngcyulzxp4fvtjwui5kghfph1go	.eJxVjEEOwiAQRe_C2hDowJS6dO8ZyMBMpWpoUtqV8e7apAvd_vfef6lI21ri1mSJE6uz6tTpd0uUH1J3wHeqt1nnua7LlPSu6IM2fZ1ZnpfD_Tso1Mq3ltESgjgnAhm9BR_6DEYwMaXBMfghCAYJRCb31pFHg10aQdg5i6TeH-6SOAE:1oRffZ:0G9YMvgPT32WbPwr0ipG2fI5p_tDRA6j1wmOnajbgts	2022-09-09 17:11:09.257028-03
+9tmsawdglo9dbmfyazvft7alnj186d29	.eJxVjEEOwiAQAP_C2RBwWQGP3vsGssBWqgaS0p6MfzckPeh1ZjJvEWjfStg7r2HJ4iq0OP2ySOnJdYj8oHpvMrW6rUuUI5GH7XJqmV-3o_0bFOplbEGDR_SeUEF02SpmhovPEZOmGQkhcjaOHRhlZkfglVUJtTVn9IDi8wXJyzbq:1oRk9J:O6uyO_TmMfJYklSvORJvSC-69BVOw-oKO1GjnlmGrVQ	2022-09-09 21:58:09.920532-03
+vhk0undj17b4v5gx8f6t94g3vonzobd8	.eJxVjDsOwjAQBe_iGln-xR9Kes5g7a5tHEC2FCcV4u4QKQW0b2bei0XY1hq3kZc4J3ZmUrHT74hAj9x2ku7Qbp1Tb-syI98VftDBrz3l5-Vw_w4qjPqtJ6NdTp5UEbkEpUwwwssEJkhUVoIF6YwLZFFDFnYi9OgkFaPBOgyCvT_y9zeh:1oRmGM:D2X0xM9w7MRrPjqgcLRKAtqK9pYMOw8KoXV7IhgaHwY	2022-09-10 00:13:34.633697-03
+xzpailmktngetcp78vku4t14ckgg272s	.eJxVjEEOwiAQRe_C2hDowJS6dO8ZyMBMpWpoUtqV8e7apAvd_vfef6lI21ri1mSJE6uz6tTpd0uUH1J3wHeqt1nnua7LlPSu6IM2fZ1ZnpfD_Tso1Mq3ltESgjgnAhm9BR_6DEYwMaXBMfghCAYJRCb31pFHg10aQdg5i6TeH-6SOAE:1oQozk:eJkwAhT6gzuZqhzAcjXmnotwPCXB20n6cIgmblSpZMA	2022-09-07 08:56:28.263161-03
+kbu520jeobnrsaz2dwmiymidgffvikv5	.eJxVjEEOwiAQRe_C2hDowJS6dO8ZyMBMpWpoUtqV8e7apAvd_vfef6lI21ri1mSJE6uz6tTpd0uUH1J3wHeqt1nnua7LlPSu6IM2fZ1ZnpfD_Tso1Mq3ltESgjgnAhm9BR_6DEYwMaXBMfghCAYJRCb31pFHg10aQdg5i6TeH-6SOAE:1oRCir:qZBwfdPUWK_ZYe8in_-ggUx60IEQ6JZAEyE9HDVW7G4	2022-09-08 10:16:37.712275-03
+wclt6wu1ztk7m186ljopbosektx6xr2r	.eJxVjEEOwiAQRe_C2hDowJS6dO8ZyMBMpWpoUtqV8e7apAvd_vfef6lI21ri1mSJE6uz6tTpd0uUH1J3wHeqt1nnua7LlPSu6IM2fZ1ZnpfD_Tso1Mq3ltESgjgnAhm9BR_6DEYwMaXBMfghCAYJRCb31pFHg10aQdg5i6TeH-6SOAE:1oRIC9:wnY5wDFTn0AZfj6G0bsR3PLiPIM-yjwrru5wp_ICZsI	2022-09-08 16:07:13.644542-03
 \.
 
 
@@ -1047,10 +1263,10 @@ wpltpngf7ra8xeulaxgolyy3vqs3mhue	.eJxVjDkOwjAUBe_iGlnxGkxJnzNYf7FxANlSnFSIu0OkFN
 -- Data for Name: inquilinos_cab; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.inquilinos_cab (id, nombre, "cantHabitaciones", "costoPorNoche", slug) FROM stdin;
-1	Cabaña Principal	4	2500	cabana-principal
-2	Cabaña Mediana	3	2000	cabana-mediana
-3	Cabaña Chica	1	1500	cabana-chica
+COPY public.inquilinos_cab (id, nombre, "cantHabitaciones", slug, descripcion, "costoPorAdulto", "costoPorMenor", "cantMaxPersonas") FROM stdin;
+1	Cabaña Principal	4	cabana-principal	Ésta es nuestra cabaña mas ámplia y lujosa, cuenta con un gran patio e instalaciones de primer calidad.	1000	400	7
+2	Cabaña Mediana	3	cabana-mediana	Cabaña orientada para aquellos que deseen tomarse unas vacaciones en las que poder descansar y estar al aire libre.	700	350	5
+3	Cabaña Chica	1	cabana-chica	Nuestra cabaña más pequeña pero no por eso significa que no te sea conveniente, te esperamos!	400	200	2
 \.
 
 
@@ -1059,19 +1275,109 @@ COPY public.inquilinos_cab (id, nombre, "cantHabitaciones", "costoPorNoche", slu
 --
 
 COPY public.inquilinos_cambioestado (id, "fechaFin", "fechaInicio", estado_id, reserva_id) FROM stdin;
-19	\N	2022-08-19	3	15
-21	\N	2022-08-19	3	17
-23	\N	2022-08-19	3	19
-20	2022-08-19	2022-08-19	3	16
-24	\N	2022-08-19	6	16
-22	2022-08-19	2022-08-19	3	18
-25	\N	2022-08-19	6	18
-26	\N	2022-08-19	3	20
-27	2022-08-19	2022-08-19	3	21
-28	\N	2022-08-19	6	21
-29	2022-08-19	2022-08-19	3	22
-30	\N	2022-08-19	6	22
-31	\N	2022-08-19	3	23
+53	2022-08-26	2022-08-25	1	30
+73	\N	2022-08-26	4	30
+74	2022-08-26	2022-08-26	1	37
+75	\N	2022-08-26	4	37
+76	2022-08-26	2022-08-26	1	38
+77	2022-08-26	2022-08-26	4	38
+79	\N	2022-08-26	3	38
+78	2022-08-26	2022-08-26	1	39
+80	\N	2022-08-26	4	39
+81	2022-08-26	2022-08-26	1	40
+82	\N	2022-08-26	4	40
+83	2022-08-26	2022-08-26	1	41
+84	\N	2022-08-26	4	41
+85	2022-08-26	2022-08-26	1	42
+86	\N	2022-08-26	5	42
+87	2022-08-26	2022-08-26	1	43
+88	\N	2022-08-26	5	43
+89	\N	2022-08-26	1	44
+90	\N	2022-08-26	1	45
+91	\N	2022-08-26	1	46
+92	\N	2022-08-26	1	47
+93	2022-08-26	2022-08-26	1	48
+94	\N	2022-08-26	4	48
+23	\N	2022-08-24	1	12
+24	2022-08-24	2022-08-24	1	13
+25	\N	2022-08-24	4	13
+27	2022-08-24	2022-08-24	1	15
+28	\N	2022-08-24	3	15
+26	2022-08-24	2022-08-24	1	14
+29	\N	2022-08-24	3	14
+31	2022-08-24	2022-08-24	1	17
+32	\N	2022-08-24	3	17
+30	2022-08-24	2022-08-24	1	16
+33	\N	2022-08-24	3	16
+34	2022-08-24	2022-08-24	1	18
+36	\N	2022-08-24	3	18
+35	2022-08-24	2022-08-24	1	19
+37	\N	2022-08-24	3	19
+38	2022-08-24	2022-08-24	1	20
+39	\N	2022-08-24	3	20
+40	2022-08-24	2022-08-24	1	21
+41	\N	2022-08-24	3	21
+42	2022-08-24	2022-08-24	1	22
+44	\N	2022-08-24	3	22
+43	2022-08-24	2022-08-24	1	23
+45	\N	2022-08-24	3	23
+46	2022-08-24	2022-08-24	1	24
+47	\N	2022-08-24	5	24
+48	\N	2022-08-24	1	25
+49	\N	2022-08-24	1	26
+56	2022-08-25	2022-08-25	1	33
+57	2022-08-25	2022-08-25	3	33
+58	2022-08-25	2022-08-25	2	33
+59	2022-08-25	2022-08-25	5	33
+60	\N	2022-08-25	3	33
+61	2022-08-25	2022-08-25	1	34
+62	\N	2022-08-25	4	34
+63	2022-08-25	2022-08-25	1	35
+64	\N	2022-08-25	5	35
+65	2022-08-26	2022-08-26	1	36
+66	\N	2022-08-26	3	36
+55	2022-08-26	2022-08-25	1	32
+67	\N	2022-08-26	4	32
+52	2022-08-26	2022-08-25	1	29
+54	2022-08-26	2022-08-25	1	31
+69	\N	2022-08-26	4	31
+51	2022-08-26	2022-08-25	1	28
+70	\N	2022-08-26	4	28
+50	2022-08-26	2022-08-25	1	27
+71	\N	2022-08-26	4	27
+68	2022-08-26	2022-08-26	4	29
+72	\N	2022-08-26	4	29
+95	2022-08-27	2022-08-27	1	49
+97	\N	2022-08-27	4	49
+96	2022-08-27	2022-08-27	1	50
+98	2022-08-27	2022-08-27	3	50
+99	\N	2022-08-27	5	50
+100	\N	2022-08-27	1	51
+\.
+
+
+--
+-- Data for Name: inquilinos_comentario; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.inquilinos_comentario (id, comentario, calificacion, "fechaPublicacion", huesped_id, reserva_id, cab_id) FROM stdin;
+35	Buenísima!	5	2022-08-26	1	42	3
+36	Esto es un comentario ejemplo.	4	2022-08-26	1	43	3
+37	La pase muy bien loko	4	2022-08-27	12	50	1
+21	Muy buena la cabaña. La pasé muy bien.	4	2022-08-24	5	15	1
+22	Muy contento con la atención!!!	3	2022-08-24	5	14	2
+23	Gracias por la atención, hermosa cabaña.	5	2022-08-24	6	17	1
+24	Un desastre todo	2	2022-08-24	6	16	1
+25	Bastante bien.  Pero demoraron en confirmar la reserva.	3	2022-08-24	7	19	2
+26	Muy buenaaaaaaaaaaaa	5	2022-08-24	7	18	1
+27	Hermosa la cabaña y la atención.	5	2022-08-24	8	20	1
+28	Podría ser mejor...	3	2022-08-24	8	21	2
+29	Las mejores cabañas!!	5	2022-08-24	9	23	3
+30	Muy buena la cabaña y la atención	4	2022-08-24	9	22	3
+31	Muy buenas cabañas	4	2022-08-24	6	24	1
+32	Muy buena	4	2022-08-25	11	35	3
+33	Gran experiencia en la cabaña...	5	2022-08-26	1	38	3
+34	asdasdsadadadads	3	2022-08-26	1	30	1
 \.
 
 
@@ -1079,14 +1385,12 @@ COPY public.inquilinos_cambioestado (id, "fechaFin", "fechaInicio", estado_id, r
 -- Data for Name: inquilinos_estado; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.inquilinos_estado (id, nombre, ambito) FROM stdin;
-1	disponible	cab
-2	ocupada	cab
-3	Pte Confirmacion	res
-4	Rechazada	res
-5	Confirmada	res
-6	Cancelada	res
-7	Finalizada	res
+COPY public.inquilinos_estado (id, nombre) FROM stdin;
+1	Pte Confirmacion
+2	Rechazada
+3	Confirmada
+4	Cancelada
+5	Finalizada
 \.
 
 
@@ -1095,12 +1399,11 @@ COPY public.inquilinos_estado (id, nombre, ambito) FROM stdin;
 --
 
 COPY public.inquilinos_foto (id, foto, descripcion, cab_id) FROM stdin;
-1	cabs/cabaña_J5Z4Lbb.jpg	Descripcion de la foto de la cabaña	1
-2	cabs/charming-creekside-cabin-california-2_JIjC66y.jpg	Descripcion de la foto de la cabaña	2
-3	cabs/The-Wedge-Tiny-Cabin_1_BDyNvpF.jpg	Descripcion de la foto de la cabaña	3
-4	cabs/Modern-vacation-house-just3ds.com-1.jpg	Descripcion de otra foto de la cabaña	1
-5	cabs/vacation-house-17.jpg	Descripcion de otra foto etc etc	2
-6	cabs/image.jpg	Descripcion de otra foto etc etc	3
+3	cabs/image.jpg	Lorem ipsum dolor sit amet.	3
+2	cabs/The-Wedge-Tiny-Cabin_1.jpg	Lorem ipsum dolor sit amet.	2
+1	cabs/cabaña.jpg	Lorem ipsum dolor sit amet.	1
+4	cabs/Modern-vacation-house-just3ds.com-1.jpg	Lorem ipsum dolor sit amet.	1
+5	cabs/CTRGaafP5_720x0__1.webp	Lorem ipsum dolor sit amet.	2
 \.
 
 
@@ -1109,10 +1412,15 @@ COPY public.inquilinos_foto (id, foto, descripcion, cab_id) FROM stdin;
 --
 
 COPY public.inquilinos_huesped (id, nombre, apellido, telefono, usuario_id) FROM stdin;
-4	Samuel	Andrés	3534237553	10
-5	Nombre	Apellido	123456	11
-6	Taylor	Swift	1234656	12
-7	Rihanna	Fenty	35346789	13
+1	Taylor	Swift	455788965	2
+5	Joaquin	Álvarez	3534687993	5
+6	Samuel	Andrés	3534237553	6
+7	Eder	Zoy	123456789	7
+8	Valeria	Abdala	35346789	8
+9	Franca	Pairetti	12346	9
+10	Anibal	Álvarez	3538432775	10
+11	Matias	Arias	123123213	11
+12	Samuel	Andrés	3534237553	12
 \.
 
 
@@ -1123,7 +1431,7 @@ COPY public.inquilinos_huesped (id, nombre, apellido, telefono, usuario_id) FROM
 COPY public.inquilinos_instalacion (id, nombre, descripcion) FROM stdin;
 1	Asador	Asador con parrilla
 2	Cochera	Cochera techada
-3	Pileta	Pileta
+3	Pileta	Pileta grande
 \.
 
 
@@ -1145,13 +1453,11 @@ COPY public.inquilinos_instalacion_cab (id, instalacion_id, cab_id) FROM stdin;
 --
 
 COPY public.inquilinos_rango (id, "fechaDesde", "fechaHasta", cab_id) FROM stdin;
-1	2022-08-09	2022-09-15	1
-2	2022-09-23	2022-09-30	1
-3	2022-08-18	2022-08-24	2
-4	2022-09-12	2022-09-21	2
-5	2023-03-05	2024-03-05	2
-6	2022-08-03	2022-09-16	3
-7	2022-09-23	2022-09-30	3
+1	2022-08-09	2022-08-26	1
+2	2022-08-28	2022-09-15	1
+3	2022-08-25	2022-10-20	2
+4	2022-08-24	2022-09-29	3
+5	2022-10-13	2022-11-24	1
 \.
 
 
@@ -1159,16 +1465,72 @@ COPY public.inquilinos_rango (id, "fechaDesde", "fechaHasta", cab_id) FROM stdin
 -- Data for Name: inquilinos_reserva; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.inquilinos_reserva (id, "fechaDesde", "fechaHasta", "fechaReserva", "precioFinal", "cantAdultos", "cantMenores", cab_id, huesped_id) FROM stdin;
-15	2022-08-19	2022-08-21	2022-08-19	5000	1	0	1	6
-16	2022-09-13	2022-09-15	2022-08-19	5000	1	0	1	6
-17	2022-09-28	2022-09-30	2022-08-19	5000	1	0	1	6
-18	2022-09-24	2022-09-25	2022-08-19	2500	1	0	1	6
-19	2022-08-23	2022-08-26	2022-08-19	7500	1	0	1	6
-20	2022-09-13	2022-09-15	2022-08-19	5000	1	0	1	6
-21	2022-09-08	2022-09-11	2022-08-19	7500	1	0	1	7
-22	2022-09-08	2022-09-11	2022-08-19	7500	1	2	1	7
-23	2022-09-05	2022-09-11	2022-08-19	15000	1	0	1	7
+COPY public.inquilinos_reserva (id, "fechaDesde", "fechaHasta", "fechaReserva", "precioFinal", "cantAdultos", "cantMenores", cab_id, huesped_id, "motivoCancelacion") FROM stdin;
+12	2022-09-07	2022-09-09	2022-08-24	5000	2	1	1	5	\N
+13	2022-09-14	2022-09-17	2022-08-24	6000	1	0	2	5	\N
+14	2022-09-22	2022-09-25	2022-08-24	6000	1	3	2	5	\N
+15	2022-08-29	2022-08-31	2022-08-24	5000	1	0	1	5	\N
+16	2022-09-14	2022-09-15	2022-08-24	2500	1	0	1	6	\N
+17	2022-09-01	2022-09-04	2022-08-24	7500	1	0	1	6	\N
+18	2022-09-05	2022-09-06	2022-08-24	2500	1	0	1	7	\N
+19	2022-09-13	2022-09-17	2022-08-24	8000	1	0	2	7	\N
+20	2022-08-24	2022-08-25	2022-08-24	2500	2	3	1	8	\N
+21	2022-09-07	2022-09-09	2022-08-24	4000	3	0	2	8	\N
+22	2022-09-15	2022-09-18	2022-08-24	4500	1	2	3	9	\N
+23	2022-08-29	2022-08-31	2022-08-24	3000	1	0	3	9	\N
+24	2022-09-10	2022-09-11	2022-08-24	2500	1	0	1	6	\N
+25	2022-10-14	2022-10-22	2022-08-24	11200	2	2	1	6	\N
+26	2022-11-09	2022-11-12	2022-08-24	3000	1	0	1	6	\N
+32	2022-10-25	2022-10-31	2022-08-25	31200	4	3	1	1	\N
+33	2022-11-03	2022-11-05	2022-08-25	10400	4	3	1	1	\N
+34	2022-11-03	2022-11-06	2022-08-25	13800	3	4	1	10	\N
+35	2022-09-06	2022-09-10	2022-08-25	3200	2	0	3	11	\N
+36	2022-11-01	2022-11-06	2022-08-26	20000	2	5	1	1	Pésima experiencia en las cabañakas.
+31	2022-10-03	2022-10-04	2022-08-25	2800	3	2	2	1	Cancelado kapo
+28	2022-09-12	2022-09-13	2022-08-25	1000	1	0	1	1	Cancelada!
+27	2022-09-27	2022-09-29	2022-08-25	4900	2	3	2	1	PAPER RINGS lalala
+29	2022-09-10	2022-09-11	2022-08-25	1000	1	0	1	1	._.
+30	2022-11-15	2022-11-17	2022-08-25	2000	1	0	1	1	CANCELADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+37	2022-09-19	2022-09-21	2022-08-26	4900	2	3	2	1	
+38	2022-09-21	2022-09-23	2022-08-26	1200	1	1	3	1	Nulla sed malesuada ligula. Maecenas eleifend sollicitudin ex, aliquet euismod mauris scelerisque vel. Sed commodo sit amet odio ac pharetra. Nunc pharetra finibus aliquet. Nulla quis euismod nunc. Nullam mollis nunc a erat interdum, et blandit felis lobortis. Nam luctus tincidunt tortor vel interdum.
+39	2022-09-22	2022-09-24	2022-08-26	1200	1	1	3	1	No mw fuar LA ATENCION
+40	2022-09-22	2022-09-24	2022-08-26	1200	1	1	3	1	I'm here on the kitchen floor\r\nYou call, but I won't hear it\r\nYou said no one else, how could you do this, babe?\r\nYou really blew this, babe\r\nWe ain't getting through this one, babe (yeah, yeah, yeah)\r\nThis is the last time I'll ever call you, babe\r\n(This is the last time, this is the last time)\r\nThis is the last time I'll ever call you, babe\r\n(What about your promises, promises, promises? No)\r\nWhat a waste\r\nTaking down the pictures and the plans we made, yeah\r\nAnd it's strange how your face doesn't look so innocent\r\nYour secret has its consequence and that's on you, babe
+41	2022-09-26	2022-09-29	2022-08-26	6300	1	4	2	1	No hago a tiempo a ir
+42	2022-09-21	2022-09-24	2022-08-26	1800	1	1	3	1	\N
+43	2022-09-08	2022-09-10	2022-08-26	1200	1	1	3	1	\N
+44	2022-09-07	2022-09-09	2022-08-26	1200	1	1	3	1	\N
+45	2022-09-20	2022-09-23	2022-08-26	1800	1	1	3	1	\N
+46	2022-09-13	2022-09-14	2022-08-26	600	1	1	3	1	\N
+47	2022-09-12	2022-09-13	2022-08-26	3400	1	6	1	1	\N
+48	2022-09-26	2022-09-28	2022-08-26	1600	2	0	3	1	Ejemplo de motivo cancelacion
+50	2022-11-23	2022-11-24	2022-08-27	3800	3	2	1	12	\N
+49	2022-11-15	2022-11-17	2022-08-27	7600	3	2	1	12	Ejemplo texto de motivo cancelacion.
+51	2022-08-27	2022-08-28	2022-08-27	400	1	0	3	1	\N
+\.
+
+
+--
+-- Data for Name: inquilinos_servicio; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.inquilinos_servicio (id, nombre, descripcion) FROM stdin;
+1	Internet	WiFi de alta velocidad
+2	Limpieza	Servicio de limpieza
+3	DirecTV	DirecTV con pack de películas
+\.
+
+
+--
+-- Data for Name: inquilinos_servicio_cab; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.inquilinos_servicio_cab (id, servicio_id, cab_id) FROM stdin;
+1	1	1
+2	1	2
+3	2	1
+4	2	2
+5	2	3
+6	3	3
 \.
 
 
@@ -1176,14 +1538,14 @@ COPY public.inquilinos_reserva (id, "fechaDesde", "fechaHasta", "fechaReserva", 
 -- Name: accounts_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.accounts_user_groups_id_seq', 14, true);
+SELECT pg_catalog.setval('public.accounts_user_groups_id_seq', 26, true);
 
 
 --
 -- Name: accounts_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.accounts_user_id_seq', 13, true);
+SELECT pg_catalog.setval('public.accounts_user_id_seq', 12, true);
 
 
 --
@@ -1211,28 +1573,28 @@ SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 1, true);
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.auth_permission_id_seq', 57, true);
+SELECT pg_catalog.setval('public.auth_permission_id_seq', 65, true);
 
 
 --
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.django_admin_log_id_seq', 47, true);
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 106, true);
 
 
 --
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.django_content_type_id_seq', 14, true);
+SELECT pg_catalog.setval('public.django_content_type_id_seq', 16, true);
 
 
 --
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 23, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 30, true);
 
 
 --
@@ -1246,28 +1608,35 @@ SELECT pg_catalog.setval('public.inquilinos_cab_id_seq', 3, true);
 -- Name: inquilinos_cambioestado_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.inquilinos_cambioestado_id_seq', 31, true);
+SELECT pg_catalog.setval('public.inquilinos_cambioestado_id_seq', 100, true);
+
+
+--
+-- Name: inquilinos_comentario_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.inquilinos_comentario_id_seq', 37, true);
 
 
 --
 -- Name: inquilinos_estado_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.inquilinos_estado_id_seq', 7, true);
+SELECT pg_catalog.setval('public.inquilinos_estado_id_seq', 5, true);
 
 
 --
 -- Name: inquilinos_foto_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.inquilinos_foto_id_seq', 6, true);
+SELECT pg_catalog.setval('public.inquilinos_foto_id_seq', 5, true);
 
 
 --
 -- Name: inquilinos_huesped_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.inquilinos_huesped_id_seq', 7, true);
+SELECT pg_catalog.setval('public.inquilinos_huesped_id_seq', 12, true);
 
 
 --
@@ -1288,14 +1657,28 @@ SELECT pg_catalog.setval('public.inquilinos_instalacion_id_seq', 3, true);
 -- Name: inquilinos_rango_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.inquilinos_rango_id_seq', 7, true);
+SELECT pg_catalog.setval('public.inquilinos_rango_id_seq', 5, true);
 
 
 --
 -- Name: inquilinos_reserva_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.inquilinos_reserva_id_seq', 23, true);
+SELECT pg_catalog.setval('public.inquilinos_reserva_id_seq', 51, true);
+
+
+--
+-- Name: inquilinos_servicio_cab_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.inquilinos_servicio_cab_id_seq', 6, true);
+
+
+--
+-- Name: inquilinos_servicio_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.inquilinos_servicio_id_seq', 3, true);
 
 
 --
@@ -1467,6 +1850,22 @@ ALTER TABLE ONLY public.inquilinos_cambioestado
 
 
 --
+-- Name: inquilinos_comentario inquilinos_comentario_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inquilinos_comentario
+    ADD CONSTRAINT inquilinos_comentario_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: inquilinos_comentario inquilinos_comentario_reserva_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inquilinos_comentario
+    ADD CONSTRAINT inquilinos_comentario_reserva_id_key UNIQUE (reserva_id);
+
+
+--
 -- Name: inquilinos_estado inquilinos_estado_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1536,6 +1935,30 @@ ALTER TABLE ONLY public.inquilinos_rango
 
 ALTER TABLE ONLY public.inquilinos_reserva
     ADD CONSTRAINT inquilinos_reserva_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: inquilinos_servicio_cab inquilinos_servicio_cab_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inquilinos_servicio_cab
+    ADD CONSTRAINT inquilinos_servicio_cab_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: inquilinos_servicio_cab inquilinos_servicio_cab_servicio_id_cab_id_d36069f8_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inquilinos_servicio_cab
+    ADD CONSTRAINT inquilinos_servicio_cab_servicio_id_cab_id_d36069f8_uniq UNIQUE (servicio_id, cab_id);
+
+
+--
+-- Name: inquilinos_servicio inquilinos_servicio_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inquilinos_servicio
+    ADD CONSTRAINT inquilinos_servicio_pkey PRIMARY KEY (id);
 
 
 --
@@ -1658,6 +2081,20 @@ CREATE INDEX inquilinos_cambioestado_reserva_id_9dcea929 ON public.inquilinos_ca
 
 
 --
+-- Name: inquilinos_comentario_cab_id_3de34ac7; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX inquilinos_comentario_cab_id_3de34ac7 ON public.inquilinos_comentario USING btree (cab_id);
+
+
+--
+-- Name: inquilinos_comentario_huesped_id_1a5a84db; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX inquilinos_comentario_huesped_id_1a5a84db ON public.inquilinos_comentario USING btree (huesped_id);
+
+
+--
 -- Name: inquilinos_foto_cab_id_ce7c3d44; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -1697,6 +2134,20 @@ CREATE INDEX inquilinos_reserva_cab_id_6d18a96a ON public.inquilinos_reserva USI
 --
 
 CREATE INDEX inquilinos_reserva_huesped_id_7406da95 ON public.inquilinos_reserva USING btree (huesped_id);
+
+
+--
+-- Name: inquilinos_servicio_cab_cab_id_8437aa38; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX inquilinos_servicio_cab_cab_id_8437aa38 ON public.inquilinos_servicio_cab USING btree (cab_id);
+
+
+--
+-- Name: inquilinos_servicio_cab_servicio_id_92c07903; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX inquilinos_servicio_cab_servicio_id_92c07903 ON public.inquilinos_servicio_cab USING btree (servicio_id);
 
 
 --
@@ -1788,6 +2239,30 @@ ALTER TABLE ONLY public.inquilinos_cambioestado
 
 
 --
+-- Name: inquilinos_comentario inquilinos_comentari_huesped_id_1a5a84db_fk_inquilino; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inquilinos_comentario
+    ADD CONSTRAINT inquilinos_comentari_huesped_id_1a5a84db_fk_inquilino FOREIGN KEY (huesped_id) REFERENCES public.inquilinos_huesped(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: inquilinos_comentario inquilinos_comentari_reserva_id_3157bff1_fk_inquilino; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inquilinos_comentario
+    ADD CONSTRAINT inquilinos_comentari_reserva_id_3157bff1_fk_inquilino FOREIGN KEY (reserva_id) REFERENCES public.inquilinos_reserva(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: inquilinos_comentario inquilinos_comentario_cab_id_3de34ac7_fk_inquilinos_cab_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inquilinos_comentario
+    ADD CONSTRAINT inquilinos_comentario_cab_id_3de34ac7_fk_inquilinos_cab_id FOREIGN KEY (cab_id) REFERENCES public.inquilinos_cab(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
 -- Name: inquilinos_foto inquilinos_foto_cab_id_ce7c3d44_fk_inquilinos_cab_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1841,6 +2316,22 @@ ALTER TABLE ONLY public.inquilinos_reserva
 
 ALTER TABLE ONLY public.inquilinos_reserva
     ADD CONSTRAINT inquilinos_reserva_huesped_id_7406da95_fk_inquilinos_huesped_id FOREIGN KEY (huesped_id) REFERENCES public.inquilinos_huesped(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: inquilinos_servicio_cab inquilinos_servicio__servicio_id_92c07903_fk_inquilino; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inquilinos_servicio_cab
+    ADD CONSTRAINT inquilinos_servicio__servicio_id_92c07903_fk_inquilino FOREIGN KEY (servicio_id) REFERENCES public.inquilinos_servicio(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: inquilinos_servicio_cab inquilinos_servicio_cab_cab_id_8437aa38_fk_inquilinos_cab_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inquilinos_servicio_cab
+    ADD CONSTRAINT inquilinos_servicio_cab_cab_id_8437aa38_fk_inquilinos_cab_id FOREIGN KEY (cab_id) REFERENCES public.inquilinos_cab(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
