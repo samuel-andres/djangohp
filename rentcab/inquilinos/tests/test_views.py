@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.test import TestCase
 from django.urls import reverse
+from rest_framework import status
 
 from inquilinos.models import Cab, Huesped, Rango, Reserva
 
@@ -30,12 +31,12 @@ class RegistroReservaViewTest(TestCase):
             fechaDesde=datetime.date.today() - datetime.timedelta(weeks=2),
             fechaHasta=datetime.date.today() + datetime.timedelta(weeks=2),
         )
-        reserva = Reserva(
+        test_reserva = Reserva(
             fechaDesde=datetime.date.today(),
             fechaHasta=datetime.date.today() + datetime.timedelta(weeks=1),
             cantAdultos=1,
         )
-        reserva.save()
+        test_reserva.save()
         test_rango.save()
         # creación del grupo con el que se manejan los permisos de la vista
         group = Group(name="huesped")
@@ -58,11 +59,11 @@ class RegistroReservaViewTest(TestCase):
     def test_code_403_si_no_completo_datos_personales(self):
         """Testea que se prohiba el acceso al usuario aún estando logueado si no completó sus
         datos personales"""
-        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
         response = self.client.get(
             reverse("inquilinos:reserva-registro", kwargs={"slug": "cab_test"})
         )
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_code_200_si_completo_datos_personales(self):
         """Testea que el usuario tenga acceso al registro de reservas si está logueado y completó sus
@@ -74,8 +75,8 @@ class RegistroReservaViewTest(TestCase):
             telefono="3534267889",
         )
         huesped.save()
-        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
-        response2 = self.client.get(
+        self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        response = self.client.get(
             reverse("inquilinos:reserva-registro", kwargs={"slug": "cab_test"})
         )
-        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

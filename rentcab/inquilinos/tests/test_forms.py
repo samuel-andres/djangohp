@@ -7,10 +7,12 @@ from django.test import TestCase
 from inquilinos.forms import CrearHuespedForm, RegResForm
 from inquilinos.models import Cab, Estado, Huesped, Rango, Reserva
 
+# helper functions
 
-def get_a_cab():
+
+def create_cab():
     cab = Cab(
-        nombre="cab_slug",
+        nombre="test_cab",
         cantHabitaciones=2,
         costoPorAdulto=500.0,
         costoPorMenor=200.0,
@@ -33,9 +35,7 @@ def get_a_huesped(user):
 
 
 def crear_reserva(cab, user, fechaDesde, fechaHasta, cantAdultos=2, cantMenores=2):
-
     huesped = get_a_huesped(user)
-
     datos_reserva = {
         "fechaDesde": fechaDesde,
         "fechaHasta": fechaHasta,
@@ -43,13 +43,13 @@ def crear_reserva(cab, user, fechaDesde, fechaHasta, cantAdultos=2, cantMenores=
         "cantMenores": cantMenores,
         "huesped": huesped,
     }
-
     reserva = cab.crear_reserva(datos_reserva)
-
     return reserva
 
 
-class RegistrarReservaFormTest(TestCase):
+class RegistroReservaFormTest(TestCase):
+    """Test case para formulario de registro de reservas"""
+
     def setUp(self):
         # Creación de un usuario para testeo
         self.user = get_user_model().objects.create_user(
@@ -57,28 +57,6 @@ class RegistrarReservaFormTest(TestCase):
         )
         self.user.save()
 
-        # creación de una cabaña
-        test_cab = Cab(
-            nombre="cab_test",
-            cantHabitaciones=2,
-            costoPorAdulto=500.0,
-            costoPorMenor=200.0,
-            cantMaxPersonas=6,
-        )
-        test_cab.save()
-
-        # creación de un rango y una reserva
-        test_rango = Rango(
-            fechaDesde=datetime.date.today() - datetime.timedelta(weeks=2),
-            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=2),
-        )
-        reserva = Reserva(
-            fechaDesde=datetime.date.today(),
-            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=1),
-            cantAdultos=1,
-        )
-        reserva.save()
-        test_rango.save()
         # creación del grupo con el que se manejan los permisos de la vista
         group = Group(name="huesped")
         group.save()
@@ -87,30 +65,39 @@ class RegistrarReservaFormTest(TestCase):
         permission.save()
         group.permissions.add(permission)
 
+        # creación de estados
         PteConf = Estado(nombre="Pte Confirmacion")
+        Cancelada = Estado(nombre="Cancelada")
+        Finalizada = Estado(nombre="Finalizada")
+        Confirmada = Estado(nombre="Confirmada")
+        Rechazada = Estado(nombre="Rechazada")
+        Cancelada.save()
+        Finalizada.save()
+        Confirmada.save()
+        Rechazada.save()
         PteConf.save()
 
     # tests para la fechaDesde
     def test_fecha_desde_antes_de_hoy(self):
         """Testea que no sea exitosa la carga de una reserva con la fecha de ingreso menor
         a la fecha actual."""
-        cab = get_a_cab()
-
-        rango = Rango(
-            fechaDesde=datetime.date.today(),
-            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=6),
+        cab = create_cab()
+        # creación de un rango de disponibilidad
+        test_rango = Rango(
+            fechaDesde=datetime.date.today() - datetime.timedelta(weeks=2),
+            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=2),
             cab=cab,
         )
+        test_rango.save()
 
-        rango.save()
-
+        # se chequea contra el rango definido en el setup que es desde hace dos semanas hasta dentro de dos semanas
         fechaDesdeHasta = (
             (datetime.date.today() - datetime.timedelta(days=1)).strftime("%d/%m/%Y")
             + " - "
-            + (datetime.date.today() + datetime.timedelta(weeks=4)).strftime("%d/%m/%Y")
+            + (datetime.date.today() + datetime.timedelta(weeks=1)).strftime("%d/%m/%Y")
         )
 
-        cab_slug = "cab_slug"
+        cab_slug = "test_cab"
 
         form = RegResForm(
             data={
@@ -125,20 +112,21 @@ class RegistrarReservaFormTest(TestCase):
     def test_fecha_desde_igual_a_hoy(self):
         """Testea que sea exitosa la carga de una reserva con la fecha de ingreso
         igual a la fecha actual."""
-        cab = get_a_cab()
-        rango = Rango(
-            fechaDesde=datetime.date.today(),
-            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=6),
+        cab = create_cab()
+        # creación de un rango de disponibilidad
+        test_rango = Rango(
+            fechaDesde=datetime.date.today() - datetime.timedelta(weeks=2),
+            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=2),
             cab=cab,
         )
+        test_rango.save()
 
-        rango.save()
         fechaDesdeHasta = (
             (datetime.date.today()).strftime("%d/%m/%Y")
             + " - "
-            + (datetime.date.today() + datetime.timedelta(weeks=4)).strftime("%d/%m/%Y")
+            + (datetime.date.today() + datetime.timedelta(weeks=1)).strftime("%d/%m/%Y")
         )
-        cab_slug = "cab_slug"
+        cab_slug = "test_cab"
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,
@@ -152,7 +140,7 @@ class RegistrarReservaFormTest(TestCase):
     def test_fecha_desde_fuera_de_rango_de_disponibilidad(self):
         """Testea que no sea exitosa la carga de una reserva en la que la fecha de ingreso
         no está dentro de ningún rango de disponibilidad de alquiler de la cabaña."""
-        cab = get_a_cab()
+        cab = create_cab()
         rango = Rango(
             fechaDesde=datetime.date.today(),
             fechaHasta=datetime.date.today() + datetime.timedelta(weeks=6),
@@ -165,7 +153,7 @@ class RegistrarReservaFormTest(TestCase):
             + " - "
             + (datetime.date.today() + datetime.timedelta(weeks=8)).strftime("%d/%m/%Y")
         )
-        cab_slug = "cab_slug"
+        cab_slug = "test_cab"
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,
@@ -179,7 +167,7 @@ class RegistrarReservaFormTest(TestCase):
     def test_fecha_desde_dentro_de_rango_de_una_reserva(self):
         """Testea que no sea exitosa la carga de una reserva que tiene la fecha de ingreso
         dentro de algún rango de reserva de la misma cabaña."""
-        cab = get_a_cab()
+        cab = create_cab()
         rango = Rango(
             fechaDesde=datetime.date.today(),
             fechaHasta=datetime.date.today() + datetime.timedelta(weeks=6),
@@ -200,7 +188,7 @@ class RegistrarReservaFormTest(TestCase):
             + (datetime.date.today() + datetime.timedelta(weeks=4)).strftime("%d/%m/%Y")
         )
 
-        cab_slug = "cab_slug"
+        cab_slug = "test_cab"
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,
@@ -216,7 +204,7 @@ class RegistrarReservaFormTest(TestCase):
     def test_fecha_hasta_antes_de_hoy(self):
         """Testea que no sea exitosa la carga de una reserva con la fecha hasta menor
         a la fecha actual."""
-        cab = get_a_cab()
+        cab = create_cab()
         rango = Rango(
             fechaDesde=datetime.date.today(),
             fechaHasta=datetime.date.today() + datetime.timedelta(weeks=6),
@@ -229,7 +217,7 @@ class RegistrarReservaFormTest(TestCase):
             + " - "
             + (datetime.date.today() - datetime.timedelta(weeks=1)).strftime("%d/%m/%Y")
         )
-        cab_slug = "cab_slug"
+        cab_slug = "test_cab"
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,
@@ -243,7 +231,7 @@ class RegistrarReservaFormTest(TestCase):
     def test_fecha_hasta_igual_a_hoy(self):
         """Testea que la carga de una reserva con la fecha hasta igual al día de la fecha
         no sea exitosa, debido al hecho de que la cantidad mínima de noches es = 1 (2 días)"""
-        cab = get_a_cab()
+        cab = create_cab()
         rango = Rango(
             fechaDesde=datetime.date.today(),
             fechaHasta=datetime.date.today() + datetime.timedelta(weeks=6),
@@ -256,7 +244,7 @@ class RegistrarReservaFormTest(TestCase):
             + " - "
             + (datetime.date.today()).strftime("%d/%m/%Y")
         )
-        cab_slug = "cab_slug"
+        cab_slug = "test_cab"
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,
@@ -270,7 +258,7 @@ class RegistrarReservaFormTest(TestCase):
     def test_fecha_hasta_fuera_de_rango_de_disponibilidad(self):
         """Testea que no sea exitosa la carga de una reserva con la fecha hasta fuera
         de rango de disponibilidad."""
-        cab = get_a_cab()
+        cab = create_cab()
         rango = Rango(
             fechaDesde=datetime.date.today(),
             fechaHasta=datetime.date.today() + datetime.timedelta(weeks=6),
@@ -283,7 +271,7 @@ class RegistrarReservaFormTest(TestCase):
             + " - "
             + (datetime.date.today() + datetime.timedelta(weeks=8)).strftime("%d/%m/%Y")
         )
-        cab_slug = "cab_slug"
+        cab_slug = "test_cab"
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,
@@ -297,7 +285,7 @@ class RegistrarReservaFormTest(TestCase):
     def test_fecha_hasta_dentro_de_rango_de_una_reserva(self):
         """Testea que no sea exitosa la carga de una reserva con la fecha hasta dentro
         del rango de alguna reserva de la cabaña."""
-        cab = get_a_cab()
+        cab = create_cab()
         rango = Rango(
             fechaDesde=datetime.date.today(),
             fechaHasta=datetime.date.today() + datetime.timedelta(weeks=6),
@@ -317,7 +305,7 @@ class RegistrarReservaFormTest(TestCase):
             + " - "
             + (datetime.date.today() + datetime.timedelta(weeks=3)).strftime("%d/%m/%Y")
         )
-        cab_slug = "cab_slug"
+        cab_slug = "test_cab"
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,
@@ -333,7 +321,7 @@ class RegistrarReservaFormTest(TestCase):
     def test_fecha_en_rango_ingresado_fuera_de_rango_de_disponibilidad(self):
         """Testea que no sea exitosa la carga de una reserva la cual tiene alguna fecha
         dentro de su rango fuera de algún rango de disponibilidad."""
-        cab = get_a_cab()
+        cab = create_cab()
         rango1 = Rango(
             fechaDesde=datetime.date.today(),
             fechaHasta=datetime.date.today() + datetime.timedelta(weeks=4),
@@ -352,7 +340,7 @@ class RegistrarReservaFormTest(TestCase):
             + " - "
             + (datetime.date.today() + datetime.timedelta(weeks=7)).strftime("%d/%m/%Y")
         )
-        cab_slug = "cab_slug"
+        cab_slug = "test_cab"
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,
@@ -366,7 +354,7 @@ class RegistrarReservaFormTest(TestCase):
     def test_fecha_en_rango_ingresado_dentro_de_rango_de_una_reserva(self):
         """Testea que no sea exitosa la carga de una reserva la cual tiene alguna fecha
         en su rango dentro del rango de alguna reserva de la cabaña."""
-        cab = get_a_cab()
+        cab = create_cab()
         rango = Rango(
             fechaDesde=datetime.date.today(),
             fechaHasta=datetime.date.today() + datetime.timedelta(weeks=5),
@@ -387,7 +375,7 @@ class RegistrarReservaFormTest(TestCase):
             + (datetime.date.today() + datetime.timedelta(weeks=4)).strftime("%d/%m/%Y")
         )
 
-        cab_slug = "cab_slug"
+        cab_slug = "test_cab"
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,

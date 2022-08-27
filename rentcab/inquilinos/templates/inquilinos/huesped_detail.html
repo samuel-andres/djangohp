@@ -3,7 +3,7 @@
   {% load static %}
   {% load crispy_forms_tags %}
   <br/>
-  <div class="col-md-3 offset-md-4 p-5 d-flex justify-content-center border rounded bg-white"
+  <div class="col-lg-4 offset-md-4 p-3 d-flex justify-content-center border rounded bg-white"
        id="divreserva">
     <div class="container">
       {% for message in messages  %}
@@ -19,7 +19,7 @@
       </div>
       <div class="row">
         <ul>
-          <li>{{ huesped.usuario.username }}</li>
+          <li>@{{ huesped.usuario.username }}</li>
           <li>{{ huesped.usuario.email }}</li>
         </ul>
       </div>
