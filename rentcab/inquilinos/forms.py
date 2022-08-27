@@ -13,7 +13,9 @@ from .utils import CustomParser
 
 
 class RegResForm(forms.Form):
-    foo_slug = forms.SlugField()
+    """Formulario para el registro de reservas."""
+
+    cab_slug = forms.SlugField()
     # cantidades predefinidas para los campos adultos y menores
     # textinput con el id que usa el datepicker
     fechaDesdeHasta = forms.CharField(
@@ -21,8 +23,8 @@ class RegResForm(forms.Form):
             attrs={
                 "id": "litepicker",
                 "placeholder": "Ingreso - Salida",
-                "class":"mb-3 form-control textinput textInput text-center",
-                "readonly":"true",
+                "class": "mb-3 form-control textinput textInput text-center",
+                "readonly": "true",
             }
         ),
         label="Rango de reserva",
@@ -35,10 +37,10 @@ class RegResForm(forms.Form):
         min_value=1,
         widget=forms.TextInput(
             attrs={
-                "class":"form-control text-center numberinput",
-                'required':'true',
-                "style":"border: 1px solid #D3D3D3;",
-                "readonly":"true",
+                "class": "form-control text-center numberinput",
+                "required": "true",
+                "style": "border: 1px solid #D3D3D3;",
+                "readonly": "true",
             }
         ),
     )
@@ -47,10 +49,10 @@ class RegResForm(forms.Form):
         min_value=0,
         widget=forms.TextInput(
             attrs={
-                "class":"form-control text-center numberinput",
-                'required':'true',
-                "style":"border: 1px solid #D3D3D3;",
-                "readonly":"true",
+                "class": "form-control text-center numberinput",
+                "required": "true",
+                "style": "border: 1px solid #D3D3D3;",
+                "readonly": "true",
             }
         ),
     )
@@ -72,7 +74,7 @@ class RegResForm(forms.Form):
             )
         if hasta.date() == datetime.date.today():
             raise forms.ValidationError("Error. Debe alojarse al menos una noche.")
-        cab = Cab.objects.get(slug=self.cleaned_data["foo_slug"])
+        cab = Cab.objects.get(slug=self.cleaned_data["cab_slug"])
         desde = desde.date()
         hasta = hasta.date()
         foobar = False
@@ -120,15 +122,18 @@ class RegResForm(forms.Form):
         # (el if verifica que solo se realice la validación si los
         # dos campos que dependen de sí pasaron sus propias validaciones)
         if cantMenores and cantAdultos:
-            cab = Cab.objects.get(slug=self.cleaned_data["foo_slug"])
+            cab = Cab.objects.get(slug=self.cleaned_data["cab_slug"])
             cantMaxPersonas = cab.cantMaxPersonas
             # se valida que la suma de menores y mayores sea menor a la maxima cantidad de personas definida en la cabaña
             if (int(cantAdultos) + int(cantMenores)) > cantMaxPersonas:
-                raise forms.ValidationError(f"Máxima cantidad de personas = {cantMaxPersonas}")
+                raise forms.ValidationError(
+                    f"Máxima cantidad de personas = {cantMaxPersonas}"
+                )
 
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request", None)
         super().__init__(*args, **kwargs)
-        self.fields["foo_slug"].widget = forms.HiddenInput()
+        self.fields["cab_slug"].widget = forms.HiddenInput()
 
 
 class CrearHuespedForm(forms.ModelForm):
@@ -180,12 +185,15 @@ class ComentarioCreateForm(forms.ModelForm):
         self.helper.form_method = "POST"
         self.helper.form_style = "inline"
 
+
 class CancelarReservaForm(forms.ModelForm):
     class Meta:
         model = Reserva
-        fields = ['motivoCancelacion']
+        fields = ["motivoCancelacion"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["motivoCancelacion"].widget = forms.Textarea(attrs={'class': 'form-control'})
+        self.fields["motivoCancelacion"].widget = forms.Textarea(
+            attrs={"class": "form-control"}
+        )
         self.fields["motivoCancelacion"].required = True

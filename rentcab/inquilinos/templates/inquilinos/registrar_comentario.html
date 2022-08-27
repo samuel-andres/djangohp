@@ -1,21 +1,8 @@
 {% extends 'inquilinos/base.html' %}
 {% block content %}
-    {% load static %}
-    {% load crispy_forms_tags %}
-    {% if comentario_existente %}
-        <br>
-        <div class="card shadow-sm col-md-4 offset-md-4 p-2 d-flex">
-            <div class="card-body">
-                <p class="card-text">{{ comentario_existente.comentario }}</p>
-                <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted">{{ comentario_existente.huesped }}</small>
-                    <small class="text-muted star-place-holder">{{ comentario_existente.calificacion }}/5</small>
-                </div>
-            </div>
-        </div>
-    {% else %}
-        {% csrf_token %}
-        <br/>
-        <div class="col-md-4 offset-md-4 p-3 d-flex justify-content-center border rounded bg-white">{% crispy form %}</div>
-    {% endif %}
+  {% load static %}
+  {% load crispy_forms_tags %}
+  {% csrf_token %}
+  <br/>
+  <div class="col-md-4 offset-md-4 p-3 d-flex justify-content-center border rounded bg-white">{% crispy form %}</div>
 {% endblock %}

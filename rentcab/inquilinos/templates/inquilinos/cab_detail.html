@@ -1,113 +1,113 @@
 {% extends 'inquilinos/base.html' %}
 {% block content %}
-    {% load static %}
-    <br>
-    <div class="row mb-3">
-        <center>
-            <h1>{{ cab.nombre }}</h1>
-            {% if cab.descripcion %}
-                <h7 class="fst-italic fw-light">
-                {{ cab.descripcion }}
-                </h7>
-            {% endif %}
-        </center>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div id="gallery"
-                 class="carousel slide me-2 ms-5 mt-2 mb-2"
-                 data-bs-ride="carousel">
-                <ul class="carousel-indicators">
-                    <li data-bs-target="#gallery" data-bs-slide-to="0" class="active"></li>
-                    {% for foto in cab.foto_set.all %}
-                        {% if forloop.last %}<! --{% endif %}
-                        <li data-bs-target="#gallery" data-bs-slide-to="{{ forloop.counter }}"></li>
-                    {% endfor %}
-                </ul>
-                <div class="carousel-inner">
-                    {% for foto in cab.foto_set.all %}
-                        <div class="carousel-item {% if forloop.counter0 == 0 %}active{% endif %}">
-                            <img src="{{ foto.foto.url }}"
-                                 class="d-block  w-100 img-fluid rounded maseit"
-                                 alt="Responsive image"/>
-                            <div class="carousel-caption d-none d-md-block rounded position-absolute bg-custom">
-                                <p>{{ foto.descripcion }}</p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-                <button class="carousel-control-prev"
-                        type="button"
-                        data-bs-target="#gallery"
-                        data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next"
-                        type="button"
-                        data-bs-target="#gallery"
-                        data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
+  {% load static %}
+  <br/>
+  <div class="row mb-3">
+    <center>
+      <h1>{{ cab.nombre }}</h1>
+      {% if cab.descripcion %}
+        <h7 class="fst-italic fw-light">
+        {{ cab.descripcion }}
+        </h7>
+      {% endif %}
+    </center>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div id="gallery"
+           class="carousel slide me-2 ms-5 mt-2 mb-2"
+           data-bs-ride="carousel">
+        <ul class="carousel-indicators">
+          <li data-bs-target="#gallery" data-bs-slide-to="0" class="active"></li>
+          {% for foto in cab.foto_set.all %}
+            {% if forloop.last %}<! --{% endif %}
+            <li data-bs-target="#gallery" data-bs-slide-to="{{ forloop.counter }}"></li>
+          {% endfor %}
+        </ul>
+        <div class="carousel-inner">
+          {% for foto in cab.foto_set.all %}
+            <div class="carousel-item {% if forloop.counter0 == 0 %}active{% endif %}">
+              <img src="{{ foto.foto.url }}"
+                   class="d-block  w-100 img-fluid rounded carr-img"
+                   alt="Responsive image"/>
+              <div class="carousel-caption d-none d-md-block rounded position-absolute bg-custom">
+                <p>{{ foto.descripcion }}</p>
+              </div>
             </div>
+          {% endfor %}
         </div>
-        <div class="col-md-6">
-            <ul class="list-group col-md-10 offset-md-1 mb-3 mt-2 text-center">
-                {% if cab.calificacion_promedio %}
-                    <li class="list-group-item" id="calificacion_id">
-                        Calificación promedio: <span id="estrellas" style="color:goldenrod;"></span>
-                    </li>
-                {% endif %}
-                <li class="list-group-item">
-                    {{ cab.cantHabitaciones }}
-                    {% if cab.cantHabitaciones > 1 %}
-                        habitaciones.
-                    {% else %}
-                        habitación.
-                    {% endif %}
-                </li>
-                <div class="clearfix split-items">
-                    <li class="list-group-item left-side">Adulto x Noche ${{ cab.costoPorAdulto }}</li>
-                    <li class="list-group-item right-side">Menor x Noche ${{ cab.costoPorMenor }}</li>
+        <button class="carousel-control-prev"
+                type="button"
+                data-bs-target="#gallery"
+                data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next"
+                type="button"
+                data-bs-target="#gallery"
+                data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="list-group col-md-10 offset-md-1 mb-3 mt-2 text-center">
+        {% if cab.calificacion_promedio %}
+          <li class="list-group-item" id="id_Calificacion">
+            Calificación promedio: <span id="id_Estrellas" class="star-color"></span>
+          </li>
+        {% endif %}
+        <li class="list-group-item">
+          {{ cab.cantHabitaciones }}
+          {% if cab.cantHabitaciones > 1 %}
+            habitaciones.
+          {% else %}
+            habitación.
+          {% endif %}
+        </li>
+        <div class="clearfix split-items">
+          <li class="list-group-item left-side">Adulto x Noche ${{ cab.costoPorAdulto }}</li>
+          <li class="list-group-item right-side">Menor x Noche ${{ cab.costoPorMenor }}</li>
+        </div>
+        {% for inst in cab.instalacion_set.all  %}
+          <li class="list-group-item">
+            {{ inst.descripcion }}<i class="bi bi-check-all"></i>
+          </li>
+        {% endfor %}
+        {% for serv in cab.servicio_set.all  %}
+          <li class="list-group-item">
+            {{ serv.descripcion }}<i class="bi bi-check-all"></i>
+          </li>
+        {% endfor %}
+      </ul>
+      <button type="button"
+              onclick="location.href='{% url 'inquilinos:reserva-registro' cab.slug %}'"
+              class="btn btn-primary col-md-6 offset-md-3 mb-3">
+        Consultar disponibilidad
+      </button>
+    </div>
+  </div>
+  <div class="album py-5 bg-light">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        {% for comentario in comentarios  %}
+          <div class="col">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <p class="card-text">{{ comentario.comentario }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <small class="text-muted">{{ comentario.huesped }}</small>
+                  <small class="text-muted star-place-holder">{{ comentario.calificacion }}</small>
                 </div>
-                {% for inst in cab.instalacion_set.all  %}
-                    <li class="list-group-item">
-                        {{ inst.descripcion }}<i class="bi bi-check-all"></i>
-                    </li>
-                {% endfor %}
-                {% for serv in cab.servicio_set.all  %}
-                    <li class="list-group-item">
-                        {{ serv.descripcion }}<i class="bi bi-check-all"></i>
-                    </li>
-                {% endfor %}
-            </ul>
-            <button type="button"
-                    onclick="location.href='{% url 'inquilinos:reg-res' cab.slug %}'"
-                    class="btn btn-primary col-md-6 offset-md-3 mb-3">
-                Consultar disponibilidad
-            </button>
-        </div>
-    </div>
-    <div class="album py-5 bg-light">
-        <div class="container">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                {% for comentario in comentarios  %}
-                    <div class="col">
-                        <div class="card shadow-sm">
-                            <div class="card-body">
-                                <p class="card-text">{{ comentario.comentario }}</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">{{ comentario.huesped }}</small>
-                                    <small class="text-muted star-place-holder">{{ comentario.calificacion }}</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
+              </div>
             </div>
-        </div>
+          </div>
+        {% endfor %}
+      </div>
     </div>
-    {{ cab.calificacion_promedio|default:"null"|json_script:"calificacionPromedio" }}
-    <script src="{% static 'inquilinos/js/estrellas.js' %}"></script>
+  </div>
+  {{ cab.calificacion_promedio|default:"null"|json_script:"id_calificacionPromedio" }}
+  <script src="{% static 'inquilinos/js/cab_detail.js' %}"></script>
 {% endblock content %}

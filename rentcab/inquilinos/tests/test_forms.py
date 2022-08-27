@@ -10,7 +10,7 @@ from inquilinos.models import Cab, Estado, Huesped, Rango, Reserva
 
 def get_a_cab():
     cab = Cab(
-        nombre="foo_slug",
+        nombre="cab_slug",
         cantHabitaciones=2,
         costoPorAdulto=500.0,
         costoPorMenor=200.0,
@@ -110,12 +110,12 @@ class RegistrarReservaFormTest(TestCase):
             + (datetime.date.today() + datetime.timedelta(weeks=4)).strftime("%d/%m/%Y")
         )
 
-        foo_slug = "foo_slug"
+        cab_slug = "cab_slug"
 
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,
-                "foo_slug": foo_slug,
+                "cab_slug": cab_slug,
                 "cantAdultos": 2,
                 "cantMenores": 2,
             }
@@ -138,11 +138,11 @@ class RegistrarReservaFormTest(TestCase):
             + " - "
             + (datetime.date.today() + datetime.timedelta(weeks=4)).strftime("%d/%m/%Y")
         )
-        foo_slug = "foo_slug"
+        cab_slug = "cab_slug"
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,
-                "foo_slug": foo_slug,
+                "cab_slug": cab_slug,
                 "cantAdultos": 2,
                 "cantMenores": 2,
             }
@@ -165,11 +165,11 @@ class RegistrarReservaFormTest(TestCase):
             + " - "
             + (datetime.date.today() + datetime.timedelta(weeks=8)).strftime("%d/%m/%Y")
         )
-        foo_slug = "foo_slug"
+        cab_slug = "cab_slug"
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,
-                "foo_slug": foo_slug,
+                "cab_slug": cab_slug,
                 "cantAdultos": 2,
                 "cantMenores": 2,
             }
@@ -200,11 +200,11 @@ class RegistrarReservaFormTest(TestCase):
             + (datetime.date.today() + datetime.timedelta(weeks=4)).strftime("%d/%m/%Y")
         )
 
-        foo_slug = "foo_slug"
+        cab_slug = "cab_slug"
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,
-                "foo_slug": foo_slug,
+                "cab_slug": cab_slug,
                 "cantAdultos": 2,
                 "cantMenores": 2,
             }
@@ -229,11 +229,11 @@ class RegistrarReservaFormTest(TestCase):
             + " - "
             + (datetime.date.today() - datetime.timedelta(weeks=1)).strftime("%d/%m/%Y")
         )
-        foo_slug = "foo_slug"
+        cab_slug = "cab_slug"
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,
-                "foo_slug": foo_slug,
+                "cab_slug": cab_slug,
                 "cantAdultos": 2,
                 "cantMenores": 2,
             }
@@ -256,11 +256,11 @@ class RegistrarReservaFormTest(TestCase):
             + " - "
             + (datetime.date.today()).strftime("%d/%m/%Y")
         )
-        foo_slug = "foo_slug"
+        cab_slug = "cab_slug"
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,
-                "foo_slug": foo_slug,
+                "cab_slug": cab_slug,
                 "cantAdultos": 2,
                 "cantMenores": 2,
             }
@@ -283,11 +283,11 @@ class RegistrarReservaFormTest(TestCase):
             + " - "
             + (datetime.date.today() + datetime.timedelta(weeks=8)).strftime("%d/%m/%Y")
         )
-        foo_slug = "foo_slug"
+        cab_slug = "cab_slug"
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,
-                "foo_slug": foo_slug,
+                "cab_slug": cab_slug,
                 "cantAdultos": 2,
                 "cantMenores": 2,
             }
@@ -317,11 +317,11 @@ class RegistrarReservaFormTest(TestCase):
             + " - "
             + (datetime.date.today() + datetime.timedelta(weeks=3)).strftime("%d/%m/%Y")
         )
-        foo_slug = "foo_slug"
+        cab_slug = "cab_slug"
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,
-                "foo_slug": foo_slug,
+                "cab_slug": cab_slug,
                 "cantAdultos": 2,
                 "cantMenores": 2,
             }
@@ -352,11 +352,11 @@ class RegistrarReservaFormTest(TestCase):
             + " - "
             + (datetime.date.today() + datetime.timedelta(weeks=7)).strftime("%d/%m/%Y")
         )
-        foo_slug = "foo_slug"
+        cab_slug = "cab_slug"
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,
-                "foo_slug": foo_slug,
+                "cab_slug": cab_slug,
                 "cantAdultos": 2,
                 "cantMenores": 2,
             }
@@ -387,11 +387,11 @@ class RegistrarReservaFormTest(TestCase):
             + (datetime.date.today() + datetime.timedelta(weeks=4)).strftime("%d/%m/%Y")
         )
 
-        foo_slug = "foo_slug"
+        cab_slug = "cab_slug"
         form = RegResForm(
             data={
                 "fechaDesdeHasta": fechaDesdeHasta,
-                "foo_slug": foo_slug,
+                "cab_slug": cab_slug,
                 "cantAdultos": 2,
                 "cantMenores": 2,
             }

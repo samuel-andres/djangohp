@@ -1,77 +1,76 @@
 {% extends 'inquilinos/base.html' %}
 {% block content %}
-{% load static %}
-{% load crispy_forms_tags %}
-<br />
-<div class="col-md-4 offset-md-4 p-4 d-flex justify-content-center border rounded bg-white" id="divreserva">
-  <div class="container">
-    <div class="row text-center">
-      <h1>Reserva #{{ reserva.pk }}</h1>
-    </div>
-    <div class="row text-center">
-      <h2 class="fw-lighter">{{ reserva.cab }}</h2>
-    </div>
-    <div class="row">
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item">
-          <strong>Estado:</strong>
-          <span class="float-end">{{ estadoreserva }}</span>
-        </li>
-        <li class="list-group-item">
-          <strong>Fecha de ingreso:</strong>
-          <span class="float-end">{{ reserva.fechaDesde }}</span>
-        </li>
-        <li class="list-group-item">
-          <strong>Fecha de salida:</strong>
-          <span class="float-end">
-            {{ reserva.fechaHasta }}
-          </span>
-        </li>
-        <li class="list-group-item">
-          <strong>Cantidad de adultos:</strong>
-          <span class="float-end">{{ reserva.cantAdultos }}</span>
-        </li>
-        {% if reserva.cantMenores > 0 %}
-        <li class="list-group-item">
-          <strong>Cantidad de menores:</strong>
-          <span class="float-end">{{ reserva.cantMenores }}</span>
-        </li>
-        {% endif %}
-        <li class="list-group-item">
-          <strong>Precio final:</strong>
-          <span class="float-end">{{ reserva.get_precio_final }}</span>
-        </li>
-        <li class="list-group-item">
-          <strong>Reserva realizada por:</strong>
-          <span class="float-end">{{ reserva.huesped }}</span>
-        </li>
-        <li class="list-group-item">
-          <strong>Fecha de reserva:</strong>
-          <span class="float-end">{{ reserva.fechaReserva }}</span>
-        </li>
-
-        {% if estadoreserva == "Pte Confirmacion"  %}
-        <li class="list-group-item">
-          <p class="fw-bold">
-            <span style="background-color:#FFFF00;">La reserva quedara pendiente hasta que sea confirmada o
-            rechazada.</span>
-          </p>
-        </li>
+  {% load static %}
+  {% load crispy_forms_tags %}
+  <br />
+  <div class="col-md-4 offset-md-4 p-4 d-flex justify-content-center border rounded bg-white"
+       id="divreserva">
+    <div class="container">
+      <div class="row text-center">
+        <h1>Reserva #{{ reserva.pk }}</h1>
+      </div>
+      <div class="row text-center">
+        <h2 class="fw-lighter">{{ reserva.cab }}</h2>
+      </div>
+      <div class="row">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <strong>Estado:</strong>
+            <span class="float-end">{{ estadoreserva }}</span>
+          </li>
+          <li class="list-group-item">
+            <strong>Fecha de ingreso:</strong>
+            <span class="float-end">{{ reserva.fechaDesde }}</span>
+          </li>
+          <li class="list-group-item">
+            <strong>Fecha de salida:</strong>
+            <span class="float-end">{{ reserva.fechaHasta }}</span>
+          </li>
+          <li class="list-group-item">
+            <strong>Cantidad de adultos:</strong>
+            <span class="float-end">{{ reserva.cantAdultos }}</span>
+          </li>
+          {% if reserva.cantMenores > 0 %}
+            <li class="list-group-item">
+              <strong>Cantidad de menores:</strong>
+              <span class="float-end">{{ reserva.cantMenores }}</span>
+            </li>
+          {% endif %}
+          <li class="list-group-item">
+            <strong>Precio final:</strong>
+            <span class="float-end">{{ reserva.get_precio_final }}</span>
+          </li>
+          <li class="list-group-item">
+            <strong>Reserva realizada por:</strong>
+            <span class="float-end">{{ reserva.huesped }}</span>
+          </li>
+          <li class="list-group-item">
+            <strong>Fecha de reserva:</strong>
+            <span class="float-end">{{ reserva.fechaReserva }}</span>
+          </li>
+          {% if estadoreserva == "Pte Confirmacion"  %}
+            <li class="list-group-item">
+              <p class="fw-bold">
+                <span style="background-color:#FFFF00;">La reserva quedara pendiente hasta que sea confirmada o
+                rechazada.</span>
+              </p>
+            </li>
+          </ul>
+          <button class="w-100 mt-2 btn btn-secondary"
+                  onclick="location.href='{% url 'inquilinos:reserva-cancelar' reserva.pk %}'">
+            Cancelar reserva
+          </button>
+        {% elif reserva.se_puede_calificar %}
         </ul>
-        <button class="w-100 mt-2 btn btn-secondary"
-          onclick="location.href='{% url 'inquilinos:cancelar-res' reserva.pk %}'">
-          Cancelar reserva
+        <button class="w-100 mt-2 btn btn-success"
+                type="button"
+                onclick="location.href='{% url 'inquilinos:comentario-registro' reserva.pk %}'">
+          Dejar un comentario
         </button>
-      {% elif reserva.se_puede_calificar %}
-      </ul>
-      <button class="w-100 mt-2 btn btn-success" type="button"
-        onclick="location.href='{% url 'inquilinos:crear-comentario' reserva.pk %}'">
-        Dejar un comentario
-      </button>
       {% elif reserva.tiene_comentario %}
       </ul>
-      </div>
-      <div class="container mt-2">
+    </div>
+    <div class="container mt-2">
       <div class="row">
         <div class="col">
           <div class="card shadow-sm">
@@ -86,12 +85,13 @@
         </div>
       </div>
     </div>
-      {% elif estadoreserva == "Cancelada" %}
-      <li class="list-group-item">
-        <span class="fw-bold">Motivo de cancelación:</span> <br>
-        <span class="fw-lighter text-justify" style="text-align: justify;">{{ reserva.motivoCancelacion }}</span>
-      </li>
-      {% endif %}
-    </div>
-  </div>
+  {% elif estadoreserva == "Cancelada" %}
+    <li class="list-group-item">
+      <span class="fw-bold">Motivo de cancelación:</span>
+      <br/>
+      <span class="fw-lighter text-justify" style="text-align: justify;">{{ reserva.motivoCancelacion }}</span>
+    </li>
+  {% endif %}
+</div>
+</div>
 {% endblock %}

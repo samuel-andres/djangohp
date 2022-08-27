@@ -9,33 +9,32 @@ app_name = "inquilinos"
 urlpatterns = [
     # HOMEPAGE
     path("", views.IndexView.as_view(), name="index"),
-    # DetailViews
-    path("cab/<slug:slug>", views.CabDetailView.as_view(), name="cab-det"),
-    path("huesped/<int:pk>", views.PerfilHuespedDetailView.as_view(), name="hue-det"),
+    # Vistas de cabaña
+    path("cab/<slug:slug>", views.CabDetailView.as_view(), name="cab-detail"),
     path(
-        "reservas/<int:pk>", views.ReservaDetailView.as_view(), name="res-det"
+        "cab/<slug:slug>/reservar",
+        views.RegistroReservaView.as_view(),
+        name="reserva-registro",
     ),
-    # CreateViews
-    path(
-        "huesped/perfil/", views.CrearPerfilHuespedView.as_view(), name="crear-huesped"
-    ),
+    # Vistas de huesped
+    path("huesped/<int:pk>", views.HuespedDetailView.as_view(), name="huesped-detail"),
+    path("huesped/perfil/", views.HuespedCreateView.as_view(), name="huesped-registro"),
     path(
         "huesped/perfil/editar",
-        views.EditarPerfilHuespedView.as_view(),
-        name="editar-huesped",
+        views.HuespedUpdateView.as_view(),
+        name="huesped-update",
+    ),
+    # Vistas de reserva
+    path("reservas/", views.ReservasListView.as_view(), name="reserva-list"),
+    path("reservas/<int:pk>", views.ReservaDetailView.as_view(), name="reserva-detail"),
+    path(
+        "reservas/<int:pk>/cancelar",
+        views.CancelarReservaView.as_view(),
+        name="reserva-cancelar",
     ),
     path(
         "reservas/<int:pk>/calificar",
         views.ComentarioCreateView.as_view(),
-        name="crear-comentario",
+        name="comentario-registro",
     ),
-    # ListViews
-    path("reservas/", views.ReservasDeHuespedListView.as_view(), name="res-h-list"),
-    # CustomViews
-    path(
-        "cab/<slug:slug>/reservar", views.RegistroReservaView.as_view(), name="reg-res"
-    ),
-    # UpdateViews
-    path("reservas/<int:pk>/cancelar", views.CancelarReservaView.as_view(), name="cancelar-res"),
-    path("test/", views.test_view),
 ]

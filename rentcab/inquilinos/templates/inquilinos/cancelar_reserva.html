@@ -1,24 +1,24 @@
 {% extends 'inquilinos/base.html' %}
 {% block content %}
-    <br/>
-    <div class="row">
-        <div class="col-md-4 offset-md-4 p-4 d-flex justify-content-center border rounded bg-white">
-            <form method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    <legend class="mb-0">
-                        Cancelar reserva
-                    </legend>
-                    <h7 class="mt-0 fs-6 fw-light">
-                    Por favor, indique un motivo de cancelación.
-                    </h7>
-                    {{ form.motivoCancelacion }}
-                    {% for error in form.motivoCancelacion.errors  %}<p class="mt-2 mb-0 text-danger">{{ error }}</p>{% endfor %}
-                    <input type="submit"
-                           class="mt-2 form-control btn btn-primary"
-                           value="Confirmar cancelación de reserva">
-                </div>
-            </form>
+  <br/>
+  <div class="row">
+    <div class="col-md-4 offset-md-4 p-4 d-flex justify-content-center border rounded bg-white">
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <legend class="mb-0">
+            Cancelar reserva
+          </legend>
+          <h7 class="mt-0 fs-6 fw-light">
+          Por favor, indique un motivo de cancelación.
+          </h7>
+          {{ form.motivoCancelacion }}
+          {% for error in form.motivoCancelacion.errors  %}<p class="mt-2 mb-0 text-danger">{{ error }}</p>{% endfor %}
+          <input type="submit"
+                 class="mt-2 form-control btn btn-primary"
+                 value="Confirmar cancelación de reserva"/>
         </div>
+      </form>
     </div>
+  </div>
 {% endblock content %}

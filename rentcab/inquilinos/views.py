@@ -3,20 +3,22 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.urls import reverse, reverse_lazy
 from django.views import View, generic
 
-from inquilinos.forms import CrearHuespedForm, RegResForm, ComentarioCreateForm, CancelarReservaForm
+from inquilinos.forms import (
+    CrearHuespedForm,
+    RegResForm,
+    ComentarioCreateForm,
+    CancelarReservaForm,
+)
 from inquilinos.models import Cab, Huesped, Reserva, Comentario
 from inquilinos.utils import CustomParser
 
 from .restricted import (
     HuespedRestrictedListView,
     UserRestrictedCreateView,
-    HuespedRestrictedUpdateView,
     HuespedRestrictedCreateView,
 )
-
 
 # Views
 class IndexView(generic.ListView):
@@ -53,34 +55,34 @@ class RegistroReservaView(PermissionRequiredMixin, View):
     permission_required = ("inquilinos.puede_registrar_reserva",)
     permission_denied_message = "Para consultar la disponibilidad de las cabañas y registrar reservas debes completar tus datos personales."
     model = Reserva
-    template_name = "inquilinos/reg_res.html"
+    template_name = "inquilinos/registro_reserva.html"
     form_class = RegResForm
 
     def get(self, request, slug):
         # se genera el formulario vacío
-        form = self.form_class(initial={"foo_slug": slug})
+        form = self.form_class(initial={"cab_slug": slug})
         # se obtiene la cabaña actual
         cab = get_object_or_404(Cab, slug=slug)
         costoPorAdulto = cab.costoPorAdulto
         costoPorMenor = cab.costoPorMenor
         cantMaxPersonas = cab.cantMaxPersonas
         # se obtienen las fechas en que la cabaña está habilitada y deshabilitada
-        fechas_habilitadas, fechas_deshabilitadas = cab.get_fechas_hab_y_des()
+        fechasHabilitadas, fechasDeshabilitadas = cab.get_fechas_hab_y_des()
         # se pasa como contexto el formulario vacío, el día de hoy y las fechas habilitadas y deshabilitadas
         context = {
             "form": form,
-            "allowed_dates": fechas_habilitadas,
-            "disabled_dates": fechas_deshabilitadas,
-            "costoPorAdulto" : costoPorAdulto,
-            "costoPorMenor" : costoPorMenor,
-            "cantMaxPersonas" : cantMaxPersonas,
+            "fechasHabilitadas": fechasHabilitadas,
+            "fechasDeshabilitadas": fechasDeshabilitadas,
+            "costoPorAdulto": costoPorAdulto,
+            "costoPorMenor": costoPorMenor,
+            "cantMaxPersonas": cantMaxPersonas,
         }
 
         return render(request, self.template_name, context)
 
     def post(self, request, slug):
         # guarda el formulario con los datos ingresados
-        form = self.form_class(request.POST, initial={"foo_slug": slug})
+        form = self.form_class(request.POST, initial={"cab_slug": slug})
         if form.is_valid():
             # si el formulario es válido parseo las fechas del datepicker
             # y las convierto a objetos datetime
@@ -88,6 +90,7 @@ class RegistroReservaView(PermissionRequiredMixin, View):
             fechaDesde, fechaHasta = self.parse_picker_input(pickerinput=pickerinput)
             # obtengo la cabaña según el slug del url
             cab = get_object_or_404(Cab, slug=slug)
+            # genero la payload para la carga
             datos_reserva = {
                 "fechaDesde": fechaDesde,
                 "fechaHasta": fechaHasta,
@@ -95,31 +98,33 @@ class RegistroReservaView(PermissionRequiredMixin, View):
                 "cantMenores": form.cleaned_data["cantMenores"],
                 "huesped": request.user.huesped,
             }
+            # se delega la creación de la reserva al objeto cabaña con la payload correspondiente
             res = cab.crear_reserva(datos_reserva)
 
             # después del post exitoso se redirige a la vista detalle de la reserva
             return HttpResponseRedirect(
                 reverse(
-                    "inquilinos:res-det",
+                    "inquilinos:reserva-detail",
                     kwargs={
                         "pk": res.pk,
                     },
                 )
             )
+
         # si el formulario no fue válido se devuelve el formulario con los datos incorrectos
         cab = get_object_or_404(Cab, slug=slug)
         costoPorAdulto = cab.costoPorAdulto
         costoPorMenor = cab.costoPorMenor
         cantMaxPersonas = cab.cantMaxPersonas
         # se obtienen las fechas en que la cabaña está habilitada y deshabilitada
-        fechas_habilitadas, fechas_deshabilitadas = cab.get_fechas_hab_y_des()
+        fechasHabilitadas, fechasDeshabilitadas = cab.get_fechas_hab_y_des()
         context = {
             "form": form,
-            "allowed_dates": fechas_habilitadas,
-            "disabled_dates": fechas_deshabilitadas,
-            "costoPorAdulto" : costoPorAdulto,
-            "costoPorMenor" : costoPorMenor,
-            "cantMaxPersonas" : cantMaxPersonas,
+            "fechasHabilitadas": fechasHabilitadas,
+            "fechasDeshabilitadas": fechasDeshabilitadas,
+            "costoPorAdulto": costoPorAdulto,
+            "costoPorMenor": costoPorMenor,
+            "cantMaxPersonas": cantMaxPersonas,
         }
         return render(request, self.template_name, context)
 
@@ -132,7 +137,7 @@ class RegistroReservaView(PermissionRequiredMixin, View):
         return CustomParser.parsePickerInput(pickerinput=pickerinput)
 
 
-class CrearPerfilHuespedView(SuccessMessageMixin, UserRestrictedCreateView):
+class HuespedCreateView(SuccessMessageMixin, UserRestrictedCreateView):
     """CreateView que hereda de la vista UserCreateView"""
 
     model = Huesped
@@ -140,13 +145,13 @@ class CrearPerfilHuespedView(SuccessMessageMixin, UserRestrictedCreateView):
     success_message = "Datos cargados con éxito. Ya puedes realizar reservas!"
 
 
-class PerfilHuespedDetailView(generic.DetailView):
+class HuespedDetailView(generic.DetailView):
     """DetailView del perfil del huesped"""
 
     model = Huesped
 
 
-class EditarPerfilHuespedView(LoginRequiredMixin, generic.UpdateView):
+class HuespedUpdateView(LoginRequiredMixin, generic.UpdateView):
     """UpdateView para el perfil del huesped"""
 
     model = Huesped
@@ -157,7 +162,7 @@ class EditarPerfilHuespedView(LoginRequiredMixin, generic.UpdateView):
 
 
 class ReservaDetailView(PermissionRequiredMixin, View):
-    """Vista de reserva con opción de cancelar. Un huesped solo tiene acceso a las reservas que
+    """DetailView de reserva. Un huesped solo tiene acceso a las reservas que
     registró."""
 
     permission_required = ("inquilinos.puede_registrar_reserva",)
@@ -175,11 +180,11 @@ class ReservaDetailView(PermissionRequiredMixin, View):
         return render(request, "inquilinos/reserva_detail.html", context)
 
 
-class ReservasDeHuespedListView(HuespedRestrictedListView):
+class ReservasListView(HuespedRestrictedListView):
     """ListView de las reservas de un huesped que hereda de HuespedRestrictedListView"""
 
     model = Reserva
-    template_name = "inquilinos/reserva_h_list.html"
+    template_name = "inquilinos/reservas_list.html"
 
 
 class ComentarioCreateView(HuespedRestrictedCreateView):
@@ -188,6 +193,19 @@ class ComentarioCreateView(HuespedRestrictedCreateView):
     model = Comentario
     template_name = "inquilinos/registrar_comentario.html"
     form_class = ComentarioCreateForm
+
+    def get(self, request, *args, **kwargs):
+        reserva = Reserva.objects.get(id=self.kwargs["pk"])
+        if not reserva.se_puede_calificar():
+            return HttpResponseRedirect(
+                reverse(
+                    "inquilinos:reserva-detail",
+                    kwargs={
+                        "pk": reserva.pk,
+                    },
+                )
+            )
+        return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
         reserva = Reserva.objects.get(id=self.kwargs["pk"])
@@ -198,56 +216,54 @@ class ComentarioCreateView(HuespedRestrictedCreateView):
         object.save()
         return super(ComentarioCreateView, self).form_valid(form)
 
-    def get_context_data(self, **kwargs):
-        context = super(ComentarioCreateView, self).get_context_data(**kwargs)
-        reserva = Reserva.objects.get(id=self.kwargs["pk"])
-        if reserva.tiene_comentario:
-            context["comentario_existente"] = Comentario.objects.get(reserva=reserva)
-        return context
 
 class CancelarReservaView(PermissionRequiredMixin, View):
     """View para cancelar reservas con formulario que permite
     cargar un motivo de cancelacion asociado a la reserva"""
+
     model = Reserva
     form_class = CancelarReservaForm
     template_name = "inquilinos/cancelar_reserva.html"
     permission_required = ("inquilinos.puede_registrar_reserva",)
 
     def get(self, request, pk):
-        reserva = get_object_or_404(self.get_queryset(), pk=pk)
+        reserva = get_object_or_404(Reserva, pk=pk)
+        if not reserva.se_puede_cancelar():
+            return HttpResponseRedirect(
+                reverse(
+                    "inquilinos:reserva-detail",
+                    kwargs={
+                        "pk": reserva.pk,
+                    },
+                )
+            )
         form = self.form_class()
-        context = {
-            'form':form
-        }
+        context = {"form": form}
         return render(request, self.template_name, context)
 
     def post(self, request, pk):
-        reserva = get_object_or_404(self.get_queryset(), pk=pk)
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            reserva.set_motivo_cancelacion(form.cleaned_data.get('motivoCancelacion'))
+        reserva = get_object_or_404(Reserva, pk=pk)
+        if not reserva.se_puede_cancelar():
             return HttpResponseRedirect(
                 reverse(
-                    "inquilinos:res-det",
+                    "inquilinos:reserva-detail",
+                    kwargs={
+                        "pk": reserva.pk,
+                    },
+                )
+            )
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            reserva.set_motivo_cancelacion(form.cleaned_data.get("motivoCancelacion"))
+            return HttpResponseRedirect(
+                reverse(
+                    "inquilinos:reserva-detail",
                     kwargs={
                         "pk": reserva.pk,
                     },
                 )
             )
         context = {
-            'form':form,
+            "form": form,
         }
         return render(request, self.template_name, context)
-
-    def get_queryset(self):
-        return self.model.objects.filter(
-            huesped=self.request.user.huesped,
-            cambioestado__fechaFin__isnull=True,
-            cambioestado__estado__nombre="Pte Confirmacion"
-        )
-
-
-
-def test_view(request):
-    context = {}
-    return render(request, "inquilinos/test.html", context)

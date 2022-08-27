@@ -2,28 +2,19 @@
   font-family: 'Poppins', sans-serif;
 }
 
-.maseit {
+.carr-img {
+  /**
+  * Clase para normalizar las imágenes del carrousell de bootstrap.
+  */
     max-height: 350px;
     min-height: auto;
     min-width: auto;
     max-width: auto;
-    /* border-style: outset; */
-    /* border-radius: 9px; */
   }
-.cuac {
-  float: right;
-}
-
-.marigen {
-  margin-left: 200px;
-  margin-right: 200px;
-}
 
 .disabled{
     color:#cecece;
 }
-
-
 
 .bd-placeholder-img {
   font-size: 1.125rem;
@@ -81,6 +72,9 @@ ul {
 }
 
 .tumneil {
+  /**
+  * Estilo para la miniatura con el logo de la empresa de cabañas en el índice
+  */
   max-height:200px;
   float: left;
   margin-right: 20px;
@@ -89,6 +83,10 @@ ul {
 .cartelito-pasresconf {
   font-size: 16px;
   text-align: center;
+}
+
+.star-color {
+  color: goldenrod;
 }
 
 
@@ -129,11 +127,6 @@ ul {
   box-shadow: none;
 }
 
-
-
-/* sadadadasdasdadsadadadadadadadadasadasdsadadsadadadsadadadadadadadad */
-
-/* CSS */
 .button-4 {
   appearance: none;
   background-color: #FAFBFC;

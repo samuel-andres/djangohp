@@ -1,26 +1,26 @@
 {% extends 'inquilinos/base.html' %}
 {% block content %}
-    {% load static %}
-    {% if request.user.huesped %}
-        <br>
-        <div class="col-md-3 offset-md-4 p-4 d-flex justify-content-center border rounded bg-white">
-            <div class="container">
-                <div class="row">
-                    <button class="btn btn-outline-primary btn-sm px-5"
-                            onclick="location.href='{% url 'inquilinos:hue-det' request.user.huesped.pk %}'"
-                            type="button">
-                        Ver mi perfil.
-                    </button>
-                </div>
-            </div>
+  {% load static %}
+  {% if request.user.huesped %}
+    <br/>
+    <div class="col-md-3 offset-md-4 p-4 d-flex justify-content-center border rounded bg-white">
+      <div class="container">
+        <div class="row">
+          <button class="btn btn-outline-primary btn-sm px-5"
+                  onclick="location.href='{% url 'inquilinos:huesped-detail' request.user.huesped.pk %}'"
+                  type="button">
+            Ver mi perfil.
+          </button>
         </div>
-    {% else %}
-        {% load crispy_forms_tags %}
-        {% csrf_token %}
-        <br/>
-        <div class="col-md-3 offset-md-4 p-5 d-flex justify-content-center border rounded bg-white"
-             id="divreserva">
-            {% crispy form %}
-        </div>
-    {% endif %}
+      </div>
+    </div>
+  {% else %}
+    {% load crispy_forms_tags %}
+    {% csrf_token %}
+    <br/>
+    <div class="col-md-3 offset-md-4 p-5 d-flex justify-content-center border rounded bg-white"
+         id="divreserva">
+      {% crispy form %}
+    </div>
+  {% endif %}
 {% endblock %}

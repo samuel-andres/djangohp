@@ -10,7 +10,7 @@ from .models import (
     Rango,
     Reserva,
     Comentario,
-    Servicio
+    Servicio,
 )
 
 
@@ -91,7 +91,7 @@ class InstalacionAdmin(admin.ModelAdmin):
 class ComentarioAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(Servicio)
 class SercicioAdmin(admin.ModelAdmin):
     pass
-

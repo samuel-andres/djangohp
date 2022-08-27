@@ -1,12 +1,14 @@
 import datetime
 from re import template
 
-from django.core.mail import EmailMultiAlternatives, send_mail
+from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
 
 class CustomParser:
+    """Helper para custom parsing"""
+
     def parseRanges(queryset, formatear):
         """toma como argumento un queryset y devuelve una lista con los rangos de fechas
         desde hasta de cada objeto en forma de array"""

@@ -1,47 +1,47 @@
 {% extends 'inquilinos/base.html' %}
 {% block content %}
-    {% load static %}
+  {% load static %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="p-4 rounded mt-3">
+          <div class="col-sm-8 mx-auto">
+            <img src="{% static 'inquilinos/images/lapraderalogo.jpg' %}"
+                 class="img-thumbnail tumneil"
+                 alt=""/>
+            <h1>La Pradera</h1>
+            <p align="justify">
+              Disponemos de {{ cab_list.count }} excelentes cabañas equipadas completamente para seis personas. Las mismas cuentan con dos habitaciones, baño, antebaño y cocina comedor.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="album py-4 bg-light">
     <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                    <div class="p-4 rounded mt-3">
-                        <div class="col-sm-8 mx-auto">
-                            <img src="{% static 'inquilinos/images/lapraderalogo.jpg' %}"
-                                 class="img-thumbnail tumneil"
-                                 alt=""/>
-                            <h1>La Pradera</h1>
-                            <p align="justify">
-                                Disponemos de {{ cab_list.count }} excelentes cabañas equipadas completamente para seis personas. Las mismas cuentan con dos habitaciones, baño, antebaño y cocina comedor.
-                            </p>
-                        </div>
-                    </div>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        {% for cab in cab_list %}
+          <div class="col">
+            <div class="card shadow-sm">
+              <img class="rounded-top" src="{{ cab.foto_set.first.foto.url }}" alt=""/>
+              <div class="card-body">
+                <p class="card-text">{{ cab.descripcion }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button"
+                            onclick="location.href='{% url 'inquilinos:cab-detail' cab.slug %}'"
+                            class="btn btn-sm btn-outline-secondary">
+                      Ver cabaña
+                    </button>
+                  </div>
+                  <small class="text-muted">{{ cab.nombre }}</small>
+                </div>
+              </div>
             </div>
-        </div>
+          </div>
+        {% endfor %}
+      </div>
     </div>
-    <div class="album py-4 bg-light">
-        <div class="container">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                {% for cab in cab_list %}
-                    <div class="col">
-                        <div class="card shadow-sm">
-                            <img class="rounded-top" src="{{ cab.foto_set.first.foto.url }}" alt=""/>
-                            <div class="card-body">
-                                <p class="card-text">{{ cab.descripcion }}</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="btn-group">
-                                        <button type="button"
-                                                onclick="location.href='{% url 'inquilinos:cab-det' cab.slug %}'"
-                                                class="btn btn-sm btn-outline-secondary">
-                                            Ver cabaña
-                                        </button>
-                                    </div>
-                                    <small class="text-muted">{{ cab.nombre }}</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+  </div>
 {% endblock content %}

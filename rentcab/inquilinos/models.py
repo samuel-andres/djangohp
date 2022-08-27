@@ -3,7 +3,10 @@ import numpy as np
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from django.core.validators import MaxValueValidator, MinValueValidator, MinLengthValidator
+from django.core.validators import (
+    MinValueValidator,
+    MinLengthValidator,
+)
 from django.db import models
 from django.db.models import Q, Avg
 from django.urls import reverse
@@ -42,7 +45,7 @@ class Huesped(models.Model):
 
     def get_absolute_url(self) -> str:
         """devuelve el url de la vista detalle del huesped(perfil)"""
-        return reverse("inquilinos:hue-det", kwargs={"pk": self.pk})
+        return reverse("inquilinos:huesped-detail", kwargs={"pk": self.pk})
 
 
 class Estado(models.Model):
@@ -185,17 +188,15 @@ class Reserva(models.Model):
     motivoCancelacion = models.TextField(
         null=True,
         blank=True,
-        validators = [
+        validators=[
             MinLengthValidator(15),
-        ]
+        ],
     )
 
     def set_motivo_cancelacion(self, value):
         self.motivoCancelacion = value
         self.save()
         self.cancelar_reserva()
-
-
 
     # punteros
     huesped = models.ForeignKey(
@@ -230,7 +231,10 @@ class Reserva(models.Model):
 
     def calcular_precio_final(self):
         """retorna el cálculo de precio final de la reserva"""
-        return self.get_cant_noches() * ((self.cantAdultos * self.cab.costoPorAdulto) + (self.cantMenores * self.cab.costoPorMenor))
+        return self.get_cant_noches() * (
+            (self.cantAdultos * self.cab.costoPorAdulto)
+            + (self.cantMenores * self.cab.costoPorMenor)
+        )
 
     def set_precio_final(self):
         """setea el precio final de la reserva llamando al método
@@ -268,6 +272,11 @@ class Reserva(models.Model):
         return (
             estado.nombre == "Finalizada" or estado.nombre == "Confirmada"
         ) and not self.tiene_comentario
+
+    def se_puede_cancelar(self) -> bool:
+        """Retorna true si la reserva esta en estado Pte Confirmacion o Confirmada"""
+        estado = self.get_estado()
+        return estado.nombre == "Pte Confirmacion" or estado.nombre == "Confirmada"
 
     @property
     def tiene_comentario(self):
@@ -311,6 +320,7 @@ class CaracteristicaCabaña(models.Model):
     # métodos
     def __str__(self) -> str:
         return f"{self.descripcion}"
+
     class Meta:
         abstract = True
 
@@ -319,11 +329,10 @@ class Instalacion(CaracteristicaCabaña):
     class Meta:
         verbose_name_plural = "Instalaciones"
 
+
 class Servicio(CaracteristicaCabaña):
     class Meta:
         verbose_name_plural = "Servicios"
-
-
 
 
 class CambioEstado(models.Model):

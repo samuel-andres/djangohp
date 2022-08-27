@@ -1,0 +1,96 @@
+{% extends 'inquilinos/base.html' %}
+{% block content %}
+  {% load static %}
+  <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
+  <br />
+  <div class="col-md-4 offset-md-4 p-4 d-flex justify-content-center border rounded bg-white"
+       id="divreserva">
+    {% if request.user.is_staff %}
+      Por favor, logueate con una cuenta de cliente
+      para probar el registro de reservas.
+    {% else %}
+      <form method="post">
+        {% csrf_token %}
+        <fieldset class="inlineLabels">
+          <legend class="mb-0">
+            Reservar cabaña
+          </legend>
+          <h7 class="mt-0 fs-6 fw-light">
+          Cantidad máxima de personas: {{ cantMaxPersonas }}
+          </h7>
+          <div id="div_id_fechaDesdeHasta" class="form-group">
+            <p class="mb-2">
+              Rango de reserva<span class="asteriskField">*</span>
+              {% if form.fechaDesdeHasta.errors %}
+                <br/>
+                {% for error in form.fechaDesdeHasta.errors  %}<span class="text-danger mb-0 mt-0">{{ error }}</span>{% endfor %}
+              {% endif %}
+            </p>
+            <div>{{ form.fechaDesdeHasta }}</div>
+          </div>
+          <div class="row">
+            <div id="div_cantAdultos" class="col-md-6">
+              <div class="input-group mb-3 mt-1" style="max -width: 120px;">
+                <button class="button-4" type="button" id="btn-men-ad">-</button>
+                {{ form.cantAdultos }}
+                <button class="button-4" type="button" id="btn-mas-ad">+</button>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <p class="mb-0 text-end">Adultos</p>
+              <p class="fw-light text-end" style="font-size: 14px;">Desde 18 años</p>
+            </div>
+          </div>
+          {% if form.cantAdultos.errors %}
+            <div class="row">
+              {% for error in form.cantAdultos.errors %}<p class="text-danger">{{ error }}</p>{% endfor %}
+            </div>
+          {% endif %}
+          <div class="row">
+            <div id="div_id_cantMenores" class="form-group col-md-6 mt-2">
+              <div class="input-group mb-3">
+                <button class="button-4" type="button" id="btn-men-men">-</button>
+                {{ form.cantMenores }}
+                <button class="button-4" type="button" id="btn-mas-men">+</button>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <p class="mb-0 text-end">Menores</p>
+              <p class="fw-light text-end" style="font-size: 14px;">Hasta 17 años</p>
+            </div>
+          </div>
+          {% if form.cantMenores.errors %}
+            <div class="row">
+              {% for error in form.cantMenores.errors %}<p class="text-danger">{{ error }}</p>{% endfor %}
+            </div>
+          {% endif %}
+          <div id="after_reserva">
+            <p id="ptag"></p>
+          </div>
+          {{ form.cab_slug }}
+        </fieldset>
+        {% if form.non_field_errors %}
+          {% for error in form.non_field_errors %}<p class="text-danger">{{ error }}</p>{% endfor %}
+        {% endif %}
+        <div class="row">
+          <div class="col-md-6 d-grid gap-2">
+            <a class="btn btn-secondary" href="/">Cancelar</a>
+          </div>
+          <div class="col-md-6 d-grid gap-2">
+            <input type="submit"
+                   name="submit"
+                   value="Confirmar"
+                   class="btn btn-primary btn btn-primary"
+                   id="submit-id-submit"/>
+          </div>
+        </div>
+      </form>
+    </div>
+    {{ fechasHabilitadas|json_script:"id_fechasHabilitadas" }}
+    {{ fechasDeshabilitadas|json_script:"id_fechasDeshabilitadas" }}
+    {{ costoPorAdulto|json_script:"id_costoPorAdulto" }}
+    {{ costoPorMenor|json_script:"id_costoPorMenor" }}
+    {{ cantMaxPersonas|json_script:"id_cantMaxPersonas" }}
+    <script src="{% static 'inquilinos/js/registro_reserva.js' %}"></script>
+  {% endif %}
+{% endblock content %}

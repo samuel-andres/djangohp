@@ -21,7 +21,7 @@ class RegistroReservaViewTest(TestCase):
             nombre="cab_test",
             cantHabitaciones=2,
             costoPorAdulto=500.0,
-            costoPorMenor=200.0
+            costoPorMenor=200.0,
         )
         test_cab.save()
 
@@ -49,7 +49,7 @@ class RegistroReservaViewTest(TestCase):
         """Testea que se rediriga al usuario correctamente cuando intenta registrar una reserva
         sin estar logueado"""
         response = self.client.get(
-            reverse("inquilinos:reg-res", kwargs={"slug": "cab_test"})
+            reverse("inquilinos:reserva-registro", kwargs={"slug": "cab_test"})
         )
         self.assertRedirects(
             response, "/accounts/login/?next=/inquilinos/cab/cab_test/reservar"
@@ -60,7 +60,7 @@ class RegistroReservaViewTest(TestCase):
         datos personales"""
         login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
         response = self.client.get(
-            reverse("inquilinos:reg-res", kwargs={"slug": "cab_test"})
+            reverse("inquilinos:reserva-registro", kwargs={"slug": "cab_test"})
         )
         self.assertEqual(response.status_code, 403)
 
@@ -76,6 +76,6 @@ class RegistroReservaViewTest(TestCase):
         huesped.save()
         login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
         response2 = self.client.get(
-            reverse("inquilinos:reg-res", kwargs={"slug": "cab_test"})
+            reverse("inquilinos:reserva-registro", kwargs={"slug": "cab_test"})
         )
         self.assertEqual(response2.status_code, 200)

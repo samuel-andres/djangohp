@@ -1,2 +1,3 @@
 [tool.djlint]
 ignore="H031,H006"
+indent = 2
