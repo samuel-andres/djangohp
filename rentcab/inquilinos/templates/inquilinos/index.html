@@ -1,11 +1,12 @@
 {% extends 'inquilinos/base.html' %}
 {% block content %}
   {% load static %}
+  {% load bootstrap_icons %}
   <div class="container">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-8">
         <div class="p-4 rounded mt-3">
-          <div class="col-sm-8 mx-auto">
+          {% comment %} <div class="col-sm-8 mx-auto"> {% endcomment %}
             <img src="{% static 'inquilinos/images/lapraderalogo.jpg' %}"
                  class="img-thumbnail tumneil"
                  alt=""/>
@@ -13,8 +14,30 @@
             <p align="justify">
               Disponemos de {{ cab_list.count }} excelentes cabañas equipadas completamente para seis personas. Las mismas cuentan con dos habitaciones, baño, antebaño y cocina comedor.
             </p>
-          </div>
+          {% comment %} </div> {% endcomment %}
         </div>
+      </div>
+      <div class="col-md-4 mt-5">
+        <div class="card shadown-sm p-3 align-middle">
+
+
+        {% comment %} <div class="input-group w-100">
+          <span class="input-group-text" id="basic-addon1" onclick="location.href='https://api.whatsapp.com/send?phone=543534237553&text=Caba%C3%B1as'">
+            {% bs_icon 'whatsapp' size='1em'%}
+          </span>
+          <input type="text" class="form-control" placeholder="Consultanos por formas de pago!" aria-label="Input group example" aria-describedby="basic-addon1">
+        </div> {% endcomment %}
+        <button class="btn btn-success" onclick="location.href='https://api.whatsapp.com/send?phone=543534237553&text='">
+          {% bs_icon 'whatsapp' size='1em'%}
+          Contacto
+        </button>
+        <p class="mt-2 mb-1 text-center">Horario de consulta:</p>
+        <ul class="list-group">
+          <li class="text-center list-group-item">
+            Lunes a Viernes de 09:00 a 18:00
+          </li>
+        </ul>
+      </div>
       </div>
     </div>
   </div>
