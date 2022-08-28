@@ -166,12 +166,16 @@ class ReservaDetailView(PermissionRequiredMixin, View):
     """DetailView de reserva. Un huesped solo tiene acceso a las reservas que
     registró."""
 
-    permission_required = ("inquilinos.puede_registrar_reserva",)
+    permission_required = ("inquilinos.puede_consultar_reserva",)
     permission_denied_message = "Esta reserva no te pertenece."
+    admin_must_use_client_account_message = "Para probar la consulta de detalle de reserva en la sección de inquilinos debes loguearte con una cuenta de cliente."
+
     model = Reserva
 
     def get(self, request, pk):
         reserva = get_object_or_404(Reserva, pk=pk)
+        if request.user.is_admin:
+            raise PermissionDenied(self.admin_must_use_client_account_message)
         if reserva.huesped != request.user.huesped:
             raise PermissionDenied(self.permission_denied_message)
         context = {
@@ -181,8 +185,12 @@ class ReservaDetailView(PermissionRequiredMixin, View):
         return render(request, "inquilinos/reserva_detail.html", context)
 
 
-class ReservasListView(HuespedRestrictedListView):
+class ReservasListView(PermissionRequiredMixin,HuespedRestrictedListView):
     """ListView de las reservas de un huesped que hereda de HuespedRestrictedListView"""
+
+    permission_required = ("inquilinos.puede_consultar_reserva",)
+    permission_denied_message = "Para consultar tus reservas debes completar tus datos personales."
+    admin_must_use_client_account_message = "Para probar la consulta de reservas en la sección de inquilinos debes loguearte con una cuenta de cliente."
 
     model = Reserva
     template_name = "inquilinos/reservas_list.html"
@@ -225,7 +233,7 @@ class CancelarReservaView(PermissionRequiredMixin, View):
     model = Reserva
     form_class = CancelarReservaForm
     template_name = "inquilinos/cancelar_reserva.html"
-    permission_required = ("inquilinos.puede_registrar_reserva",)
+    permission_required = ("inquilinos.puede_cancelar_reserva",)
 
     def get(self, request, pk):
         reserva = get_object_or_404(Reserva, pk=pk)

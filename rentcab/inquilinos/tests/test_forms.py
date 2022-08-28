@@ -40,7 +40,13 @@ def get_a_huesped(user):
     return huesped
 
 
-def crear_reserva(cab, user, fechaDesde, fechaHasta, cantAdultos=2, cantMenores=2):
+def crear_reserva(cab,
+    user,
+    fechaDesde=datetime.date.today(),
+    fechaHasta=datetime.date.today() + datetime.timedelta(weeks=2),
+    cantAdultos=2,
+    cantMenores=2
+    ):
     huesped = get_a_huesped(user)
     datos_reserva = {
         "fechaDesde": fechaDesde,

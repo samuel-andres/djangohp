@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.views import View, generic
+from django.core.exceptions import PermissionDenied
 
 from .models import Huesped
 
@@ -21,7 +22,10 @@ class HuespedRestrictedListView(LoginRequiredMixin, generic.ListView):
         """sobreescribe el método get_queryset para que un huesped solo tenga acceso
         a las las reservas realizadas por el"""
         qs = super(HuespedRestrictedListView, self).get_queryset()
-        return qs.filter(huesped=self.request.user.huesped).order_by("-id")
+        try:
+            return qs.filter(huesped=self.request.user.huesped).order_by("-id")
+        except:
+            raise PermissionDenied(self.admin_must_use_client_account_message)
 
 
 class HuespedRestrictedUpdateView(LoginRequiredMixin, generic.UpdateView):

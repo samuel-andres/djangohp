@@ -286,6 +286,8 @@ class Reserva(models.Model):
         verbose_name_plural = "Reservas"
         permissions = (
             ("puede_registrar_reserva", "Este usuario puede registrar una reserva."),
+            ("puede_consultar_reserva", "Este usuario puede consultar una reserva."),
+            ("puede_cancelar_reserva", "Este usuario puede cancelar una reserva")
         )
 
 
