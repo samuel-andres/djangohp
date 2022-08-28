@@ -1,35 +1,28 @@
-{% extends 'inquilinos/base.html' %}
-{% block content %}
-  {% load static %}
-  {% load bootstrap_icons %}
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8">
-        <div class="p-4 rounded mt-3">
-          {% comment %} <div class="col-sm-8 mx-auto"> {% endcomment %}
-            <img src="{% static 'inquilinos/images/lapraderalogo.jpg' %}"
-                 class="img-thumbnail tumneil"
-                 alt=""/>
-            <h1>La Pradera</h1>
-            <p align="justify">
-              Disponemos de {{ cab_list.count }} excelentes cabañas equipadas completamente para seis personas. Las mismas cuentan con dos habitaciones, baño, antebaño y cocina comedor.
-            </p>
-          {% comment %} </div> {% endcomment %}
-        </div>
+{% extends 'inquilinos/base.html' %} {% block content %} {% load static %} {%load bootstrap_icons %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="p-4 rounded mt-3">
+          <img
+            src="{% static 'inquilinos/images/lapraderalogo.jpg' %}"
+            class="img-thumbnail tumneil"
+            alt=""
+          />
+          <h1>La Pradera</h1>
+          <p align="justify">
+            Disponemos de {{ cab_list.count }} excelentes cabañas equipadas
+            completamente para seis personas. Las mismas cuentan con dos
+            habitaciones, baño, antebaño y cocina comedor.
+          </p>
       </div>
-      <div class="col-md-4 mt-5">
-        <div class="card shadown-sm p-3 align-middle">
-
-
-        {% comment %} <div class="input-group w-100">
-          <span class="input-group-text" id="basic-addon1" onclick="location.href='https://api.whatsapp.com/send?phone=543534237553&text=Caba%C3%B1as'">
-            {% bs_icon 'whatsapp' size='1em'%}
-          </span>
-          <input type="text" class="form-control" placeholder="Consultanos por formas de pago!" aria-label="Input group example" aria-describedby="basic-addon1">
-        </div> {% endcomment %}
-        <button class="btn btn-success" onclick="location.href='https://api.whatsapp.com/send?phone=543534237553&text='">
-          {% bs_icon 'whatsapp' size='1em'%}
-          Contacto
+    </div>
+    <div class="col-md-4 mt-5">
+      <div class="card shadown-sm p-3 align-middle">
+        <button
+          class="btn btn-success"
+          onclick="location.href='https://api.whatsapp.com/send?phone=543534237553&text='"
+        >
+          {% bs_icon 'whatsapp' size='1em'%} Contacto
         </button>
         <p class="mt-2 mb-1 text-center">Horario de consulta:</p>
         <ul class="list-group">
@@ -38,33 +31,39 @@
           </li>
         </ul>
       </div>
-      </div>
     </div>
   </div>
-  <div class="album py-4 bg-light">
-    <div class="container">
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-        {% for cab in cab_list %}
-          <div class="col">
-            <div class="card shadow-sm">
-              <img class="rounded-top" src="{{ cab.foto_set.first.foto.url }}" alt=""/>
-              <div class="card-body">
-                <p class="card-text">{{ cab.descripcion }}</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="btn-group">
-                    <button type="button"
-                            onclick="location.href='{% url 'inquilinos:cab-detail' cab.slug %}'"
-                            class="btn btn-sm btn-outline-secondary">
-                      Ver cabaña
-                    </button>
-                  </div>
-                  <small class="text-muted">{{ cab.nombre }}</small>
-                </div>
+</div>
+<div class="album py-4 bg-light">
+  <div class="container">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+      {% for cab in cab_list %}
+      <div class="col">
+        <div class="card shadow-sm">
+          <img
+            class="rounded-top"
+            src="{{ cab.foto_set.first.foto.url }}"
+            alt=""
+          />
+          <div class="card-body">
+            <p class="card-text">{{ cab.descripcion }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <button
+                  type="button"
+                  onclick="location.href='{% url 'inquilinos:cab-detail' cab.slug %}'"
+                  class="btn btn-sm btn-outline-secondary"
+                >
+                  Ver cabaña
+                </button>
               </div>
+              <small class="text-muted">{{ cab.nombre }}</small>
             </div>
           </div>
-        {% endfor %}
+        </div>
       </div>
+      {% endfor %}
     </div>
   </div>
+</div>
 {% endblock content %}

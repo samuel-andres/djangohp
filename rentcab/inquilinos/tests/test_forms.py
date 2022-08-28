@@ -10,13 +10,19 @@ from inquilinos.models import Cab, Estado, Huesped, Rango, Reserva
 # helper functions
 
 
-def create_cab():
+def create_cab(
+    nombre = "test_cab",
+    cantHabitaciones = 2,
+    costoPorAdulto = 500.0,
+    costoPorMenor = 200.0,
+    cantMaxPersonas = 6,
+):
     cab = Cab(
-        nombre="test_cab",
-        cantHabitaciones=2,
-        costoPorAdulto=500.0,
-        costoPorMenor=200.0,
-        cantMaxPersonas=6,
+        nombre=nombre,
+        cantHabitaciones=cantHabitaciones,
+        costoPorAdulto=costoPorAdulto,
+        costoPorMenor=costoPorMenor,
+        cantMaxPersonas=cantMaxPersonas,
     )
     cab.save()
     return cab
@@ -386,10 +392,240 @@ class RegistroReservaFormTest(TestCase):
         )
         self.assertFalse(form.is_valid())
 
-    # los tests de cantidad de adultos y menores no los escribo todavía pq hay que definir
-    # bien cómo es el límite, ahora la aplicación funciona con un máximo de 5 personas por
-    # cabaña, entre adultos y menores, y con como mínimo, un adulto.
+    def test_cant_personas_menor_a_cant_max_personas(self):
+        """Testea que sea valido el registro de una reserva
+        cuando la cantidad de menores + adultos es menor a la
+        cantidad maxima de personas definida en la cabaña."""
 
+        cab = create_cab(cantMaxPersonas=4)
+        rango = Rango(
+            fechaDesde=datetime.date.today(),
+            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=5),
+            cab=cab,
+        )
+        rango.save()
+
+        fechaDesdeHasta = (
+            (datetime.date.today() + datetime.timedelta(weeks=2)).strftime("%d/%m/%Y")
+            + " - "
+            + (datetime.date.today() + datetime.timedelta(weeks=3)).strftime("%d/%m/%Y")
+        )
+
+        cab_slug = "test_cab"
+        form = RegResForm(
+            data={
+                "fechaDesdeHasta": fechaDesdeHasta,
+                "cab_slug": cab_slug,
+                "cantAdultos": 2,
+                "cantMenores": 1,
+            }
+        )
+        self.assertTrue(form.is_valid())
+
+    def test_cant_personas_igual_a_cant_max_personas(self):
+        """Testea que sea valido el registro de una reserva
+        cuando la cantidad de menores + adultos es igual a la
+        cantidad maxima de personas definida en la cabaña."""
+
+        cab = create_cab(cantMaxPersonas=4)
+        rango = Rango(
+            fechaDesde=datetime.date.today(),
+            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=5),
+            cab=cab,
+        )
+        rango.save()
+
+        fechaDesdeHasta = (
+            (datetime.date.today() + datetime.timedelta(weeks=2)).strftime("%d/%m/%Y")
+            + " - "
+            + (datetime.date.today() + datetime.timedelta(weeks=3)).strftime("%d/%m/%Y")
+        )
+
+        cab_slug = "test_cab"
+        form = RegResForm(
+            data={
+                "fechaDesdeHasta": fechaDesdeHasta,
+                "cab_slug": cab_slug,
+                "cantAdultos": 2,
+                "cantMenores": 2,
+            }
+        )
+        self.assertTrue(form.is_valid())
+
+    def test_cant_personas_mayor_a_cant_max_personas(self):
+        """Testea que no sea valido el registro de una reserva
+        cuando la cantidad de menores + adultos es mayor a la
+        cantidad maxima de personas definida en la cabaña."""
+
+        cab = create_cab(cantMaxPersonas=4)
+        rango = Rango(
+            fechaDesde=datetime.date.today(),
+            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=5),
+            cab=cab,
+        )
+        rango.save()
+
+        fechaDesdeHasta = (
+            (datetime.date.today() + datetime.timedelta(weeks=2)).strftime("%d/%m/%Y")
+            + " - "
+            + (datetime.date.today() + datetime.timedelta(weeks=3)).strftime("%d/%m/%Y")
+        )
+
+        cab_slug = "test_cab"
+        form = RegResForm(
+            data={
+                "fechaDesdeHasta": fechaDesdeHasta,
+                "cab_slug": cab_slug,
+                "cantAdultos": 2,
+                "cantMenores": 3,
+            }
+        )
+        self.assertFalse(form.is_valid())
+
+    def test_cant_adultos_menor_a_uno(self):
+        """Testea que no sea valido el registro de una reserva
+        cuando la cantidad de adultos es menor a uno."""
+
+        cab = create_cab(cantMaxPersonas=3)
+        rango = Rango(
+            fechaDesde=datetime.date.today(),
+            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=5),
+            cab=cab,
+        )
+        rango.save()
+
+        fechaDesdeHasta = (
+            (datetime.date.today() + datetime.timedelta(weeks=2)).strftime("%d/%m/%Y")
+            + " - "
+            + (datetime.date.today() + datetime.timedelta(weeks=3)).strftime("%d/%m/%Y")
+        )
+
+        cab_slug = "test_cab"
+        form = RegResForm(
+            data={
+                "fechaDesdeHasta": fechaDesdeHasta,
+                "cab_slug": cab_slug,
+                "cantAdultos": 0,
+                "cantMenores": 2,
+            }
+        )
+        self.assertFalse(form.is_valid())
+
+    def test_cant_menores_menor_a_uno(self):
+        """Testea que sea valido el registro de una reserva
+        cuando la cantidad de menores es menor a uno."""
+
+        cab = create_cab(cantMaxPersonas=3)
+        rango = Rango(
+            fechaDesde=datetime.date.today(),
+            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=5),
+            cab=cab,
+        )
+        rango.save()
+
+        fechaDesdeHasta = (
+            (datetime.date.today() + datetime.timedelta(weeks=2)).strftime("%d/%m/%Y")
+            + " - "
+            + (datetime.date.today() + datetime.timedelta(weeks=3)).strftime("%d/%m/%Y")
+        )
+
+        cab_slug = "test_cab"
+        form = RegResForm(
+            data={
+                "fechaDesdeHasta": fechaDesdeHasta,
+                "cab_slug": cab_slug,
+                "cantAdultos": 2,
+                "cantMenores": 0,
+            }
+        )
+        self.assertTrue(form.is_valid())
+
+    def test_cant_adultos_y_menores_blank(self):
+        """Testea que no sea valido el registro de una reserva
+        cuando la cantidad de adultos y menores es blank."""
+
+        cab = create_cab(cantMaxPersonas=3)
+        rango = Rango(
+            fechaDesde=datetime.date.today(),
+            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=5),
+            cab=cab,
+        )
+        rango.save()
+
+        fechaDesdeHasta = (
+            (datetime.date.today() + datetime.timedelta(weeks=2)).strftime("%d/%m/%Y")
+            + " - "
+            + (datetime.date.today() + datetime.timedelta(weeks=3)).strftime("%d/%m/%Y")
+        )
+
+        cab_slug = "test_cab"
+        form = RegResForm(
+            data={
+                "fechaDesdeHasta": fechaDesdeHasta,
+                "cab_slug": cab_slug,
+                "cantAdultos": "",
+                "cantMenores": "",
+            }
+        )
+        self.assertFalse(form.is_valid())
+
+    def test_cant_adultos_y_menores_con_caracteres_invalidos(self):
+        """Testea que no sea valido el registro de una reserva
+        cuando la cantidad de adultos y menores no es un número."""
+
+        cab = create_cab(cantMaxPersonas=3)
+        rango = Rango(
+            fechaDesde=datetime.date.today(),
+            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=5),
+            cab=cab,
+        )
+        rango.save()
+
+        fechaDesdeHasta = (
+            (datetime.date.today() + datetime.timedelta(weeks=2)).strftime("%d/%m/%Y")
+            + " - "
+            + (datetime.date.today() + datetime.timedelta(weeks=3)).strftime("%d/%m/%Y")
+        )
+
+        cab_slug = "test_cab"
+        form = RegResForm(
+            data={
+                "fechaDesdeHasta": fechaDesdeHasta,
+                "cab_slug": cab_slug,
+                "cantAdultos": "a",
+                "cantMenores": "x",
+            }
+        )
+        self.assertFalse(form.is_valid())
+
+    def test_cant_adultos_y_menores_con_numeros_negativos(self):
+        """Testea que no sea valido el registro de una reserva
+        cuando la cantidad de adultos y menores no es un número positivo."""
+
+        cab = create_cab(cantMaxPersonas=3)
+        rango = Rango(
+            fechaDesde=datetime.date.today(),
+            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=5),
+            cab=cab,
+        )
+        rango.save()
+
+        fechaDesdeHasta = (
+            (datetime.date.today() + datetime.timedelta(weeks=2)).strftime("%d/%m/%Y")
+            + " - "
+            + (datetime.date.today() + datetime.timedelta(weeks=3)).strftime("%d/%m/%Y")
+        )
+
+        cab_slug = "test_cab"
+        form = RegResForm(
+            data={
+                "fechaDesdeHasta": fechaDesdeHasta,
+                "cab_slug": cab_slug,
+                "cantAdultos": 3,
+                "cantMenores": -1,
+            }
+        )
+        self.assertFalse(form.is_valid())
 
 class RegistrarHuespedFormTest(TestCase):
     def test_datos_correctos(self):
