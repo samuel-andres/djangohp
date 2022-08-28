@@ -241,7 +241,6 @@ class ReservasListViewTest(TestCase):
         response = self.client.get(
             reverse("inquilinos:reserva-list",)
         )
-        print(response)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, "inquilinos/reservas_list.html")
         self.assertContains(response, "Todavía no registraste ninguna reserva.",)
@@ -279,9 +278,6 @@ class ReservasListViewTest(TestCase):
         user2.save()
 
         reserva2= crear_reserva(user=user2, cab=cab)
-        print(reserva1.pk)
-        print(reserva2.pk)
-
         response = self.client.get(
             reverse("inquilinos:reserva-list",)
         )
@@ -290,3 +286,118 @@ class ReservasListViewTest(TestCase):
         self.assertTemplateUsed(response, "inquilinos/reservas_list.html")
         self.assertContains(response, f'<th scope="row">{reserva1.pk}</th>',)
         self.assertNotContains(response, f'<th scope="row">{reserva2.pk}</th>',)
+
+class ReservaDetailViewTest(TestCase):
+    """Test case para la vista detalle de reserva"""
+    def setUp(self):
+        # Creación de un usuario para testeo
+        self.user = get_user_model().objects.create_user(
+            username="testuser1", password="1X<ISRUkw+tuK", email="test@test.com"
+        )
+        self.user.save()
+
+        # creación de una cabaña
+        test_cab = Cab(
+            nombre="cab_test",
+            cantHabitaciones=2,
+            costoPorAdulto=500.0,
+            costoPorMenor=200.0,
+        )
+        test_cab.save()
+
+        # creación de un rango y una reserva
+        test_rango = Rango(
+            fechaDesde=datetime.date.today() - datetime.timedelta(weeks=2),
+            fechaHasta=datetime.date.today() + datetime.timedelta(weeks=2),
+        )
+        test_rango.save()
+        # creación del grupo con el que se manejan los permisos de la vista
+        group = Group(name="huesped")
+        group.save()
+        # se agrega el permiso al grupo
+        permission1 = Permission.objects.get(codename="puede_registrar_reserva")
+        permission2 = Permission.objects.get(codename="puede_consultar_reserva")
+        permission1.save()
+        permission2.save()
+        group.permissions.add(permission1)
+        group.permissions.add(permission2)
+
+        # creación de estados
+        PteConf = Estado(nombre="Pte Confirmacion")
+        Cancelada = Estado(nombre="Cancelada")
+        Finalizada = Estado(nombre="Finalizada")
+        Confirmada = Estado(nombre="Confirmada")
+        Rechazada = Estado(nombre="Rechazada")
+        Cancelada.save()
+        Finalizada.save()
+        Confirmada.save()
+        Rechazada.save()
+        PteConf.save()
+
+
+    def test_403_mensaje_correcto_si_usuario_es_admin(self):
+        """Testea que el mensaje sea correcto cuando el admin
+        intenta ingresar a la vista detalle de una reserva
+        desde la aplicación de inquilinos"""
+
+        self.user = get_user_model().objects.create_superuser(
+            username="admin", password="1X<ISRUkw+tuK", email="admin@test.com"
+        )
+        self.user.save()
+        self.client.login(username="admin", password="1X<ISRUkw+tuK")
+
+        user_huesped = get_user_model().objects.create_user(
+            username="testuser",
+            password="1X<ISRUkw+tuK",
+            email="testuser@test.com",)
+
+        user_huesped.save()
+
+        reserva = crear_reserva(
+            user=user_huesped,
+            cab = Cab.objects.get(slug='cab_test'))
+
+        response = self.client.get(
+            reverse("inquilinos:reserva-detail", kwargs={"pk": reserva.pk})
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertTemplateUsed(response, '403.html',)
+        self.assertRaisesMessage(response, """Para probar la consulta de detalle de reserva en la sección de inquilinos debes loguearte con una cuenta de cliente.""")
+
+    def test_huesped_puede_consultar_detalle_de_una_reserva_suya(self):
+        """Testea que un usuario pueda consultar el detalle de una reserva
+        que registró"""
+
+        self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        reserva = crear_reserva(
+            user=self.user,
+            cab = Cab.objects.get(slug='cab_test'))
+
+        response = self.client.get(
+            reverse("inquilinos:reserva-detail", kwargs={"pk": reserva.pk})
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, "inquilinos/reserva_detail.html")
+        self.assertContains(response, f'<h1>Reserva #{reserva.pk}</h1>')
+
+    def test_huesped_no_puede_consultar_detalle_de_reserva_de_otro(self):
+        """Testea que un huesped no pueda consultar el detalle reserva de
+        otro huesped"""
+
+        self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+
+        otro_huesped = get_user_model().objects.create_user(username="otro_huesped", password="1X<ISRUkw+tuK", email="otro@test.com")
+
+        reserva = crear_reserva(
+            user=otro_huesped,
+            cab = Cab.objects.get(slug='cab_test'))
+
+        response = self.client.get(
+            reverse("inquilinos:reserva-detail", kwargs={"pk": reserva.pk})
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertTemplateUsed(response, "403.html")
+        self.assertRaisesMessage(response, "Esta reserva no te pertenece.")
