@@ -80,3 +80,23 @@ class RegistroReservaViewTest(TestCase):
             reverse("inquilinos:reserva-registro", kwargs={"slug": "cab_test"})
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_mensaje_correcto_si_es_admin(self):
+        """Testea que se muestre el mensaje correcto si un usuario
+        con una cuenta de administrador intenta ingresar a la vista
+        de registro de reservas."""
+
+        self.user = get_user_model().objects.create_superuser(
+            username="admin", password="1X<ISRUkw+tuK", email="admin@test.com"
+        )
+        self.user.save()
+        self.client.login(username="admin", password="1X<ISRUkw+tuK")
+
+        response = self.client.get(
+            reverse("inquilinos:reserva-registro", kwargs={"slug": "cab_test"})
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, 'inquilinos/registro_reserva.html')
+        self.assertContains(response, """Por favor, logueate con una cuenta de cliente
+      para probar el registro de reservas.""")
+
