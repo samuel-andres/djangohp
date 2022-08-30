@@ -102,11 +102,11 @@ WSGI_APPLICATION = "rentcab.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "rentcabdb_2",
+        "NAME": "rentcab_db_2",
         "USER": "postgres",
         "PASSWORD": "postgres",
         "HOST": "localhost",
-        "PORT": "5432",
+        "PORT": "5433",
     }
 }
 
@@ -150,13 +150,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_REDIRECT_URL = "/"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.mail.yahoo.com"
+EMAIL_HOST = "smtp.gmail.com"
 # EMAIL_PORT = 465 (no TLS)
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "samuel5848@yahoo.com"
-EMAIL_HOST_PASSWORD = "dbvnecpwqbkrwisn"
-DEFAULT_FROM_EMAIL = "samuel5848@yahoo.com"
+EMAIL_HOST_USER = "alvarezdjoaquin@gmail.com"
+EMAIL_HOST_PASSWORD = "kuiampyixfivbyqh"
+DEFAULT_FROM_EMAIL = "joaquinalv_00@hotmail.com"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 # CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
