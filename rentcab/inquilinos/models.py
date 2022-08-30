@@ -1,5 +1,4 @@
 import datetime
-import numpy as np
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
