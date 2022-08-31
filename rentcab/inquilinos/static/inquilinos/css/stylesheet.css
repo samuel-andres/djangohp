@@ -187,3 +187,24 @@ ul {
 .buttons-right {
   display: flex;
 }
+
+
+/*CSS PARA LIGHT MODE APP*/
+.button-light-mode {
+  padding: 0.6rem 0.85rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(147, 51, 234);
+  border-radius: 1rem;
+  border: none;
+  cursor: pointer;
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+}
+
+.svg-button-lightmode {
+  color: white;
+}
+
+
+/*CSS PARA DARK MODE APP*/
