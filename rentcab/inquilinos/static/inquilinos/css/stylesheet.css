@@ -207,4 +207,13 @@ ul {
 }
 
 
-/*CSS PARA DARK MODE APP*/
+/*ESTILOS PARA CAMPO ERRONEO EN FORMULARIOS */
+.campo-erroneo {
+  border-color: #dc3545 !important;
+  background-color: #d4646f35 !important;
+}
+
+.campo-correcto {
+  border-color: #28a746de !important;
+  background-color: #28a74622 !important;
+}
