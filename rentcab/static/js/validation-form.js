@@ -1,12 +1,10 @@
 function validarFormulario(evento) {
   var email = document.getElementById('typeEmailX');
-  console.log(email.value)
   if(validarEmail(email.value)) {
     email.classList.remove("campo-erroneo")
     email.classList.add("campo-correcto")
     return true;
   } else {
-    console.log("erroneo pa")
     email.classList.remove("campo-correcto")
     email.classList.add("campo-erroneo");
     //console.log(email)
@@ -18,10 +16,8 @@ function validarFormulario(evento) {
 function validarEmail(valor) {
   var emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
   if (emailRegex.test(valor)){
-    console.log("bien")
     return true;	
   } else {
-    console.log("mal")
     return false;
   }
 }
@@ -75,7 +71,7 @@ function trigger(indicator, input, debil, media, fuerte, text, shwButton) {
 
     var no;
 
-    if(input.value.length <= 3 && input.value.match(regExpDebil) || input.value.match(regExpMedia) || input.value.match(regExpFuerte))no=1;
+    if(input.value.match(regExpDebil) || input.value.match(regExpMedia) || input.value.match(regExpFuerte))no=1;
     if(input.value.length >= 6 && input.value.match(regExpDebil) && input.value.match(regExpMedia) || (input.value.match(regExpMedia) && input.value.match(regExpFuerte)) || (input.value.match(regExpDebil) && input.value.length >= 6 && input.value.match(regExpFuerte)))no=2;
     if(input.value.length >= 6 && input.value.match(regExpDebil) && input.value.match(regExpMedia) && input.value.match(regExpFuerte))no=3;
 
@@ -108,7 +104,10 @@ function trigger(indicator, input, debil, media, fuerte, text, shwButton) {
     }
     
   }else {
-    indicator.style.display = "none";
+    debil.classList.remove("active");
+    media.classList.remove("active");
+    fuerte.classList.remove("active");
+    /*indicator.style.display = "none";*/
     text.style.display = "none";
     shwButton.style.display = "none";
   }

@@ -39,9 +39,15 @@
                             <span class="shwButton"></span>
                         </div>
                         <div class="indicator"> 
-                            <span class="debil"></span>
-                            <span class="media"></span>
-                            <span class="fuerte"></span>
+                            <div>
+                                <span class="debil"></span>
+                            </div>
+                            <div>
+                                <span class="media"></span>
+                            </div>
+                            <div>
+                                <span class="fuerte"></span>
+                            </div>
                         </div>
                         <div class="text"></div>
                         <span class="signup">{{ form.password1.errors }}</span>
@@ -55,7 +61,7 @@
                         <span class="signup">{{ form.password2.errors }}</span>
                     </div>
                     <p class="small pb-lg-2">
-                    <a class="text-black-50" href="{% url 'login' %}">Ya tienes una cuenta?</a
+                    <a class="text-black-50" href="{% url 'login' %}">¿Ya tienes una cuenta?</a
                     >
                 </p>
                 <button class="btn btn-outline-primary btn-lg px-5" type="submit">Registrarme</button>
