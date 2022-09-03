@@ -28,7 +28,7 @@
                         <span class="signup">{{ form.email.errors }}</span>
                     </div>
                     <div class="form-outline form-white mb-4">
-                        <label class="form-label fw-bold" for="typeEmailX">Usuario</label>
+                        <label class="form-label fw-bold" for="typeUserX">Usuario</label>
                         <input type="text" id="typeUserX" name="username" class="form-control form-control-lg" onkeyup="validarUsuario()"  placeholder="Ej.: ejemplo.usuario" value {% if form.username.value %}{{ form.username.value }}{% endif %}/>
                         <span class="signup">{{ form.username.errors }}</span>
                     </div>
