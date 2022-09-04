@@ -264,13 +264,13 @@ form .form-outline .indicator span.active.fuerte{
 }
 
 
-form .form-outline .text {
+form .form-outline .text, form .form-outline .text-error {
   font-weight: bold;
   margin-bottom: -10px;
   display: none;
 }
 
-form .form-outline .text.debil {
+form .form-outline .text.debil, .text-error.debil {
   color: #ff4757;
   font-size: 15px;
   margin-bottom: 0.1px;

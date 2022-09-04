@@ -7,7 +7,7 @@
         integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
         crossorigin="anonymous">
     </script>
-    <div class="col-md-6 offset-md-3 p-5 d-flex justify-content-center border rounded bg-white"
+    <div class="col-md-6 shadow offset-md-3 p-5 d-flex justify-content-center border rounded bg-white"
          id="divreserva">
         <div class="card-body text-center">
             <form method="post" action="">
@@ -24,13 +24,14 @@
                                onblur="validarFormulario()" 
                                placeholder="Ej.: ejemplo@email.com"
                                />
-                               
+                        <div class="text-error" id="text-email-error">Revisá tu dirección de email.</div>
                         <span class="signup">{{ form.email.errors }}</span>
                     </div>
                     <div class="form-outline form-white mb-4">
                         <label class="form-label fw-bold" for="typeUserX">Usuario</label>
                         <input type="text" id="typeUserX" name="username" class="form-control form-control-lg" onkeyup="validarUsuario()"  placeholder="Ej.: ejemplo.usuario" value {% if form.username.value %}{{ form.username.value }}{% endif %}/>
                         <span class="signup">{{ form.username.errors }}</span>
+                        <div class="text-error" id="text-user-error">Revisá tu nombre de usuario.</div>
                     </div>
                     <div class="form-outline form-white mb-4">
                         <div class="field-password">
@@ -40,7 +41,7 @@
                         </div>
                         <div class="indicator"> 
                             <div>
-                                <span class="debil"></span>
+                                <span class="debil" id="debil"></span>
                             </div>
                             <div>
                                 <span class="media"></span>
@@ -59,6 +60,7 @@
                         </label>
                         <input type="password" id="typePasswordX2" onkeyup="validarPasswordRepetido()" name="password2" class="form-control form-control-lg" placeholder="" value {% if form.password1.value %}{{ form.password2.value }}{% endif %}/>
                         <span class="signup">{{ form.password2.errors }}</span>
+                        <div class="text-error" id="text-contra-error">Las contraseñas ingresadas no coinciden.</div>
                     </div>
                     <p class="small pb-lg-2">
                     <a class="text-black-50" href="{% url 'login' %}">¿Ya tienes una cuenta?</a

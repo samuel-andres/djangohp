@@ -1,16 +1,22 @@
 function validarFormulario(evento) {
   var email = document.getElementById('typeEmailX');
-  if(validarEmail(email.value)) {
-    email.classList.remove("campo-erroneo")
-    email.classList.add("campo-correcto")
-    return true;
-  } else {
-    email.classList.remove("campo-correcto")
-    email.classList.add("campo-erroneo");
-    //console.log(email)
-    //email.addEventListener("click", rehabilitarCampo)
-    return false;
-  }
+  var textoEmail = document.getElementById('text-email-error');
+  if(email.value.length > 0) {
+    if(validarEmail(email.value)) {
+      email.classList.remove("campo-erroneo");
+      email.classList.add("campo-correcto");
+      textoEmail.style.display = "none";
+      return true;
+    } else {
+      email.classList.remove("campo-correcto")
+      email.classList.add("campo-erroneo");
+      textoEmail.classList.add("debil");
+      textoEmail.style.display = "flex";
+      //console.log(email)
+      //email.addEventListener("click", rehabilitarCampo)
+      return false;
+    }
+  } 
 }
 
 function validarEmail(valor) {
@@ -24,12 +30,16 @@ function validarEmail(valor) {
 
 function validarUsuario() {
   var inputUsuario = document.getElementById("typeUserX");
+  var textoUsuario = document.getElementById("text-user-error");
   if(inputUsuario.value.length > 3) {
     inputUsuario.classList.remove("campo-erroneo");
     inputUsuario.classList.add("campo-correcto");
+    textoUsuario.style.display = "none";
   }else if(inputUsuario.value.length <= 3 && inputUsuario.value.length > 0) {
     inputUsuario.classList.remove("campo-correcto");
     inputUsuario.classList.add("campo-erroneo");
+    textoUsuario.classList.add("debil");
+    textoUsuario.style.display = "flex";
   }else {
     inputUsuario.classList.remove("campo-erroneo");
     inputUsuario.classList.remove("campo-correcto");
@@ -39,7 +49,7 @@ function validarUsuario() {
 function validarContrasena() {
   const indicator = document.querySelector(".indicator");
   const input = document.getElementById("typePasswordX");
-  const debil = document.querySelector(".debil");
+  const debil = document.getElementById("debil");
   const media = document.querySelector(".media");
   const fuerte = document.querySelector(".fuerte");
   const text = document.querySelector(".text"); 
@@ -107,6 +117,7 @@ function trigger(indicator, input, debil, media, fuerte, text, shwButton) {
     debil.classList.remove("active");
     media.classList.remove("active");
     fuerte.classList.remove("active");
+    input.classList.remove("campo-correcto");
     /*indicator.style.display = "none";*/
     text.style.display = "none";
     shwButton.style.display = "none";
@@ -121,12 +132,21 @@ function verPaswword() {
 function validarPasswordRepetido() {
   var password1 = document.getElementById("typePasswordX");
   var password2 = document.getElementById("typePasswordX2");
-
-  if (password1.value == password2.value) {
+  var textoPassword = document.getElementById("text-contra-error")
+  if(password2.value.length > 0) {
+    if (password1.value == password2.value) {
+      password2.classList.remove("campo-erroneo");
+      password2.classList.add("campo-correcto");
+      textoPassword.style.display = "none"
+    } else{
+      password2.classList.remove("campo-correcto");
+      password2.classList.add("campo-erroneo");
+      textoPassword.classList.add("debil");
+      textoPassword.style.display = "flex";
+    }
+  }else{
+    textoPassword.style.display = "none";
     password2.classList.remove("campo-erroneo");
-    password2.classList.add("campo-correcto");
-  } else{
-    password2.classList.remove("campo-correcto");
-    password2.classList.add("campo-erroneo");
   }
+    
 }
