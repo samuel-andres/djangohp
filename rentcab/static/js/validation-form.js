@@ -43,6 +43,7 @@ function validarUsuario() {
   }else {
     inputUsuario.classList.remove("campo-erroneo");
     inputUsuario.classList.remove("campo-correcto");
+    textoUsuario.style.display = "none";
   }
 }
 
