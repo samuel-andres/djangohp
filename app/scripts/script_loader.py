@@ -3,6 +3,10 @@ from django.contrib.auth.models import Group, Permission
 from inquilinos.models import Estado, Cab, Foto
 
 def run():
+    
+    Estado.objects.all().delete()
+    Group.objects.all().delete()
+        
 
     # creación de grupo
     group = Group(name="huesped")
@@ -20,6 +24,9 @@ def run():
     group.permissions.add(permission1)
     group.permissions.add(permission2)
     group.permissions.add(permission3)
+
+    # crecion de superusuario
+    admin = get_user_model().objects.create_superuser('admin', 'admin@example.com', 'admin')
 
     # creación de estados
     PteConf = Estado(nombre="Pte Confirmacion")

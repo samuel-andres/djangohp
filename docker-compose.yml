@@ -1,0 +1,38 @@
+version: "3.3"
+
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+      - dev-static-data:/vol/web
+    command: >
+      sh -c "python manage.py makemigrations accounts &&
+             python manage.py makemigrations inquilinos &&
+             python manage.py makemigrations propietarios &&
+             python manage.py migrate --run-syncdb &&
+             python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DBHOST=db
+      - DBNAME=rentcabdb
+      - DBUSER=postgres
+      - DBPASSWORD=postgres
+      - DBPORT=5432
+    depends_on:
+      - db
+  db:
+    image: postgres
+    volumes:
+      - dev-db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=rentcabdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+
+volumes:
+  dev-db-data:
+  dev-static-data:

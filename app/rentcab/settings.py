@@ -91,10 +91,10 @@ WSGI_APPLICATION = "rentcab.wsgi.application"
 # DATABASES = {
 #     "default": {
 #         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "rentcabdb_2",
+#         "NAME": "rentcabdb",
 #         "USER": "postgres",
 #         "PASSWORD": "postgres",
-#         "HOST": "10.0.3.3",
+#         "HOST": "localhost",
 #         "PORT": "5432",
 #     }
 # }
@@ -102,11 +102,11 @@ WSGI_APPLICATION = "rentcab.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        # "NAME": "rentcabdb_2",
-        "NAME": "rentcabdb_script_test",
+        # "NAME": "rentcabdb",
+        "NAME": "rentcabdb",
         "USER": "postgres",
         "PASSWORD": "postgres",
-        "HOST": "localhost",
+        "HOST": "db",
         "PORT": "5432",
     }
 }
