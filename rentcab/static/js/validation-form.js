@@ -1,17 +1,13 @@
+//FUNCION PARA VALIDACION DEL CAMPO EMAIL
 function validarFormulario(evento) {
   var email = document.getElementById('typeEmailX');
   var textoEmail = document.getElementById('text-email-error');
   if(email.value.length > 0) {
     if(validarEmail(email.value)) {
-      email.classList.remove("campo-erroneo");
-      email.classList.add("campo-correcto");
-      textoEmail.style.display = "none";
+      colocarCampoCorrecto(email, textoEmail);
       return true;
     } else {
-      email.classList.remove("campo-correcto")
-      email.classList.add("campo-erroneo");
-      textoEmail.classList.add("debil");
-      textoEmail.style.display = "flex";
+      colocarCampoErroneo(email, textoEmail);
       //console.log(email)
       //email.addEventListener("click", rehabilitarCampo)
       return false;
@@ -19,6 +15,30 @@ function validarFormulario(evento) {
   } 
 }
 
+//FUNCION PARA CAMBIAR ESTILOS DE LOS CAMPOS CORRECTOS
+function colocarCampoCorrecto(campo, textoErrorCampo) {
+  campo.classList.remove("campo-erroneo");
+  campo.classList.add("campo-correcto");
+  textoErrorCampo.style.display = "none";
+}
+
+//FUNCION PARA CAMBIAR ESTILOS DE CAMPOS ERRONEOS
+function colocarCampoErroneo(campo, textoErrorCampo) {
+  campo.classList.remove("campo-correcto")
+  campo.classList.add("campo-erroneo");
+  textoErrorCampo.classList.add("debil");
+  textoErrorCampo.style.display = "flex";//hacemos aparecer el texto de error
+}
+
+//FUNCION PARA RESETEAR LOS ESTILOS DE LOS CAMPOS DEL FORM
+function resetearEstilosCampos(campo, textoErrorCampo) {
+  campo.classList.remove("campo-erroneo");
+  campo.classList.remove("campo-correcto");
+  textoErrorCampo.style.display = "none";
+}
+
+//FUNCION PARA VALIDACION DEL FORMATO DEL EMAIL
+//Se valida el formato del email en base a una expresion regular
 function validarEmail(valor) {
   var emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
   if (emailRegex.test(valor)){
@@ -28,25 +48,20 @@ function validarEmail(valor) {
   }
 }
 
+//FUNCION PARA VALIDACION DEL NOMBRE DE USUARIO
 function validarUsuario() {
-  var inputUsuario = document.getElementById("typeUserX");
+  var usuario = document.getElementById("typeUserX");
   var textoUsuario = document.getElementById("text-user-error");
-  if(inputUsuario.value.length > 3) {
-    inputUsuario.classList.remove("campo-erroneo");
-    inputUsuario.classList.add("campo-correcto");
-    textoUsuario.style.display = "none";
-  }else if(inputUsuario.value.length <= 3 && inputUsuario.value.length > 0) {
-    inputUsuario.classList.remove("campo-correcto");
-    inputUsuario.classList.add("campo-erroneo");
-    textoUsuario.classList.add("debil");
-    textoUsuario.style.display = "flex";
+  if(usuario.value.length > 3) {
+    colocarCampoCorrecto(usuario, textoUsuario);
+  }else if(usuario.value.length <= 3 && usuario.value.length > 0) {
+    colocarCampoErroneo(usuario, textoUsuario);
   }else {
-    inputUsuario.classList.remove("campo-erroneo");
-    inputUsuario.classList.remove("campo-correcto");
-    textoUsuario.style.display = "none";
+    resetearEstilosCampos(usuario, textoUsuario);
   }
 }
 
+//FUNCION QUE OBTIENE DATOS PARA VALIDAR LA CONTRASENA
 function validarContrasena() {
   const indicator = document.querySelector(".indicator");
   const input = document.getElementById("typePasswordX");
@@ -56,65 +71,60 @@ function validarContrasena() {
   const text = document.querySelector(".text"); 
   const shwButton = document.querySelector(".shwButton");
 
-  //validamos el campo de la contrasena repetida
+  //validamos el campo de la contrasena repetida para verificar si son iguales
   validarPasswordRepetido();
 
   trigger(indicator, input, debil, media, fuerte, text, shwButton);
 }
 
+//FUNCTION PARA DETERMINAR EL GRADO DE SEGURIDAD DE LA CONTRASENA
 function trigger(indicator, input, debil, media, fuerte, text, shwButton) {
-  let regExpDebil = /[a-z]/;
-  let regExpMedia = /\d+/;
-  let regExpFuerte = /.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/;
+  //Expresiones regulares
+  let regExpDebil = /[a-z]/;//contrasena debil
+  let regExpMedia = /\d+/;//contrasena media
+  let regExpFuerte = /.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/;//contrasena fuerte
 
   if(input.value != "") {
     indicator.style.display = "block";
     indicator.style.display = "flex";   
     shwButton.style.display = "block";
 
-    shwButton.onclick = function() {
-    if(input.type == "password"){
-      input.type = "text";
-    }else {
-      input.type = "password";
-      }
-    }
+    //Evento click del boton para mostrar la contrasena
+    shwButton.onclick = verPaswword;
 
     var no;
-
+    //Valicacion de la contrasena ingresada con las expresiones regulares
     if(input.value.match(regExpDebil) || input.value.match(regExpMedia) || input.value.match(regExpFuerte))no=1;
     if(input.value.length >= 6 && input.value.match(regExpDebil) && input.value.match(regExpMedia) || (input.value.match(regExpMedia) && input.value.match(regExpFuerte)) || (input.value.match(regExpDebil) && input.value.length >= 6 && input.value.match(regExpFuerte)))no=2;
     if(input.value.length >= 6 && input.value.match(regExpDebil) && input.value.match(regExpMedia) && input.value.match(regExpFuerte))no=3;
 
-    if(no == 1) {
-      debil.classList.add("active");
-      text.style.display = "block";
-      text.textContent = "Tu contraseña es muy debil."
-      text.classList.add("debil");
-      input.classList.add("campo-correcto");
+    //En base al valor de la variable no adquirido en los condicionales ateriores
+    //determinamos el comportamiento del indicador del grado de seguridad
+    
+    //si la contrasena es categorizada como debil
+    if(no == 1) { 
+      cambiarGradoContrasena(debil, text, "debil", "Tu contraseña es muy debil.");
+      input.classList.add("campo-correcto");//indicamos que el campo esta correcto !!
     }
 
+    //si la contrasena es categorizada como media
     if(no == 2) {
-      media.classList.add("active");
-      text.style.display = "block";
-      text.textContent = "Tu contraseña es aceptable."
-      text.classList.add("media");
+      cambiarGradoContrasena(media, text, "media", "Tu contraseña es aceptable.")
     }else {
       media.classList.remove("active");
       text.classList.remove("media");
     }
 
+    //si la contrasena es categorizada como fuertev
     if(no == 3) {
       media.classList.add("active");
-      fuerte.classList.add("active");
-      text.textContent = "Tu contraseña es excelente."
-      text.classList.add("fuerte");
+      cambiarGradoContrasena(fuerte, text, "fuerte", "Tu contraseña es excelente.");
     } else {
       fuerte.classList.remove("active");
       text.classList.remove("fuerte");
     }
     
-  }else {
+  }else { //si el campo esta vacio...
     debil.classList.remove("active");
     media.classList.remove("active");
     fuerte.classList.remove("active");
@@ -125,29 +135,37 @@ function trigger(indicator, input, debil, media, fuerte, text, shwButton) {
   }
 }
 
-function verPaswword() {
-  var fieldPassword = document.querySelector("typePasswordX");
-  fieldPassword.type = "text";
+//FUNCION PARA CAMBIAR EL GRADO DE SEGURIDAD DE LA CONTRASENA Y MOSTRARLO
+function cambiarGradoContrasena(campo, textoCampo, claseCampo, mensaje) {
+  campo.classList.add("active");
+  textoCampo.style.display = "block";
+  textoCampo.textContent = mensaje;
+  textoCampo.classList.add(claseCampo);
 }
 
+//FUNCION PARA PODER VER LA CONTRASENA INGRESADA
+function verPaswword() {
+  const input = document.getElementById("typePasswordX");
+  if(input.type == "password"){
+    input.type = "text";
+  }else {
+    input.type = "password";
+  }
+}
+
+//FUNCION QUE VALIDA SI LAS CONTRASENAS INGRESADAS SON IGUALES
 function validarPasswordRepetido() {
   var password1 = document.getElementById("typePasswordX");
   var password2 = document.getElementById("typePasswordX2");
   var textoPassword = document.getElementById("text-contra-error")
   if(password2.value.length > 0) {
     if (password1.value == password2.value) {
-      password2.classList.remove("campo-erroneo");
-      password2.classList.add("campo-correcto");
-      textoPassword.style.display = "none"
+      colocarCampoCorrecto(password2, textoPassword);
     } else{
-      password2.classList.remove("campo-correcto");
-      password2.classList.add("campo-erroneo");
-      textoPassword.classList.add("debil");
-      textoPassword.style.display = "flex";
+      colocarCampoErroneo(password2, textoPassword);
     }
   }else{
-    textoPassword.style.display = "none";
-    password2.classList.remove("campo-erroneo");
+      resetearEstilosCampos(password2, textoPassword);
   }
     
 }
