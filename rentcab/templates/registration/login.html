@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
     <br/>
-    <div class="col-md-3 offset-md-4 p-5 d-flex justify-content-center border rounded bg-white"
+    <div class="col-md-3 shadow offset-md-4 p-5 d-flex justify-content-center border rounded bg-white"
          id="divreserva"/>
     <div class="card-body text-center">
         <form method="post" action="{% url 'login' %}">
@@ -12,31 +12,32 @@
             {% for message in messages  %}<p id="messages">{{ message }}</p>{% endfor %}
             <p class="small text-black-50 mb-3">Por favor, ingresa tu usuario y contraseña.</p>
             <div class="form-outline form-white mb-4">
+                <label class="form-label fw-bold" for="typeEmailX">Usuario</label>
                 <input type="text" id="typeEmailX" name="username" class="form-control form-control-lg" value {% if form.username.value %} {{ form.username.value }}{% endif %}/>
-                <label class="form-label" for="typeEmailX">Usuario</label>
             </div>
             <div class="form-outline form-white mb-2">
+                <label class="form-label fw-bold" for="typePasswordX">Contraseña</label>
                 <input type="password"
                        id="typePasswordX"
                        name="password"
                        class="form-control form-control-lg"
                        value="{% if form.password.value %} {{ form.password.value }}{% endif %}"/>
-                <label class="form-label" for="typePasswordX">Contraseña</label>
             </div>
             {% if form.errors %}
                 <p class="text-danger">
                     <strong>Usuario o contraseña incorrecta.</strong>
                 </p>
             {% endif %}
-            <p class="small mb-3 pb-lg-2">
+            <p class="small mb-3 mt-4 pb-lg-2">
                 <a class="text-black-50" href="{% url 'password_reset' %}">¿Has olvidado tu contraseña?</a>
             </p>
-            <button class="btn btn-outline-primary btn-lg px-5" type="submit">Login</button>
+            <button class="btn btn-outline-primary btn-lg px-5 mb-2" type="submit">Login</button>
             <input type="hidden" name="next" value="{{ next }}" />
         </form>
-        <p class="small mb-0 mt-3 pb-lg-2">¿No estás registrado?</p>
+        <hr></hr>
+        <p class="small mb-0 mt-4 pb-lg-2">¿No estás registrado?</p>
         <br/>
-        <a href="{% url 'accounts:sign-up' %}" class="text-black-50 fw-bold">Registrate ahora</a>
+        <a href="{% url 'accounts:sign-up' %}" class="text-primary">Registrate ahora</a>
     </div>
 </div>
 {% endblock %}

@@ -62,11 +62,9 @@
                         <span class="signup">{{ form.password2.errors }}</span>
                         <div class="text-error" id="text-contra-error">Las contraseñas ingresadas no coinciden.</div>
                     </div>
-                    <p class="small pb-lg-2">
-                    <a class="text-black-50" href="{% url 'login' %}">¿Ya tienes una cuenta?</a
-                    >
-                </p>
-                <button class="btn btn-outline-primary btn-lg px-5" type="submit">Registrarme</button>
+                    <p class="small pb-lg-2"></p>
+                <button class="btn btn-outline-primary btn-lg px-5 mb-4" type="submit">Registrarme</button>
+                <p>¿Ya tienes una cuenta? <a class="text-primary" href="{% url 'login' %}">Inicia sesión</a><p/>
             </div>
         </form>
     </div>
