@@ -10,9 +10,9 @@
           />
           <h1>La Pradera</h1>
           <p align="justify">
-            Disponemos de {{ cab_list.count }} excelentes cabañas equipadas
-            completamente para seis personas. Las mismas cuentan con dos
-            habitaciones, baño, antebaño y cocina comedor.
+            "La Pradera" es un hermoso complejo de cabañas ubicado en "El Nono"
+            que brinda servicios de alojamiento vacacional, para que pueda venir a 
+            disfrutar en familia o con amigos. <br></br>
           </p>
       </div>
     </div>
@@ -37,6 +37,12 @@
 </div>
 <div class="album py-4 bg-light">
   <div class="container">
+    <h2 align="center">Nuestras cabañas</h2>
+    <p align="justify">
+      Disponemos de {{ cab_list.count }} excelentes cabañas equipadas
+      completamente para seis personas. Las mismas cuentan con dos
+      habitaciones, baño, antebaño y cocina comedor.
+    </p>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
       {% for cab in cab_list %}
       <div class="col">
