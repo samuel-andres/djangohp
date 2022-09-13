@@ -12,8 +12,6 @@ urlpatterns = [
     path("inquilinos/", include("inquilinos.urls")),
     path("propietarios/", include("propietarios.urls")),
     path("admin/", admin.site.urls),
-    path("api-auth/", include("rest_framework.urls")),
-    path("test-endpoint/", include(router.urls)),
     path("accounts/", include("accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

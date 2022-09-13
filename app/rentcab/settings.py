@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     "django_extensions",
     "crispy_forms",
     "bootstrap4",
-    "rest_framework",
     'django_bootstrap_icons',
 ]
 
