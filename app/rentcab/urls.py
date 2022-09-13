@@ -5,8 +5,6 @@ from django.contrib.auth.models import User
 from django.urls import include, path
 from django.views.generic import RedirectView
 
-from api.routers import router
-
 urlpatterns = [
     path("", RedirectView.as_view(url="inquilinos/", permanent=True)),
     path("inquilinos/", include("inquilinos.urls")),
