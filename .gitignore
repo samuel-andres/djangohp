@@ -68,3 +68,9 @@ target/
 out/*
 
 */out/*
+
+# media
+/media
+*/media
+*/*/media
+*/*/*/media
