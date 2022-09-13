@@ -1,4 +1,4 @@
-{# 403 #} {# hay que arreglar el path #}
+{# 403 #}
 {% extends "inquilinos/base.html" %}
     {% block content %}
         <br/>
@@ -9,7 +9,7 @@
                         <center>{{ exception }}</center>
                     </p>
                 </div>
-                {% if '/inquilinos/cab/' in request.path and 'reservar' in request.path %}
+                {% if '/inquilinos/cab/' in request.path and 'reservar' in request.path or 'inquilinos/reservas/' in request.path %}
                 <div class="row">
                     <button class="btn btn-outline-primary btn-sm px-5"
                             onclick="location.href='{% url 'inquilinos:huesped-registro' %}'"
