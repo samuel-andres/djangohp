@@ -88,21 +88,9 @@ WSGI_APPLICATION = "rentcab.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "rentcabdb",
-#         "USER": "postgres",
-#         "PASSWORD": "postgres",
-#         "HOST": "localhost",
-#         "PORT": "5432",
-#     }
-# }
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        # "NAME": "rentcabdb",
         "NAME": "rentcabdb",
         "USER": "postgres",
         "PASSWORD": "postgres",
@@ -156,18 +144,10 @@ EMAIL_HOST = "smtp.mail.yahoo.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "samuel5848@yahoo.com"
-EMAIL_HOST_PASSWORD = "dbvnecpwqbkrwisn"
+EMAIL_HOST_PASSWORD = ""
 DEFAULT_FROM_EMAIL = "samuel5848@yahoo.com"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
-# CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-
-# CRISPY_TEMPLATE_PACK = "bootstrap5"
-# GRAPH_MODELS = {
-#     'all_applications': True,
-#     'group_models': True,
-# }
-
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
