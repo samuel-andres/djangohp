@@ -10,20 +10,21 @@
           />
           <h1>La Pradera</h1>
           <p align="justify">
-            Disponemos de {{ cab_list.count }} excelentes cabañas equipadas
-            completamente para seis personas. Las mismas cuentan con dos
-            habitaciones, baño, antebaño y cocina comedor.
+            "La Pradera" es un hermoso complejo de cabañas ubicado en "El Nono"
+            que brinda servicios de alojamiento vacacional, para que pueda venir a 
+            disfrutar en familia o con amigos. <br></br>
           </p>
       </div>
     </div>
     <div class="col-md-4 mt-5">
       <div class="card shadown-sm p-3 align-middle">
-        <button
-          class="btn btn-success"
-          onclick="location.href='https://api.whatsapp.com/send?phone=543534237553&text='"
+        <a
+          class="btn btn-success" type="" 
+          target="_blank"
+          href="https://api.whatsapp.com/send?phone=543534237553&text="
         >
           {% bs_icon 'whatsapp' size='1em'%} Contacto
-        </button>
+        </a>
         <p class="mt-2 mb-1 text-center">Horario de consulta:</p>
         <ul class="list-group">
           <li class="text-center list-group-item">
@@ -36,6 +37,12 @@
 </div>
 <div class="album py-4 bg-light">
   <div class="container">
+    <h2 align="center">Nuestras cabañas</h2>
+    <p align="justify">
+      Disponemos de {{ cab_list.count }} excelentes cabañas equipadas
+      completamente para seis personas. Las mismas cuentan con dos
+      habitaciones, baño, antebaño y cocina comedor.
+    </p>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
       {% for cab in cab_list %}
       <div class="col">
@@ -55,6 +62,7 @@
                   class="btn btn-sm btn-outline-secondary"
                 >
                   Ver cabaña
+                  
                 </button>
               </div>
               <small class="text-muted">{{ cab.nombre }}</small>
@@ -66,4 +74,7 @@
     </div>
   </div>
 </div>
+
+
 {% endblock content %}
+

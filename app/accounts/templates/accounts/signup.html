@@ -1,7 +1,13 @@
 {% extends "inquilinos/base.html" %}
+{% load static %}
 {% block content %}
     <br/>
-    <div class="col-md-6 offset-md-3 p-5 d-flex justify-content-center border rounded bg-white"
+    <script
+        src="https://code.jquery.com/jquery-3.6.1.js"
+        integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+        crossorigin="anonymous">
+    </script>
+    <div class="col-md-6 shadow offset-md-3 p-5 d-flex justify-content-center border rounded bg-white"
          id="divreserva">
         <div class="card-body text-center">
             <form method="post" action="">
@@ -9,54 +15,59 @@
                 <div class="mb-md-2 mt-md-1 pb-2">
                     <h2 class="fw-bold mb-3">Registrarse</h2>
                     <div class="form-outline form-white mb-4">
+                        <label class="form-label fw-bold" for="typeEmailX">Email</label>
                         <input type="email"
                                id="typeEmailX"
                                name="email"
                                class="form-control form-control-lg"
-                               value="{% if form.email.value %} {{ form.email.value }}{% endif %}"/>
-                        <label class="form-label" for="typeEmailX">Email</label>
-                        <span class="signup text-danger">{{ form.email.errors }}</span>
+                               value="{% if form.email.value %} {{ form.email.value }}{% endif %}"
+                               onblur="validarFormulario()" 
+                               placeholder="Ej.: ejemplo@email.com"
+                               />
+                        <div class="text-error" id="text-email-error">Revisá tu dirección de email.</div>
+                        <span class="signup">{{ form.email.errors }}</span>
                     </div>
                     <div class="form-outline form-white mb-4">
-                        <input type="text" id="typeEmailX" name="username" class="form-control form-control-lg"
-                            value=
-                            {% if form.username.value %}
-                                {{ form.username.value }}
-                            {% endif %}
-                        />
-                        <label class="form-label" for="typeEmailX">Usuario</label>
-                        <span class="signup text-danger">{{ form.username.errors }}</span>
+                        <label class="form-label fw-bold" for="typeUserX">Usuario</label>
+                        <input type="text" id="typeUserX" name="username" class="form-control form-control-lg" onkeyup="validarUsuario()"  placeholder="Ej.: ejemplo.usuario" value {% if form.username.value %}{{ form.username.value }}{% endif %}/>
+                        <span class="signup">{{ form.username.errors }}</span>
+                        <div class="text-error" id="text-user-error">Revisá tu nombre de usuario.</div>
                     </div>
                     <div class="form-outline form-white mb-4">
-                        <input type="password" id="typePasswordX" name="password1" class="form-control form-control-lg"
-                            value=
-                            {% if form.password1.value %}
-                                {{ form.password1.value }}
-                            {% endif %}
-                        />
-                        <label class="form-label" for="typePasswordX">Contraseña</label>
-                        <span class="signup text-danger">{{ form.password1.errors }}</span>
+                        <div class="field-password">
+                            <label class="form-label fw-bold" for="typePasswordX">Contraseña</label>
+                            <input type="password" id="typePasswordX" onkeyup="validarContrasena()" name="password1" class="form-control form-control-lg" placeholder="" value {% if form.password1.value %} {{ form.password1.value }}{% endif %}/>
+                            <span class="shwButton"></span>
+                        </div>
+                        <div class="indicator"> 
+                            <div>
+                                <span class="debil" id="debil"></span>
+                            </div>
+                            <div>
+                                <span class="media"></span>
+                            </div>
+                            <div>
+                                <span class="fuerte"></span>
+                            </div>
+                        </div>
+                        <div class="text"></div>
+                        <span class="signup">{{ form.password1.errors }}</span>
                     </div>
+
                     <div class="form-outline form-white mb-4">
-                        <input type="password" id="typePasswordX" name="password2" class="form-control form-control-lg"
-                            value=
-                            {% if form.password2.value %}
-                                {{ form.password2.value }}
-                            {% endif %}
-                        />
-                        <label class="form-label" for="typePasswordX">
+                        <label class="form-label fw-bold" for="typePasswordX">
                             Repetir contraseña
-                        </label
-                        >
-                        <span class="signup text-danger">{{ form.password2.errors }}</span>
+                        </label>
+                        <input type="password" id="typePasswordX2" onkeyup="validarPasswordRepetido()" name="password2" class="form-control form-control-lg" placeholder="" value {% if form.password1.value %}{{ form.password2.value }}{% endif %}/>
+                        <span class="signup">{{ form.password2.errors }}</span>
+                        <div class="text-error" id="text-contra-error">Las contraseñas ingresadas no coinciden.</div>
                     </div>
-                    <p class="small pb-lg-2">
-                    <a class="text-black-50" href="{% url 'login' %}">Ya tienes una cuenta?</a
-                    >
-                </p>
-                <button class="btn btn-outline-primary btn-lg px-5" type="submit">Registrarme</button>
+                    <p class="small pb-lg-2"></p>
+                <button class="btn btn-outline-primary btn-lg px-5 mb-4" type="submit">Registrarme</button>
+                <p>¿Ya tienes una cuenta? <a class="text-primary" href="{% url 'login' %}">Inicia sesión</a><p/>
             </div>
         </form>
     </div>
 </div>
+<script src="{% static '/js/validation-form.js' %}"></script>
 {% endblock %}
