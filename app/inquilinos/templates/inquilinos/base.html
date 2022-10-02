@@ -34,64 +34,7 @@
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarsExample06">
-            <ul class="navbar-nav me-auto mt-0 mb-0">
-              <li class="nav-item pe-2">
-                <button class="btn btn-outline-success" type="button"
-                  <button type="button" onclick="location.href='{% url 'inquilinos:index' %}'">
-                    Inicio
-                  </button>
-                </li>
-                {% if user.is_authenticated %}
-                  {% if user.huesped %}
-                    <li class="nav-item pe-2">
-                      <button class="btn btn-outline-primary active"
-                              onclick="location.href='{% url 'inquilinos:huesped-detail' user.huesped.pk %}'"
-                              type="button">
-                        {{ user.huesped }}
-                      </button>
-                    </li>
-                  {% elif user.is_staff %}
-                  {% else %}
-                    <li class="nav-item pe-2">
-                      <button class="btn btn-outline-primary active"
-                              onclick="location.href='{% url 'inquilinos:huesped-registro' %}'"
-                              type="button">
-                        @{{ user.username }}
-                      </button>
-                    </li>
-                  {% endif %}
-                {% endif %}
-                <li class="nav-item pe-2">
-                  {% if user.is_authenticated %}
-                    <button class="btn btn-outline-secondary active"
-                            onclick="location.href='{% url 'logout' %}'"
-                            type="button">
-                      Cerrar sesión
-                    </button>
-                  {% else %}
-                    <button class="btn btn-outline-success active"
-                            onclick="location.href='{% url 'login' %}'"
-                            type="button">
-                      Iniciar sesión
-                    </button>
-                  {% endif %}
-                </li>
-                {% if user.is_authenticated %}
-                  {% if user.huesped %}
-                    <li class="nav-item dropdown">
-                      <a class="nav-link dropdown-toggle"
-                         href="#"
-                         data-bs-toggle="dropdown"
-                         aria-expanded="false">Reservas</a>
-                      <ul class="dropdown-menu">
-                        <li>
-                          <a class="dropdown-item" href="{% url 'inquilinos:reserva-list' %}">Ver mis reservas</a>
-                        </li>
-                      </ul>
-                    </li>
-                  {% endif %}
-                {% endif %}
-              </ul>
+            
               {% comment %} <form role="search">
               <input class="form-control" type="search" placeholder="Search" aria-label="Search">
               </form> {% endcomment %}
@@ -101,6 +44,79 @@
                      width="94"
                      height="24"/>
               </a>
+
+              
+              <ul class="navbar-nav mt-0 mb-0">
+                  {% if user.is_authenticated %}
+                    {% if user.huesped %}
+                      <li class="nav-item pe-2">
+                        <button class="btn btn-outline-primary active"
+                                onclick="location.href='{% url 'inquilinos:huesped-detail' user.huesped.pk %}'"
+                                type="button">
+                          {{ user.huesped }}
+                        </button>
+                      </li>
+                    {% elif user.is_staff %}
+                    {% else %}
+                      <li class="nav-item pe-2">
+                        <button class="btn btn-outline-primary active"
+                                onclick="location.href='{% url 'inquilinos:huesped-registro' %}'"
+                                type="button">
+                          @{{ user.username }}
+                        </button>
+                      </li>
+                    {% endif %}
+                  {% endif %}
+                  {% if user.is_authenticated %}
+                    {% if user.huesped %}
+                      <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle"
+                           href="#"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false">Reservas</a>
+                        <ul class="dropdown-menu">
+                          <li>
+                            <a class="dropdown-item" href="{% url 'inquilinos:reserva-list' %}">Ver mis reservas</a>
+                          </li>
+                        </ul>
+                      </li>
+                    {% endif %}
+                  {% endif %}
+                </ul>
+                <ul class="navbar-nav ms-auto mt-0 mb-0">
+                  <div class="buttons-right">
+                    <li class="nav-item pe-2">
+                      <button class="btn btn-outline-success" type="button"
+                        <button type="button" onclick="location.href='{% url 'inquilinos:index' %}'">
+                          Inicio
+                        </button>
+                      </li>
+                      <li class="nav-item pe-2">
+                        {% if user.is_authenticated %}
+                          <button class="btn btn-outline-secondary active"
+                                  onclick="location.href='{% url 'logout' %}'"
+                                  type="button">
+                            Cerrar sesión
+                          </button>
+                        {% else %}
+                          <button class="btn btn-success"
+                                  onclick="location.href='{% url 'login' %}'"
+                                  type="button">
+                            Iniciar sesión
+                          </button>
+                        {% endif %}
+
+                        <!-- PRUEBA DE BOTON DE MODO OSCURO -->
+                        <!--
+                        <button class="button-light-mode">
+                          <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" class="svg-button-lightmode" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="none" d="M0 0h24v24H0V0z"></path>
+                            <path d="M12.01 12c0-3.57 2.2-6.62 5.31-7.87.89-.36.75-1.69-.19-1.9-1.1-.24-2.27-.3-3.48-.14-4.51.6-8.12 4.31-8.59 8.83C4.44 16.93 9.13 22 15.01 22c.73 0 1.43-.08 2.12-.23.95-.21 1.1-1.53.2-1.9A8.46 8.46 0 0112.01 12z"></path>                          </svg>
+                        </button>
+                        -->
+                    </li>
+                  <div/>
+                </ul>
             </div>
           </div>
         </nav>
