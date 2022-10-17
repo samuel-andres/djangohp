@@ -1,0 +1,23 @@
+.bg-celeste{
+    background-color: #65d5e1 !important;
+}
+
+.bg-rojo{
+    background-color: #bd3f22 !important;
+}
+
+.bg-warning-light {
+    background-color: #ffc10780!important;
+}
+
+.table td, .table th {
+    padding: .5rem !important;
+}
+
+body table{
+    font-size: 12px !important;
+}
+
+#tablaEstudioMercadoProducto .badge {
+    font-size: 100% !important;
+}

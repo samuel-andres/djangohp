@@ -1,0 +1,87 @@
+{% extends 'propietarios/inicialAdmin.html' %}
+<!--Para que herede todo de index.html -->
+
+{% block titulo %} {{titulo}} {% endblock titulo %} 
+{% block contentTitulo %}{% endblock contentTitulo %}
+
+{% block conteiner %}
+<script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
+
+<section class="content">
+	<div class="container-fluid">
+		<div class="card card-warning">
+			<div class="card-header">
+				<h3 class="card-title">{{titulo}}</h3>
+				<div class="card-tools">
+					<button type="button" class="btn btn-tool" data-card-widget="collapse">
+						<i class="fas fa-minus"></i>
+					</button>
+				</div>
+			</div>
+			<div class="card-body">
+				<div class="">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %} 
+                        {% if error %}
+                            <h2>{{ error }}</h2>
+                        {% else %}
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="{{ form.titulo.auto_id }}"> Título : </label>
+                                    {{ form.titulo }}
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="{{ form.descripcion.auto_id }}"> Descripción : </label>
+                                    {{ form.descripcion }}
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="{{ form.fechaInicio.auto_id }}"> Fecha de Inicio : </label>
+                                    {{ form.fechaInicio}}
+                                </div>
+                                
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="{{ form.fechaFin.auto_id }}"> Fecha de Fin : </label>
+                                    {{ form.fechaFin }}
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="{{ form.descuento.auto_id }}"> Procentaje de Descuento : </label>
+                                    {{ form.descuento }}
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="{{ form.cab.auto_id }}"> Cabaña : </label>
+                                    {{ form.cab }}
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success mt-4"> <icon class="fas fa-save"></icon> {{ boton }}</button>
+                            <a type="button" href="{% url 'propietarios:listarPromo' %}" class="btn btn-danger mt-4" ><icon class="fas fa-times"></icon> Cancelar</a>
+                        {% endif %}
+                    </form>
+                </div>   
+			</div>
+			<div class="card-footer">
+            </div>
+		</div>
+	</div>
+</section>
+{% endblock conteiner %}
+
+{% block extrajs %}
+<script>
+    jQuery(function () {
+        jQuery(".datepicker").datetimepicker({
+        format: 'd/m/Y H:i',
+        });
+    });
+
+</script>
+{% endblock extrajs%}

@@ -1,0 +1,93 @@
+{% extends 'propietarios/inicialAdmin.html' %}
+<!--Para que herede todo de index.html -->
+
+{% block titulo %} Listado de Promociones {% endblock titulo %} 
+{% block contentTitulo %}{% endblock contentTitulo %}
+{% block conteiner %}
+<section class="content">
+	<div class="container-fluid">
+		<div class="card card-warning">
+			<div class="card-header">
+				<h3 class="card-title">Listado de Promociones</h3>
+				<div class="card-tools">
+				</div>
+			</div>
+			<div class="card-body table-responsive p-3" style="height: auto;">
+                <div style="margin-bottom: 1rem;">
+                    <a class="btn btn-success btn-sm" href="{% url 'propietarios:registrarPromo' %}" style="margin-right: 55%;"><i class="fas fa-plus"></i> Registar Promoción</a>
+                    <a class="btn btn-success btn-sm" style="background: #bd3f22;border-color: #bd3f22;">Promoción Finalizada</a>
+                    <a class="btn btn-success btn-sm" style="background: #65d5e1;border-color: #65d5e1;">Promoción activa</a>
+                </div> 
+                <table class="table table-head-fixed text-nowrap table-bordered dataTable dtr-inline">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center ; background-color: #ffc107;">TÍTULO</th>
+                            <th style="text-align:center ; background-color: #ffc107;">DESCRICIÓN</th>
+                            <th style="text-align:center ; background-color: #ffc107;">INICIO</th>
+                            <th style="text-align:center ; background-color: #ffc107;">FIN</th>
+                            <th style="text-align:center ; background-color: #ffc107;">% DESC</th>
+                            <th style="text-align:center ; background-color: #ffc107;">CABAÑA</th>
+                            <th style="text-align:center ; background-color: #ffc107;"></th>	
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {% for promo in promo %}
+                            {% if promo.baja == 0 %}
+                                <tr role="row" class="odd {% if promo.fechaFin > fechaHoy %} bg-celeste  {% elif promo.fechaFin <= fechaHoy %} bg-rojo {% endif %} ">
+                                    <td>{{ promo.titulo }}</td>
+                                    <td>{{ promo.descripcion }}</td>
+                                    <td>{{ promo.fechaInicio }}</td>
+                                    <td>{{ promo.fechaFin }}</td>
+                                    <td>{{ promo.descuento }}</td>
+                                    <td>{{ promo.cab.nombre }}</td>
+                                    <td>
+                                        <a class="btn btn-primary btn-sm" href="{% url 'propietarios:editarPromo' promo.id %}"><i class="fas fa-fas fa-pencil-alt"></i></a>
+                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modal-warning">
+                                            <icon class="fas fa-trash-alt"></icon>
+                                        </button> 
+                                        {% if promo.fechaFin > fechaHoy %}
+                                            <a class="btn btn-warning btn-sm" href="{% url 'propietarios:finPromo' promo.id %}"><i class="fas fa-stop-circle"></i></a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            
+
+                                <div class="modal" id="modal-warning" style="display: none;" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-body" style="text-align: center;">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerca">
+                                                    <span aria-hidden="true">x</span>
+
+                                                </button>
+                                                <br>
+                                                <h4>¿Está seguro que deasea eliminar el registro?</h5>
+                                                <a href="{% url 'propietarios:bajaPromo' promo.id %}"><button type="button" class="btn btn-success"><icon class="fas fa-check"></icon> Aceptar</button></a>
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal" ><icon class="fas fa-times"></icon> Cancelar</button>
+                                            </div>
+                                        </div>
+                                    
+                                    </div>
+                                    
+                                </div>
+                            {% endif %}
+                        {% endfor %} 
+                        
+                    </tbody>
+                    
+                </table>
+            </div>
+			<div class="card-footer">
+            </div>
+		</div>
+
+        
+	</div>
+
+   
+</section>
+
+
+{% endblock conteiner %}
+

@@ -1,0 +1,63 @@
+{% extends 'propietarios/inicialAdmin.html' %}
+<!--Para que herede todo de index.html -->
+
+{% block titulo %} Listado de Cabañas {% endblock titulo %} 
+{% block contentTitulo %}{% endblock contentTitulo %}
+
+{% block conteiner %}
+<section class="content">
+	<div class="container-fluid">
+		<div class="card card-warning">
+			<div class="card-header">
+				<h3 class="card-title">Listado de Cabañas</h3>
+				<div class="card-tools">
+				</div>
+			</div>
+			<div class="card-body table-responsive p-3" style="height: auto;">
+                <div style="margin-bottom: 1rem;">
+                    <a class="btn btn-success btn-sm" href="{% url 'propietarios:registrarCab' %}"><i class="fas fa-plus"></i>Registar nueva Cabaña</a>
+                </div>
+                <table class="table table-head-fixed text-nowrap table-bordered dataTable dtr-inline">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center ; background-color: #ffc107;">NOMBRE</th>
+                            <th style="text-align:center ; background-color: #ffc107;">CANT HABITACIONES</th>
+                            <th style="text-align:center ; background-color: #ffc107;">COSTO POR NOCHE</th>
+                            <th style="text-align:center ; background-color: #ffc107;"></th>	
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {% for cabaña in cabaña %}
+                            <tr role="row" class="odd">
+                                <td>{{ cabaña.nombre }}</td>
+                                <td>{{ cabaña.cantHabitaciones }}</td>
+                                <td>{{ cabaña.costoPorNoche }}</td>
+                                <td>
+                                    <a class="btn btn-primary btn-sm" href="{% url 'propietarios:editarCab' cabaña.id %}"><i class="fas fa-fas fa-pencil-alt"></i></a>
+                                    <a class="btn btn-warning btn-sm"  href="{% url 'propietarios:registrarRango' cabaña.id %}"  ><icon class="far fa-calendar-alt"></icon></a> 
+                                    <a class="btn btn-sm" style="background-color: #45b70b;border-color: #45b70b;color: white;" href="#"  ><icon class="fas fa-camera"></icon></a>
+                                    {% if cabaña.habilitada == 1 %}
+                                        <a class="btn btn-sm" style="background-color: #ec3f0b;border-color: #ec3f0b;color: white;" href="{% url 'propietarios:deshabilitarCab' cabaña.id %}"  ><icon class="fas fa-sync-alt"></icon></a>
+                                    {% endif %}
+                                    {% if cabaña.habilitada == 0 %}
+                                        <a class="btn btn-sm" style="background-color: #0bec0b;border-color: #0bec0b;color: white;" href="{% url 'propietarios:habilitarCab' cabaña.id %}"  ><icon class="fas fa-sync-alt"></icon></a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %} 
+                        
+                    </tbody>
+                    
+                </table>
+                <div style="text-align: right;">
+                    <a type="button" class="btn btn-warning mt-4" href="#">Volver</a>
+                </div>
+            </div>
+			<div class="card-footer">
+            </div>
+		</div>
+	</div>
+</section>
+{% endblock conteiner %}
+

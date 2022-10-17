@@ -1,0 +1,127 @@
+{% load static %}
+<!-- Navbar -->
+<nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+    <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+    </li>
+    </ul>
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+    <li class="nav-item d-none d-sm-inline-block">
+        <a href="#" target="_blank"  class="nav-link">Administración</a>
+    </li>
+    <li class="nav-item d-none d-sm-inline-block">
+        <a class="nav-link" href="#"><i class="fa fa-power-off"></i></a>
+    </li>
+    </ul>
+</nav>
+<!-- /.navbar -->
+
+<!-- Main Sidebar Container -->
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="#" class="brand-link">
+    <img src="{% static 'inquilinos/images/logo2.png' %}" alt="" width="94" height="24"/> 
+    <span class="brand-text font-weight-light">Rentcab</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+    
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- Add icons to the links using the .nav-icon class
+                    with font-awesome or any other icon font library -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-home"></i> <p> CABAÑAS <i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview pl-3">
+                        <li class="nav-item">
+                            <a href="{% url 'propietarios:listarCabaña' %}" class="nav-link">
+                                <i class="fas fa-stream nav-icon"></i> <p>Listado de Cabañas</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'propietarios:registrarCab' %}" class="nav-link">
+                                <i class="fas fa-laptop-house nav-icon"></i> <p>Registrar Cabaña</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-tree"></i> <p> INSTALACIONES <i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview pl-3">
+                        <li class="nav-item">
+                            <a href="{% url 'propietarios:listarInstalacion' %}" class="nav-link">
+                                <i class="fas fa-stream nav-icon"></i> <p>Listado de Instalaciones</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'propietarios:registrarInstalacion' %}" class="nav-link">
+                                <i class="fas fa-laptop-house nav-icon"></i> <p>Registrar Instalación</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fa fa-coffee"></i> <p> SERVICIOS <i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview pl-3">
+                        <li class="nav-item">
+                            <a href="{% url 'propietarios:listarServicio' %}" class="nav-link">
+                                <i class="fas fa-stream nav-icon"></i> <p>Listado de Servicios</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'propietarios:registrarServicio' %}" class="nav-link">
+                                <i class="fas fa-laptop-house nav-icon"></i> <p>Registrar Servicio</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fa fa-bullhorn"></i> <p> PROMOCIONES <i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview pl-3">
+                        <li class="nav-item">
+                            <a href="{% url 'propietarios:listarPromo' %}" class="nav-link">
+                                <i class="fas fa-stream nav-icon"></i> <p>Listado de Promociones</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'propietarios:registrarPromo' %}" class="nav-link">
+                                <i class="fas fa-laptop-house nav-icon"></i> <p>Registrar Promoción</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon 	fas fa-users"></i> <p> HUESPED <i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview pl-3">
+                        <li class="nav-item">
+                            <a href="{% url 'propietarios:listarHuesped' %}" class="nav-link">
+                                <i class="fas fa-stream nav-icon"></i> <p>Listado de Huespedes</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'propietarios:registrarHuesped' %}" class="nav-link">
+                                <i class="fas fa-user-plus nav-icon"></i> <p>Registrar Huesped</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav> <!-- /.sidebar-menu -->
+    </div> <!-- /.sidebar -->
+</aside>

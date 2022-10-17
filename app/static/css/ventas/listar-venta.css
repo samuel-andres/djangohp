@@ -1,0 +1,42 @@
+.card-header  .card-title-container:after {
+   font-family: FontAwesome;
+   content: "\f078";
+   transition: all 0.5s;
+}
+
+.card-header.collapsed .card-title-container:after {
+	-webkit-transform: rotate(180deg);
+	-moz-transform: rotate(180deg);
+	transform: rotate(180deg);
+}
+
+#filtros-details{
+    transition: all 0.5s;
+}
+
+.form-group-filters:first-child input{
+    width:70px;
+}
+
+.form-group-filters{
+    margin-left:35px;
+    text-align:center;
+}
+
+.form-group-filters:first-child{
+    margin-left:0
+}
+
+#id_fechaCreacion_1{
+    margin-left:0;
+    margin-top: 10px;
+}
+
+#id_fechaCreacion_0::before{
+    display: block;
+    content: 'Desde';
+}
+
+#id_fechaCreacion_1::before{
+    content: 'Hasta';
+}

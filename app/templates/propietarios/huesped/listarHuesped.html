@@ -1,0 +1,89 @@
+{% extends 'propietarios/inicialAdmin.html' %}
+<!--Para que herede todo de index.html -->
+
+{% block titulo %} Listado de Huespedes {% endblock titulo %} 
+{% block contentTitulo %}{% endblock contentTitulo %}
+{% block conteiner %}
+<section class="content">
+	<div class="container-fluid">
+		<div class="card card-warning">
+			<div class="card-header">
+				<h3 class="card-title">Listado de Huespedes</h3>
+				<div class="card-tools">
+				</div>
+			</div>
+			<div class="card-body table-responsive p-3" style="height: auto;">
+                <div style="margin-bottom: 1rem;">
+                    <a class="btn btn-success btn-sm" href="{% url 'propietarios:registrarHuesped' %}"><i class="fas fa-plus"></i> Registar Huesped</a>
+                </div> 
+                <table class="table table-head-fixed text-nowrap table-bordered dataTable dtr-inline">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center ; background-color: #ffc107;">NOMBRE</th>
+                            <th style="text-align:center ; background-color: #ffc107;">APELLIDO</th>
+                            <th style="text-align:center ; background-color: #ffc107;">TELÉFONO</th>
+                            <th style="text-align:center ; background-color: #ffc107;">DNI</th>
+                            <th style="text-align:center ; background-color: #ffc107;">EMAIL</th>
+                            <th style="text-align:center ; background-color: #ffc107;"></th>	
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {% for huesped in huesped %}
+                            {% if huesped.baja == 0 %}
+                                <tr role="row" class="odd">
+                                    <td>{{ huesped.nombre }}</td>
+                                    <td>{{ huesped.apellido }}</td>
+                                    <td>{{ huesped.telefono }}</td>
+                                    <td>{{ huesped.dni }}</td>
+                                    <td>{{ huesped.email }}</td>
+                                    <td>
+                                        <a class="btn btn-primary btn-sm" href="{% url 'propietarios:editarHuesped' huesped.id %}"><i class="fas fa-fas fa-pencil-alt"></i></a>
+                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modal-warning">
+                                            <icon class="fas fa-trash-alt"></icon>
+                                        </button>    
+                                    </td>
+                                </tr>
+                            
+
+                                <div class="modal" id="modal-warning" style="display: none;" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-body" style="text-align: center;">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerca">
+                                                    <span aria-hidden="true">x</span>
+
+                                                </button>
+                                                <br>
+                                                <h4>¿Está seguro que deasea eliminar el registro?</h5>
+                                                <a href="{% url 'propietarios:bajaHuesped' huesped.id %}"><button type="button" class="btn btn-success"><icon class="fas fa-check"></icon> Aceptar</button></a>
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal" ><icon class="fas fa-times"></icon> Cancelar</button>
+                                            </div>
+                                        </div>
+                                    
+                                    </div>
+                                    
+                                </div>
+                            {% endif %}
+                        {% endfor %} 
+                        
+                    </tbody>
+                    
+                </table>
+                <div style="text-align: right;">
+                    <a type="button" class="btn btn-warning mt-4" href="#">Volver</a>
+                </div>
+            </div>
+			<div class="card-footer">
+            </div>
+		</div>
+
+        
+	</div>
+
+   
+</section>
+
+
+{% endblock conteiner %}
+
