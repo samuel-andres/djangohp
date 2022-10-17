@@ -1,5 +1,5 @@
 
-from django.contrib.auth.forms import AuthenticationForm 
+from django.contrib.auth.forms import AuthenticationForm
 from django import forms
 from .models import *
 from django.conf import settings
@@ -16,9 +16,13 @@ class RegCabForm(forms.ModelForm):
             }
     class Meta:
         model = Cab
-        fields = [ 'nombre', 'cantHabitaciones' , 'costoPorNoche']
+        fields = [
+            'nombre',
+            'cantHabitaciones' ,
+            # 'costoPorNoche',
+        ]
 
-#RANGO    
+#RANGO
 class RegRangoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(RegRangoForm, self).__init__(*args, **kwargs)
@@ -123,4 +127,4 @@ class RegHuespedForm(forms.ModelForm):
             }
     class Meta:
         model = Huesped
-        fields = [ 'nombre' , 'apellido','email', 'dni','telefono']
+        fields = [ 'nombre' , 'apellido','telefono']

@@ -1,7 +1,7 @@
 {% extends 'propietarios/inicialAdmin.html' %}
 <!--Para que herede todo de index.html -->
 
-{% block titulo %} {{titulo}} {% endblock titulo %} 
+{% block titulo %} {{titulo}} {% endblock titulo %}
 {% block contentTitulo %}{% endblock contentTitulo %}
 
 {% block conteiner %}
@@ -20,7 +20,7 @@
 			<div class="card-body">
 				<div class="row">
                     <form method="POST">
-                        {% csrf_token %} 
+                        {% csrf_token %}
                         {% if error %}
                             <h2>{{ error }}</h2>
                         {% else %}
@@ -37,15 +37,15 @@
                                 </div>
                             </div>
                             <div class="col-12">
-                                <div class="form-group">
+                                {% comment %} <div class="form-group">
                                     <label for="{{ form.costoPorNoche.auto_id }}"> Costo por Noche: </label>
                                     {{ form.costoPorNoche }}
-                                </div>
+                                </div> {% endcomment %}
                             </div>
                             <button type="submit" class="btn  btn-warning mt-4">{{ boton }}</button>
                         {% endif %}
                     </form>
-                </div>   
+                </div>
 			</div>
 			<div class="card-footer">
             </div>

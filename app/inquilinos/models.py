@@ -27,6 +27,7 @@ class Huesped(models.Model):
         get_user_model(),
         on_delete=models.CASCADE,
         related_name="huesped",
+        null=True,
     )
 
     # métodos
@@ -155,7 +156,6 @@ class Cab(models.Model):
         verbose_name = "Cabaña"
         verbose_name_plural = "Cabañas"
         ordering = [
-            # "-costoPorNoche",
             "-cantHabitaciones",
         ]
 
