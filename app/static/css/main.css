@@ -1,23 +1,63 @@
-.bg-celeste{
-    background-color: #65d5e1 !important;
+body {
+    font-family: 'Poppins', sans-serif;
 }
 
-.bg-rojo{
-    background-color: #bd3f22 !important;
+.btn-success {
+    background-color: #198754;
+    border-color: #198754;
+    border-radius: 0.375rem;
 }
 
-.bg-warning-light {
-    background-color: #ffc10780!important;
+.btn-success:hover {
+    background-color: #157347;
 }
 
-.table td, .table th {
-    padding: .5rem !important;
+.card-warning:not(.card-outline)>.card-header {
+    background-color: #f5f5f5;
 }
 
-body table{
-    font-size: 12px !important;
+.card-title {
+    font-weight: bold;
 }
 
-#tablaEstudioMercadoProducto .badge {
-    font-size: 100% !important;
+.fa, .fas {
+    padding: 0 6px 0 0;
+}
+
+.table.table-head-fixed thead tr:nth-child(1) th {
+    background-color:white !important;
+}
+
+.table-bordered td, .table-bordered th {
+    text-align: center;
+}
+
+.btn-warning {
+    background-color:#fff;
+    color:#198754;
+    border-color:#198754;
+    border-radius: 0.375rem;
+}
+
+.btn-warning:hover { 
+    background-color:#198754 !important; 
+    color:#fff !important;
+    border-color:#198754 !important;
+}
+
+.btn-editar, .icon-camara {
+    padding: 0;
+}
+
+.btn-camara:hover {
+    background-color: #3ea909 !important;
+    border-color: #3ea909 !important;
+}
+
+.btn-danger {
+    color: #ff4757;
+    background-color: #fff;
+    border-color: #ff4757;
+    border-radius:0.375rem; 
+
 }
